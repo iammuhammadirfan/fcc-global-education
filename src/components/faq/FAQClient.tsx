@@ -43,13 +43,13 @@ export default function FAQClient({ initialFaqs }: { initialFaqs: any[] }) {
             <span className="text-xs font-bold text-amber-700 uppercase tracking-widest bg-amber-100 px-3.5 py-1.5 rounded-full border border-amber-300">
               Clear & Transparent Answers
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
               Frequently Asked{' '}
               <span className="text-amber-600">
                 Questions
               </span>
             </h1>
-            <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-lg leading-relaxed">
               Find instant clarity on admission deadlines, conditional offers, IELTS waivers, financial proof for visas, and post-study work regulations.
             </p>
           </div>
@@ -88,9 +88,9 @@ export default function FAQClient({ initialFaqs }: { initialFaqs: any[] }) {
 
       {/* Accordion FAQ Display */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
               Showing {filteredFaqs.length} {filteredFaqs.length === 1 ? 'Question' : 'Questions'}
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -103,7 +103,7 @@ export default function FAQClient({ initialFaqs }: { initialFaqs: any[] }) {
                 setSelectedCategory('All');
                 setSearchQuery('');
               }}
-              className="text-xs font-semibold text-amber-600 hover:underline"
+              className="text-xs font-semibold text-amber-600 hover:underline self-start sm:self-auto"
             >
               Reset Filters
             </button>
@@ -123,7 +123,7 @@ export default function FAQClient({ initialFaqs }: { initialFaqs: any[] }) {
         )}
 
         {/* Still Have Questions Box */}
-        <div className="mt-12 p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="mt-12 p-5 sm:p-8 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="space-y-1 text-center sm:text-left">
             <h3 className="text-lg font-bold text-white">
               Still have a specific question about your profile?
@@ -133,23 +133,23 @@ export default function FAQClient({ initialFaqs }: { initialFaqs: any[] }) {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 flex-shrink-0">
+          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 w-full sm:w-auto flex-shrink-0">
             <a
               href="https://wa.me/442079460912"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white font-bold text-xs hover:bg-emerald-600 transition-colors"
+              className="inline-flex items-center justify-center flex-1 sm:flex-initial gap-2 px-5 py-2.5 rounded-xl bg-emerald-500 text-white font-bold text-xs hover:bg-emerald-600 transition-colors"
             >
-              <MessageCircle className="w-4 h-4" />
+              <MessageCircle className="w-4 h-4 shrink-0" />
               <span>WhatsApp Us</span>
             </a>
 
             <Link
               href="/book-appointment"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs hover:bg-amber-300 transition-colors"
+              className="inline-flex items-center justify-center flex-1 sm:flex-initial gap-2 px-5 py-2.5 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs hover:bg-amber-300 transition-colors"
             >
               <span>Book Call</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </Link>
           </div>
         </div>

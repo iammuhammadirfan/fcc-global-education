@@ -104,16 +104,44 @@ export default function Navbar({
   const ctaLabel = topBar.ctaLabel || navSettings?.ctaButton?.text || navSettings?.ctaButton?.label || 'Book Free Consultation';
   const ctaHref = topBar.ctaHref || navSettings?.ctaButton?.href || '/book-appointment';
 
-  const rawItems = (navSettings?.items && Array.isArray(navSettings.items) && navSettings.items.length > 0
+  let rawItems = (navSettings?.items && Array.isArray(navSettings.items) && navSettings.items.length > 0
     ? navSettings.items
     : defaultNavItems)
     .filter((item: any) => item.href !== '/blog' && !item.href?.startsWith('/blog') && item.label?.toLowerCase() !== 'blog')
     .map((item: any) => {
-      if (item.href === '/success-stories' && (item.label === 'Success Stories' || item.name === 'Success Stories')) {
-        return { ...item, label: 'Student Reviews' };
+      const updated = { ...item };
+      if (updated.href === '/success-stories' || updated.label?.toLowerCase() === 'student reviews' || updated.label?.toLowerCase() === 'success stories') {
+        updated.label = 'Student Reviews';
+        updated.href = '/success-stories';
+        delete updated.badge;
       }
-      return item;
+      if (updated.badge && (String(updated.badge).includes('98%') || String(updated.badge).toLowerCase().includes('visa rate'))) {
+        delete updated.badge;
+      }
+      if (updated.href === '/visa-success' || updated.label?.toLowerCase() === 'visa success') {
+        updated.label = 'Visa Success';
+        updated.href = '/visa-success';
+        updated.enabled = true;
+      }
+      return updated;
     });
+
+  // Guarantee Visa Success is ALWAYS in navbar
+  const hasVisaSuccess = rawItems.some((it: any) => it.href === '/visa-success' || it.label?.toLowerCase() === 'visa success');
+  if (!hasVisaSuccess) {
+    const reviewIdx = rawItems.findIndex((it: any) => it.href === '/success-stories' || it.label === 'Student Reviews');
+    const visaItem = { label: 'Visa Success', href: '/visa-success', enabled: true };
+    if (reviewIdx !== -1) {
+      rawItems.splice(reviewIdx + 1, 0, visaItem);
+    } else {
+      const aboutIdx = rawItems.findIndex((it: any) => it.href === '/about' || it.label === 'About Us');
+      if (aboutIdx !== -1) {
+        rawItems.splice(aboutIdx, 0, visaItem);
+      } else {
+        rawItems.push(visaItem);
+      }
+    }
+  }
 
   const hasHome = rawItems.some((it: any) => it.href === '/');
   const itemsWithHome = hasHome ? rawItems : [{ label: 'Home', href: '/', enabled: true }, ...rawItems];
@@ -141,26 +169,27 @@ export default function Navbar({
     <>
       {/* Top Announcement & Quick Action Bar */}
       {isTopBarEnabled && (
-        <div className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-slate-800 text-xs py-1.5 px-4 border-b border-slate-200/90 shadow-2xs relative z-50">
-          <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+        <div className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-slate-800 text-xs py-1.5 px-2.5 sm:px-4 border-b border-slate-200/90 shadow-2xs relative z-50 w-full max-w-full overflow-hidden">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-1.5 sm:gap-2 overflow-hidden w-full">
             {/* Left: Highlight Tag */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">
               {topBarTag && (
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 whitespace-nowrap shadow-2xs">
-                  <Sparkles className="w-3 h-3 mr-1 text-amber-700 shrink-0" /> {topBarTag}
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9.5px] sm:text-[11px] font-bold bg-amber-100 text-amber-900 border border-amber-300 shadow-2xs shrink-0 max-w-[130px] sm:max-w-[180px] lg:max-w-none truncate">
+                  <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1 text-amber-700 shrink-0" />
+                  <span className="truncate">{topBarTag}</span>
                 </span>
               )}
               {topBarText && (
-                <span className="hidden md:inline text-slate-600 font-medium text-[12px] truncate">
+                <span className="hidden lg:inline-block text-slate-600 font-medium text-[11px] xl:text-[12px] truncate max-w-xs xl:max-w-md min-w-0">
                   {topBarText}
                 </span>
               )}
             </div>
 
             {/* Right: Phone, Visa rate, and Book Consultation CTA Button */}
-            <div className="flex items-center gap-3 sm:gap-4 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 shrink-0">
               {topBarVisa && (
-                <div className="hidden lg:flex items-center gap-1 text-emerald-800 font-bold text-[11px] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
+                <div className="hidden xl:flex items-center gap-1 text-emerald-800 font-bold text-[11px] bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 whitespace-nowrap">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                   <span>{topBarVisa}</span>
                 </div>
@@ -169,7 +198,7 @@ export default function Navbar({
               {displayPhone && (
                 <a
                   href={`tel:${displayPhone.replace(/[^0-9+]/g, '')}`}
-                  className="hidden sm:flex items-center gap-1.5 text-slate-700 hover:text-amber-700 font-semibold transition-colors text-[11px] whitespace-nowrap"
+                  className="hidden md:flex items-center gap-1.5 text-slate-700 hover:text-amber-700 font-semibold transition-colors text-[11px] whitespace-nowrap"
                 >
                   <Phone className="w-3 h-3 text-amber-600 shrink-0" />
                   <span>{displayPhone}</span>
@@ -180,10 +209,11 @@ export default function Navbar({
               <Link
                 href={ctaHref}
                 prefetch={true}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:from-amber-400 hover:to-amber-500 shadow-sm hover:shadow transition-all duration-200 active:brightness-95 whitespace-nowrap"
+                className="inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-full text-[9.5px] sm:text-[11px] font-bold bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 hover:from-amber-400 hover:to-amber-500 shadow-2xs hover:shadow transition-all duration-200 active:brightness-95 whitespace-nowrap shrink-0"
               >
                 <CalendarCheck className="w-3 h-3 text-slate-950 shrink-0" />
-                <span>{ctaLabel}</span>
+                <span className="hidden lg:inline">{ctaLabel}</span>
+                <span className="lg:hidden">Consult</span>
                 <ArrowRight className="w-3 h-3 text-slate-950 shrink-0" />
               </Link>
             </div>
@@ -195,37 +225,37 @@ export default function Navbar({
       <header
         className={`sticky top-0 z-40 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/95 backdrop-blur-md py-2.5 shadow-md border-b border-slate-200/80'
-            : 'bg-white/95 backdrop-blur-sm py-3 border-b border-slate-200/60'
+            ? 'bg-white/95 backdrop-blur-md py-2 sm:py-2.5 shadow-md border-b border-slate-200/80'
+            : 'bg-white/95 backdrop-blur-sm py-2.5 sm:py-3 border-b border-slate-200/60'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between gap-2 sm:gap-4">
             
             {/* Brand Logo & Company Name */}
-            <Link href="/" prefetch={true} className="flex items-center gap-2.5 group shrink-0">
+            <Link href="/" prefetch={true} className="flex items-center gap-2 sm:gap-2.5 group min-w-0 shrink">
               {generalSettings?.logoUrl && generalSettings.logoUrl.trim() !== '' && generalSettings.logoUrl !== '/logo.svg' ? (
                 <div className="relative flex items-center shrink-0">
                   <img
                     src={generalSettings.logoUrl}
                     alt={generalSettings?.companyName || 'Brand Logo'}
-                    className="h-8 sm:h-9 w-auto max-h-11 object-contain transition-transform group-hover:scale-105"
+                    className="h-7 sm:h-9 w-auto max-h-10 object-contain transition-transform group-hover:scale-105"
                   />
                 </div>
               ) : (
-                <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform shrink-0">
-                  <GraduationCap className="w-5 h-5 text-slate-950" />
+                <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 font-black shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform shrink-0">
+                  <GraduationCap className="w-4 h-4 sm:w-5 sm:h-5 text-slate-950" />
                 </div>
               )}
-              <div className="flex flex-col">
-                <span className="text-base sm:text-lg font-bold tracking-tight text-slate-950 leading-tight flex items-center gap-1 whitespace-nowrap">
+              <div className="flex flex-col min-w-0">
+                <span className="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-slate-950 leading-tight flex items-center gap-1 truncate">
                   {generalSettings?.companyName ? (
                     generalSettings.companyName
                   ) : (
                     <>Aura<span className="text-amber-600">Global</span></>
                   )}
                 </span>
-                <span className="text-[9.5px] tracking-wider text-slate-500 uppercase font-semibold leading-tight truncate max-w-[170px] sm:max-w-[220px]">
+                <span className="text-[9px] sm:text-[9.5px] tracking-wider text-slate-500 uppercase font-semibold leading-tight truncate max-w-[120px] sm:max-w-[220px]">
                   {generalSettings?.tagline || 'Education Consultants'}
                 </span>
               </div>
@@ -510,17 +540,17 @@ export default function Navbar({
             </nav>
 
             {/* Mobile Hamburger Button */}
-            <div className="flex lg:hidden items-center gap-2">
+            <div className="flex lg:hidden items-center gap-1.5 sm:gap-2 shrink-0">
               <Link
                 href={ctaHref}
                 prefetch={true}
-                className="text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 shadow-sm whitespace-nowrap"
+                className="hidden sm:inline-flex text-xs font-bold px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-400 text-slate-950 shadow-xs whitespace-nowrap"
               >
                 Consult
               </Link>
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 focus:outline-none"
+                className="p-1.5 sm:p-2 rounded-xl text-slate-700 hover:text-slate-950 hover:bg-slate-100 focus:outline-none"
                 aria-label="Toggle Navigation Menu"
               >
                 {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -531,8 +561,8 @@ export default function Navbar({
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-2xl animate-in slide-in-from-top duration-200">
-            <div className="grid grid-cols-2 gap-2 text-sm">
+          <div className="lg:hidden bg-white border-b border-slate-200 px-4 pt-3 pb-6 space-y-3 shadow-2xl animate-in slide-in-from-top duration-200 max-h-[calc(100vh-75px)] overflow-y-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm">
               {activeNavItems.map((item: any, idx: number) => {
                 const targetHref = (item.href === '/destinations' || item.label?.toLowerCase() === 'destinations')
                   ? '/visa-success#destination-frameworks'

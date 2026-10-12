@@ -52,10 +52,10 @@ export default function StudentOutcomesSection({
         </div>
 
         {/* Right Action Buttons */}
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 hover:from-amber-300 hover:to-amber-400 transition-all shadow-md shadow-amber-500/20 hover:scale-[1.02]"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 hover:from-amber-300 hover:to-amber-400 transition-all shadow-md shadow-amber-500/20 hover:scale-[1.02] flex-1 sm:flex-initial"
           >
             <Plus className="w-4 h-4" />
             <span>Write a Review</span>
@@ -63,7 +63,7 @@ export default function StudentOutcomesSection({
 
           <Link
             href="/success-stories"
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors group"
+            className="inline-flex items-center justify-center gap-2 text-xs sm:text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors group flex-1 sm:flex-initial whitespace-nowrap"
           >
             <span>View All Student Reviews</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

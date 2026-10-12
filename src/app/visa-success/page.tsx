@@ -126,49 +126,49 @@ export default async function VisaSuccessPage() {
             <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-100 px-3.5 py-1.5 rounded-full border border-emerald-300">
               {pageSettings.heroBadge || 'Verified Legal Immigration Compliance'}
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
               {pageSettings.heroTitle || 'Turning Study Dreams Into'}{' '}
               <span className="text-emerald-600">
                 {pageSettings.heroTitleHighlight || 'Visa Success'}
               </span>
             </h1>
-            <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-lg leading-relaxed">
               {pageSettings.heroDescription ||
                 'Our certified immigration solicitors and visa compliance officers audit every bank statement, tax filing, and sponsor affidavit before submission, ensuring near-perfect approval outcomes.'}
             </p>
           </div>
 
           {/* Key Trust Statistics */}
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600">
+          <div className="mt-10 sm:mt-12 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
+            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-emerald-600 truncate">
                 {pageSettings.stats?.stat1Value || '98.6%'}
               </div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
                 {pageSettings.stats?.stat1Label || 'Audited Visa Approval Rate'}
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">
+            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-slate-900 truncate">
                 {pageSettings.stats?.stat2Value || '5,000+'}
               </div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
                 {pageSettings.stats?.stat2Label || 'Approved Student Visas'}
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-amber-600">
+            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-amber-600 truncate">
                 {pageSettings.stats?.stat3Value || `${countries.length || 12}+`}
               </div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
                 {pageSettings.stats?.stat3Label || 'Destination Consulates & Embassies'}
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-cyan-600">
+            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-cyan-600 truncate">
                 {pageSettings.stats?.stat4Value || '0%'}
               </div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
                 {pageSettings.stats?.stat4Label || 'Refusal on Compliant Files'}
               </div>
             </div>
@@ -182,10 +182,10 @@ export default async function VisaSuccessPage() {
           <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200">
             {pageSettings.galleryBadge || 'Real Proofs & Official Stamps'}
           </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
             {pageSettings.galleryTitle || 'Verified Student Visa Approval Letters'}
           </h2>
-          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-600 text-xs sm:text-base leading-relaxed">
             {pageSettings.galleryDescription ||
               'Browse genuine visa grant decisions and embassy approval stamps obtained by our scholars across the UK, USA, Canada, Australia, Germany, and Europe.'}
           </p>
@@ -203,24 +203,24 @@ export default async function VisaSuccessPage() {
       />
 
       {/* 4. The FCC Global Education 5-Stage Visa Audit System */}
-      <section className="bg-slate-100/70 py-16 sm:py-20 border-y border-slate-200/80">
+      <section className="bg-slate-100/70 py-12 sm:py-20 border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
+          <div className="text-center max-w-3xl mx-auto space-y-3 mb-10 sm:mb-12">
             <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
               {pageSettings.auditBadge || 'Why We Maintain 98.6% Success'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
               {pageSettings.auditTitle || 'Our 5-Stage Visa Pre-Audit Protocol'}
             </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-600 text-xs sm:text-base leading-relaxed">
               {pageSettings.auditDescription ||
                 'We never submit a visa application until it has cleared every internal compliance hurdle.'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
             {auditStages.map((st: any, idx: number) => (
-              <div key={idx} className="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
+              <div key={idx} className="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm space-y-2">
                 <span className="text-xs font-bold text-amber-600">
                   {st.stageNumber || `Stage 0${idx + 1}`}
                 </span>
@@ -236,13 +236,13 @@ export default async function VisaSuccessPage() {
 
       {/* 5. Legal Compliance Disclaimer Box */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl bg-amber-50 border border-amber-200/90 p-6 flex items-start gap-4 text-xs text-amber-900 leading-relaxed">
+        <div className="rounded-2xl bg-amber-50 border border-amber-200/90 p-4 sm:p-6 flex items-start gap-3 sm:gap-4 text-xs text-amber-900 leading-relaxed">
           <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
           <div className="space-y-1">
             <span className="font-bold block text-sm">
               {pageSettings.disclaimerTitle || 'Compliance Disclosure & Realistic Advisory Notice'}
             </span>
-            <p>
+            <p className="text-[11px] sm:text-xs">
               {pageSettings.disclaimerText ||
                 'FCC Global Education operates in strict compliance with international student recruitment standards. While our rigorous document audit produces an industry-leading 98.6% approval record, all visa grant determinations are the sole, sovereign prerogative of respective government immigration departments (such as UKVI, US Department of State, IRCC Canada, and Australian Home Affairs). We do not guarantee visa issuance; rather, we provide audit-standard representation that eliminates procedural and documentary refusal grounds.'}
             </p>
@@ -252,12 +252,12 @@ export default async function VisaSuccessPage() {
 
       {/* 6. Pre-Footer Action CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-[#0B1528] text-white p-8 sm:p-12 text-center border border-slate-800 shadow-2xl">
+        <div className="rounded-3xl bg-[#0B1528] text-white p-5 sm:p-8 lg:p-12 text-center border border-slate-800 shadow-2xl">
           <div className="max-w-2xl mx-auto space-y-4">
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
               {pageSettings.ctaTitle || 'Have an Offer Letter and Need Flawless Visa Support?'}
             </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               {pageSettings.ctaDescription ||
                 'Book a dedicated visa consultation with our licensed immigration compliance director. We audit your financial documents and organize your mock interview clinic.'}
             </p>

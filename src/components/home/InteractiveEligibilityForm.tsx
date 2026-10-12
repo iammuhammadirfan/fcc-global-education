@@ -54,7 +54,7 @@ export default function InteractiveEligibilityForm({ countries = fallbackCountri
   };
 
   return (
-    <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-[#0F1E38] to-slate-950 border border-slate-700/80 p-6 sm:p-10 shadow-2xl text-white relative overflow-hidden">
+    <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-slate-900 via-[#0F1E38] to-slate-950 border border-slate-700/80 p-4 sm:p-8 lg:p-10 shadow-2xl text-white relative overflow-hidden">
       {/* Background Decorative Rings */}
       <div className="absolute -top-12 -right-12 w-64 h-64 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
       <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />

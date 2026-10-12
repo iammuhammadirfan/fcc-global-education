@@ -273,7 +273,7 @@ export default function BookAppointmentClient({
           /* Multi-step Booking Form */
           <form
             onSubmit={handleSubmit}
-            className="rounded-3xl bg-white border border-slate-200/90 p-8 sm:p-12 shadow-sm space-y-10"
+            className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-8 lg:p-12 shadow-sm space-y-8 sm:space-y-10"
           >
             {/* Step 1: Select Consultation Type */}
             <div className="space-y-4">
@@ -325,7 +325,7 @@ export default function BookAppointmentClient({
 
             {/* Consultation Meeting Mode: Online Video vs In-Person Office Visit */}
             <div className="space-y-3 pt-6 border-t border-slate-100">
-              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between">
+              <label className="block text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center justify-between flex-wrap gap-1">
                 <span>Select Consultation Meeting Format</span>
                 <span className="text-[11px] text-amber-600 font-semibold">
                   {meetingMode === 'video' ? 'Virtual Video Conference' : 'FCC Global Headquarters'}
@@ -345,7 +345,7 @@ export default function BookAppointmentClient({
                     <Video className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                    <div className="font-bold text-sm text-slate-900 flex items-center gap-1.5 flex-wrap">
                       <span>1-on-1 Private Video Call</span>
                       {meetingMode === 'video' && (
                         <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded">Selected</span>
@@ -369,7 +369,7 @@ export default function BookAppointmentClient({
                     <Building2 className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="font-bold text-sm text-slate-900 flex items-center gap-1.5">
+                    <div className="font-bold text-sm text-slate-900 flex items-center gap-1.5 flex-wrap">
                       <span>In-Person Office Visit</span>
                       {meetingMode === 'in_person' && (
                         <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-1.5 py-0.5 rounded">Selected</span>
@@ -418,13 +418,13 @@ export default function BookAppointmentClient({
                     <Clock className="w-4 h-4 text-amber-500" />
                     <span>Select Time Slot (GMT / UK Time)</span>
                   </label>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-2">
                     {availableTimeSlots.map((slot: string, idx: number) => (
                       <button
                         type="button"
                         key={idx}
                         onClick={() => setSelectedTime(slot)}
-                        className={`p-2.5 rounded-xl text-xs font-semibold border transition-all text-center ${
+                        className={`p-2.5 rounded-xl text-xs font-semibold border transition-all text-center truncate ${
                           selectedTime === slot
                             ? 'bg-slate-900 text-amber-400 border-slate-900 shadow-md font-bold'
                             : 'border-slate-200 text-slate-700 hover:bg-slate-50'

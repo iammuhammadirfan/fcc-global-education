@@ -45,13 +45,13 @@ export default function DestinationsClient({ initialCountries }: DestinationsCli
             <span className="text-xs font-bold text-cyan-700 uppercase tracking-widest bg-cyan-100 px-3.5 py-1.5 rounded-full border border-cyan-300">
               {initialCountries.length} Leading Global Education Hubs
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
               Discover Your Ideal{' '}
               <span className="text-amber-600">
                 Study Destination
               </span>
             </h1>
-            <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+            <p className="text-slate-600 text-sm sm:text-lg leading-relaxed">
               Explore tuition benchmarks, post-study work visa rights, living costs, and top-tier universities across Europe, North America, and the Asia-Pacific.
             </p>
           </div>
@@ -87,7 +87,7 @@ export default function DestinationsClient({ initialCountries }: DestinationsCli
                 <button
                   key={region}
                   onClick={() => setSelectedRegion(region)}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                     selectedRegion === region
                       ? 'bg-amber-400 text-slate-950 shadow-sm font-bold'
                       : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-950'
@@ -105,7 +105,7 @@ export default function DestinationsClient({ initialCountries }: DestinationsCli
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
               Showing {filteredCountries.length} {filteredCountries.length === 1 ? 'Country' : 'Countries'}
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -132,7 +132,7 @@ export default function DestinationsClient({ initialCountries }: DestinationsCli
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredCountries.map((country) => (
               <CountryCard key={country.id} country={country} />
             ))}
@@ -142,15 +142,15 @@ export default function DestinationsClient({ initialCountries }: DestinationsCli
 
       {/* Pre-Footer Consultation CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-[#0B1528] text-white p-8 sm:p-12 text-center border border-slate-800 shadow-2xl">
+        <div className="rounded-3xl bg-[#0B1528] text-white p-5 sm:p-8 lg:p-12 text-center border border-slate-800 shadow-2xl">
           <div className="max-w-2xl mx-auto space-y-4">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-400/10 px-3 py-1 rounded-full">
               Country Comparison Advice
             </span>
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
               Torn Between Two Countries?
             </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               UK vs USA? Canada vs Australia? Germany vs Ireland? Our comparative diagnostic model breaks down overall tuition investment, living costs, and post-study permanent residency probability.
             </p>
             <div className="pt-4">

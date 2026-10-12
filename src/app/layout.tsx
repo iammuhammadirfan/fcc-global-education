@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
@@ -8,6 +8,13 @@ import AiChatWidget from '@/components/layout/AiChatWidget';
 import { db } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#f59e0b',
+};
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -102,26 +109,28 @@ export default async function RootLayout({
       <head>
         <meta name="theme-color" content="#f59e0b" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-amber-400 selection:text-slate-950 pb-16 sm:pb-0">
+      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-amber-400 selection:text-slate-950 pb-16 sm:pb-0 overflow-x-hidden w-full max-w-full relative">
         <Suspense fallback={null}>
           <TopProgressBar />
         </Suspense>
-        <Navbar
-          navSettings={navigationSettings}
-          generalSettings={generalSettings}
-          countries={liveCountries}
-          universities={liveUniversities}
-          topBarSettings={homepageSettings?.topBar}
-        />
-        <main className="flex-1">{children}</main>
+        <div className="w-full max-w-full overflow-x-hidden flex flex-col min-h-screen">
+          <Navbar
+            navSettings={navigationSettings}
+            generalSettings={generalSettings}
+            countries={liveCountries}
+            universities={liveUniversities}
+            topBarSettings={homepageSettings?.topBar}
+          />
+          <main className="flex-1 w-full max-w-full overflow-x-hidden">{children}</main>
+          <Footer
+            footerSettings={footerSettings}
+            generalSettings={generalSettings}
+            countries={liveCountries}
+            services={liveServices}
+          />
+        </div>
         <AiChatWidget />
         <FloatingContact generalSettings={generalSettings} />
-        <Footer
-          footerSettings={footerSettings}
-          generalSettings={generalSettings}
-          countries={liveCountries}
-          services={liveServices}
-        />
       </body>
     </html>
   );

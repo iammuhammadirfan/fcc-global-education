@@ -146,7 +146,7 @@ export default function ServicesClient({ initialServices, initialSettings = {} }
       {/* 2. Interactive Service Spotlight & Selector */}
       {selectedService && (
         <section id={selectedService.slug} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-mt-24">
-          <div className="rounded-3xl bg-white text-slate-900 border border-slate-200 p-8 sm:p-12 shadow-xl">
+          <div className="rounded-3xl bg-white text-slate-900 border border-slate-200 p-5 sm:p-8 lg:p-12 shadow-xl">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-slate-200">
               <div>
                 <span className="text-xs uppercase font-bold text-amber-700 tracking-wider">

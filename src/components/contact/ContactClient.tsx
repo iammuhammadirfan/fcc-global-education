@@ -94,9 +94,9 @@ export default function ContactClient({
 
       {/* Main Contact Grid: Form + Office Locations */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
           {/* Left Column: Interactive Contact Form */}
-          <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-10 shadow-sm space-y-6">
+          <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-8 lg:p-10 shadow-sm space-y-6">
             <div>
               <span className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
                 Direct Inquiry
@@ -269,7 +269,7 @@ export default function ContactClient({
           {/* Right Column: Global Office Cards & Contact Channels */}
           <div className="lg:col-span-5 space-y-6">
             {/* Quick Contact Box */}
-            <div className="rounded-3xl bg-slate-900 text-white p-6 sm:p-8 border border-slate-800 shadow-xl space-y-6">
+            <div className="rounded-3xl bg-slate-900 text-white p-5 sm:p-8 border border-slate-800 shadow-xl space-y-6">
               <h3 className="text-xl font-bold text-white pb-3 border-b border-slate-800">
                 Direct Contact Channels
               </h3>

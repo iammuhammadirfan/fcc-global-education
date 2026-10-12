@@ -136,28 +136,28 @@ export default async function AboutPage() {
           </div>
 
           {/* Key Statistics Grid */}
-          <div className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-amber-600">{statPlaced}</div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+          <div className="mt-10 sm:mt-14 grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
+            <div className="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-amber-600 truncate">{statPlaced}</div>
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold leading-tight">
                 {aboutSettings.stats?.stat1Label || 'Students Placed Globally'}
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-emerald-600">{statVisa}</div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+            <div className="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-emerald-600 truncate">{statVisa}</div>
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold leading-tight">
                 {aboutSettings.stats?.stat2Label || 'Verified Visa Success'}
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-cyan-600">{statUni}</div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+            <div className="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-cyan-600 truncate">{statUni}</div>
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold leading-tight">
                 {aboutSettings.stats?.stat3Label || 'Direct Partner Universities'}
               </div>
             </div>
-            <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900">{statScholarships}</div>
-              <div className="text-xs text-slate-600 mt-1 font-semibold">
+            <div className="p-4 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <div className="text-2xl sm:text-4xl font-extrabold text-slate-900 truncate">{statScholarships}</div>
+              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold leading-tight">
                 {aboutSettings.stats?.stat4Label || 'Scholarships Won by Students'}
               </div>
             </div>

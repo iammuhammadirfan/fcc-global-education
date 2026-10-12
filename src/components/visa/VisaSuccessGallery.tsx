@@ -414,15 +414,15 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
               />
             </div>
 
-            <div className="p-3 flex items-center justify-between text-xs border-t border-slate-100 mt-2">
-              <span className="font-bold text-slate-900 flex items-center gap-1.5">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <div className="p-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs border-t border-slate-100 mt-2">
+              <span className="font-bold text-slate-900 flex items-center gap-1.5 text-center sm:text-left text-[11px] sm:text-xs">
+                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                 Verified Legal Visa Grant Decision Letter
               </span>
               <button
                 type="button"
                 onClick={() => setPreviewImage(null)}
-                className="px-4 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 cursor-pointer"
+                className="w-full sm:w-auto px-4 py-1.5 rounded-xl bg-slate-900 text-white font-bold text-xs hover:bg-slate-800 cursor-pointer"
               >
                 Close Preview
               </button>

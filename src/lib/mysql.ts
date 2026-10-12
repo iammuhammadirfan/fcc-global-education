@@ -625,7 +625,8 @@ async function seedDatabase(p: mysql.Pool) {
       { label: 'Destinations', href: '/destinations', badge: '12 Countries' },
       { label: 'Universities', href: '/universities' },
       { label: 'Services', href: '/services' },
-      { label: 'Success Stories', href: '/success-stories', badge: '98% Visa Rate' },
+      { label: 'Student Reviews', href: '/success-stories' },
+      { label: 'Visa Success', href: '/visa-success' },
       { label: 'About Us', href: '/about' },
       { label: 'Contact', href: '/contact' },
     ],
@@ -780,6 +781,53 @@ function safeJsonParse<T>(val: any, fallback: T): T {
   } catch {
     return fallback;
   }
+}
+
+export function normalizeNavigationSettings(nav: any) {
+  if (!nav || typeof nav !== 'object') return nav;
+  const clone = { ...nav };
+  if (Array.isArray(clone.items)) {
+    let items = clone.items
+      .filter((item: any) => item.href !== '/blog' && !item.href?.startsWith('/blog') && item.label?.toLowerCase() !== 'blog')
+      .map((it: any) => {
+        const item = { ...it };
+        if (item.href === '/success-stories' || item.label?.toLowerCase() === 'student reviews' || item.label?.toLowerCase() === 'success stories') {
+          item.label = 'Student Reviews';
+          item.href = '/success-stories';
+          delete item.badge;
+        }
+        if (item.badge && (item.badge.includes('98%') || item.badge.toLowerCase().includes('visa rate'))) {
+          delete item.badge;
+        }
+        return item;
+      });
+
+    const hasVisaSuccess = items.some((it: any) => it.href === '/visa-success' || it.label?.toLowerCase() === 'visa success');
+    if (!hasVisaSuccess) {
+      const reviewIdx = items.findIndex((it: any) => it.href === '/success-stories' || it.label === 'Student Reviews');
+      const visaItem = { label: 'Visa Success', href: '/visa-success', enabled: true };
+      if (reviewIdx !== -1) {
+        items.splice(reviewIdx + 1, 0, visaItem);
+      } else {
+        const aboutIdx = items.findIndex((it: any) => it.href === '/about' || it.label === 'About Us');
+        if (aboutIdx !== -1) {
+          items.splice(aboutIdx, 0, visaItem);
+        } else {
+          items.push(visaItem);
+        }
+      }
+    } else {
+      items = items.map((it: any) => {
+        if (it.href === '/visa-success' || it.label?.toLowerCase() === 'visa success') {
+          return { ...it, label: 'Visa Success', href: '/visa-success', enabled: true };
+        }
+        return it;
+      });
+    }
+
+    clone.items = items;
+  }
+  return clone;
 }
 
 export async function verifyUserCredentialsMySQL(email: string, password: string) {
@@ -1180,7 +1228,7 @@ export async function loadDataFromMySQL(): Promise<any | null> {
       const parsed = safeJsonParse(s.value_json, null);
       if (!parsed) continue;
       if (s.key_name === 'general') result.generalSettings = parsed;
-      else if (s.key_name === 'navigation') result.navigationSettings = parsed;
+      else if (s.key_name === 'navigation') result.navigationSettings = normalizeNavigationSettings(parsed);
       else if (s.key_name === 'footer') result.footerSettings = parsed;
       else if (s.key_name === 'homepage') result.homepageSettings = parsed;
       else if (s.key_name === 'seo') result.seoSettings = parsed;
@@ -1226,9 +1274,10 @@ export async function syncTableToMySQL(table: string, data: any) {
     };
 
     if (settingsKeyMap[table]) {
+      const toSave = settingsKeyMap[table] === 'navigation' ? normalizeNavigationSettings(data) : data;
       await p.execute(
         'INSERT INTO cms_settings (key_name, value_json) VALUES (?, ?) ON DUPLICATE KEY UPDATE value_json = VALUES(value_json)',
-        [settingsKeyMap[table], JSON.stringify(data)]
+        [settingsKeyMap[table], JSON.stringify(toSave)]
       );
       return true;
     }
@@ -1641,7 +1690,11 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
         [keyName]
       );
       if (rows && rows.length > 0) {
-        return safeJsonParse(rows[0].value_json, null);
+        const val = safeJsonParse(rows[0].value_json, null);
+        if (table === 'navigationSettings' || keyName === 'navigation') {
+          return normalizeNavigationSettings(val);
+        }
+        return val;
       }
       return null;
     }

@@ -57,21 +57,21 @@ export default async function DynamicCustomPage({ params }: PageProps) {
 
       {/* Content Container */}
       <section className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-12 shadow-sm space-y-6 text-slate-800">
-          <div className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-700 prose-p:leading-relaxed whitespace-pre-line text-sm sm:text-base">
+        <div className="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-8 lg:p-12 shadow-sm space-y-6 text-slate-800">
+          <div className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-p:text-slate-700 prose-p:leading-relaxed whitespace-pre-line text-sm sm:text-base break-words">
             {page.content}
           </div>
 
           <div className="pt-8 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-slate-500">
+            <div className="text-xs text-slate-500 text-center sm:text-left">
               Need clarification regarding our terms or academic policies?
             </div>
             <Link
               href="/contact"
-              className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold inline-flex items-center gap-2 transition"
+              className="w-full sm:w-auto justify-center px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 text-xs font-semibold inline-flex items-center gap-2 transition"
             >
               Contact Legal & Admissions Support
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
             </Link>
           </div>
         </div>

@@ -57,23 +57,23 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
   };
 
   return (
-    <footer className="bg-white text-slate-600 border-t border-slate-200/90 pt-16 pb-12 relative overflow-hidden">
+    <footer className="bg-white text-slate-600 border-t border-slate-200/90 pt-16 pb-24 sm:pb-12 relative overflow-hidden">
       {/* Background Soft Gradients */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-50/50 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-50/40 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Top Newsletter & Consultation CTA Banner */}
-        <div className="rounded-3xl bg-gradient-to-r from-amber-50/80 via-white to-slate-50 border border-slate-200 p-8 sm:p-10 mb-16 shadow-lg relative overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div className="rounded-3xl bg-gradient-to-r from-amber-50/80 via-white to-slate-50 border border-slate-200 p-6 sm:p-10 mb-12 sm:mb-16 shadow-lg relative overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
             <div className="lg:col-span-7">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300 mb-3">
                 <ShieldCheck className="w-3.5 h-3.5 text-amber-700" /> Official University Representative
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              <h3 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">
                 Get Insider Admissions Insights & Scholarship Alerts
               </h3>
-              <p className="text-slate-600 text-sm mt-2 max-w-xl">
+              <p className="text-slate-600 text-xs sm:text-sm mt-2 max-w-xl">
                 Join 25,000+ students receiving our monthly digest on university deadlines, visa policy shifts, and exclusive tuition waivers.
               </p>
             </div>
@@ -107,7 +107,7 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
         </div>
 
         {/* Main Footer Columns */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-200">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-10 pb-12 border-b border-slate-200">
           {/* Company Info */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-3 group shrink-0">
@@ -259,9 +259,9 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
         </div>
 
         {/* Bottom Copyright Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 text-center sm:text-left">
           <div>{copyright}</div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-5 gap-y-2">
             <Link href="/privacy" className="hover:text-slate-900 transition-colors">
               Privacy Policy
             </Link>
