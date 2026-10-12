@@ -43,3 +43,6 @@ next-env.d.ts
 
 # legacy / separate laravel directory
 /laravel/
+/data/db.json
+/data/db.json.tmp.*
+/fccglobal_database_backup.sql
