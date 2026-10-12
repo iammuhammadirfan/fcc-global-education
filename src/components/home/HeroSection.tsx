@@ -170,76 +170,76 @@ export default function HeroSection({ settings }: HeroSectionProps) {
       </div>
 
       {/* 3. Main Center Content (Headlines & CTAs) */}
-      <div className="relative z-30 max-w-4xl mx-auto px-4 sm:px-6 text-center pt-2 sm:pt-4">
+      <div className="relative z-30 max-w-4xl mx-auto px-4 sm:px-6 text-center pt-1 sm:pt-4">
         {/* Trust Pill */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/95 border border-slate-200 shadow-xs text-xs font-semibold text-slate-700 mb-3.5 backdrop-blur-md">
-          <span className="flex h-2 w-2 relative">
+        <div className="inline-flex max-w-full items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 rounded-full bg-white/95 border border-slate-200 shadow-xs text-[10px] sm:text-xs font-semibold text-slate-700 mb-2.5 sm:mb-3.5 backdrop-blur-md">
+          <span className="flex h-2 w-2 relative shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span>{trustBadge}</span>
+          <span className="truncate max-w-[240px] sm:max-w-none">{trustBadge}</span>
         </div>
 
         {/* Main Headline */}
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.15] mb-3 drop-shadow-xs">
+        <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.2] sm:leading-[1.15] mb-2.5 sm:mb-3 drop-shadow-xs">
           {headline}
         </h1>
 
         {/* Subheadline */}
-        <p className="text-sm sm:text-base text-slate-700 leading-relaxed max-w-xl mx-auto mb-5 font-medium">
+        <p className="text-xs sm:text-base text-slate-700 leading-relaxed max-w-xl mx-auto mb-4 sm:mb-5 font-medium px-2 sm:px-0">
           {subheadline}
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5 sm:gap-3 w-full max-w-xs sm:max-w-none mx-auto pt-1">
           <Link
             href={primaryCtaHref}
             prefetch={true}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/25 hover:shadow-lg hover:shadow-amber-500/35 hover:scale-[1.02] active:brightness-95 transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/25 hover:shadow-lg hover:shadow-amber-500/35 hover:scale-[1.02] active:brightness-95 transition-all text-center"
           >
             <span>{primaryCtaText}</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-4 h-4 shrink-0" />
           </Link>
 
           <Link
             href={secondaryCtaHref}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-bold text-sm bg-white/95 text-slate-800 border border-slate-200 shadow-xs hover:bg-white hover:border-slate-300 backdrop-blur-md transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-6 py-3 rounded-xl font-bold text-xs sm:text-sm bg-white/95 text-slate-800 border border-slate-200 shadow-xs hover:bg-white hover:border-slate-300 backdrop-blur-md transition-all text-center"
           >
-            <Compass className="w-4 h-4 text-cyan-600" />
+            <Compass className="w-4 h-4 text-cyan-600 shrink-0" />
             <span>{secondaryCtaText}</span>
           </Link>
         </div>
       </div>
 
       {/* 4. Bottom Floating Frosted Glass Statistics Bar + Slide Indicator */}
-      <div className="relative z-30 max-w-2xl mx-auto px-4 sm:px-6 w-full mt-6 sm:mt-7 space-y-2">
-        <div className="rounded-2xl bg-white/90 backdrop-blur-xl border border-white/80 shadow-xl shadow-slate-900/10 py-3.5 px-6 sm:px-8 grid grid-cols-3 gap-2 sm:gap-4 text-center divide-x divide-slate-200/80">
+      <div className="relative z-30 max-w-2xl mx-auto px-3 sm:px-6 w-full mt-5 sm:mt-7 space-y-2">
+        <div className="rounded-2xl bg-white/90 backdrop-blur-xl border border-white/80 shadow-xl shadow-slate-900/10 py-2.5 sm:py-3.5 px-2.5 sm:px-8 grid grid-cols-3 gap-1 sm:gap-4 text-center divide-x divide-slate-200/80">
           {/* Stat 1 */}
-          <div className="px-1.5">
-            <div className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+          <div className="px-1">
+            <div className="text-base sm:text-2xl font-black text-slate-900 tracking-tight">
               {statCounters[0].number}
             </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold mt-0.5">
+            <div className="text-[9px] sm:text-[11px] text-slate-600 font-semibold mt-0.5 leading-tight truncate sm:whitespace-normal">
               {statCounters[0].label}
             </div>
           </div>
 
           {/* Stat 2 */}
-          <div className="px-1.5">
-            <div className="text-lg sm:text-2xl font-black text-amber-600 tracking-tight">
+          <div className="px-1">
+            <div className="text-base sm:text-2xl font-black text-amber-600 tracking-tight">
               {statCounters[1].number}
             </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold mt-0.5">
+            <div className="text-[9px] sm:text-[11px] text-slate-600 font-semibold mt-0.5 leading-tight truncate sm:whitespace-normal">
               {statCounters[1].label}
             </div>
           </div>
 
           {/* Stat 3 */}
-          <div className="px-1.5">
-            <div className="text-lg sm:text-2xl font-black text-cyan-700 tracking-tight">
+          <div className="px-1">
+            <div className="text-base sm:text-2xl font-black text-cyan-700 tracking-tight">
               {statCounters[2].number}
             </div>
-            <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold mt-0.5">
+            <div className="text-[9px] sm:text-[11px] text-slate-600 font-semibold mt-0.5 leading-tight truncate sm:whitespace-normal">
               {statCounters[2].label}
             </div>
           </div>

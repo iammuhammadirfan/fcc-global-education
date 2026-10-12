@@ -23,7 +23,7 @@ interface VisaSuccessSliderProps {
 // 1. Full-Section Skeleton Loader (Runs on live server during page load or if results are not loaded yet)
 function SectionSkeletonLoader() {
   return (
-    <div className="relative bg-white rounded-3xl p-6 sm:p-10 text-slate-900 overflow-hidden shadow-xl border border-slate-200/90 select-none">
+    <div className="relative bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 text-slate-900 overflow-hidden shadow-xl border border-slate-200/90 select-none">
       {/* Background soft ambient accents */}
       <div className="absolute -top-10 right-10 w-96 h-96 bg-amber-100/40 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-10 left-10 w-96 h-96 bg-emerald-100/30 rounded-full blur-3xl pointer-events-none" />
@@ -267,7 +267,7 @@ export default function VisaSuccessSlider({ items = [] }: VisaSuccessSliderProps
 
   return (
     <div
-      className="relative bg-white rounded-3xl p-6 sm:p-10 text-slate-900 overflow-hidden shadow-xl border border-slate-200/90 select-none"
+      className="relative bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-8 lg:p-10 text-slate-900 overflow-hidden shadow-xl border border-slate-200/90 select-none"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >

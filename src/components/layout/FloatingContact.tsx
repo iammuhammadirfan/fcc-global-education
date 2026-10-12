@@ -104,23 +104,23 @@ export default function FloatingContact({ generalSettings }: FloatingContactProp
       </div>
 
       {/* Sticky Mobile CTA Bar */}
-      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 p-2.5 px-4 flex items-center gap-3">
+      <div className="sm:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950/95 backdrop-blur-lg border-t border-slate-800 p-2.5 px-3 flex items-center gap-2">
         <a
           href={whatsappUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold shadow-lg shadow-emerald-500/25 transition-colors flex-1"
+          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold shadow-lg shadow-emerald-500/25 transition-colors flex-1 shrink-0"
         >
-          <WhatsAppIcon className="w-4 h-4 fill-white" />
+          <WhatsAppIcon className="w-4 h-4 fill-white shrink-0" />
           <span>WhatsApp</span>
         </a>
 
         <Link
           href="/book-appointment"
-          className="flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-bold shadow-lg shadow-amber-500/20 hover:from-amber-300 hover:to-amber-400 transition-all flex-[2]"
+          className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 text-xs font-bold shadow-lg shadow-amber-500/20 hover:from-amber-300 hover:to-amber-400 transition-all flex-[2] min-w-0"
         >
-          <Calendar className="w-4 h-4" />
-          <span>Book Free Consultation</span>
+          <Calendar className="w-4 h-4 shrink-0" />
+          <span className="truncate">Book Consultation</span>
         </Link>
       </div>
     </>

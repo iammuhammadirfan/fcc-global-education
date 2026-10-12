@@ -69,7 +69,7 @@ export default async function HomePage() {
   const featuredVideos = allVideos.filter((v: any) => v.published !== false).slice(0, 2);
 
   return (
-    <div className="space-y-12 sm:space-y-16">
+    <div className="w-full max-w-full overflow-x-clip space-y-12 sm:space-y-16">
       {/* 1. Hero Section & Partner University Sliding Ticker (Grouped together without excessive gap) */}
       <div className="space-y-0">
         <HeroSection settings={homepageSettings} />
@@ -326,42 +326,42 @@ export default async function HomePage() {
 
             {/* Right side stats box */}
             <div className="lg:col-span-6">
-              <div className="rounded-3xl bg-white p-8 sm:p-10 border border-slate-200 shadow-2xl space-y-8">
-                <div className="text-center pb-6 border-b border-slate-200">
-                  <span className="text-xs uppercase tracking-wider text-slate-500 font-bold">
+              <div className="rounded-3xl bg-white p-5 sm:p-8 lg:p-10 border border-slate-200 shadow-2xl space-y-6 sm:space-y-8">
+                <div className="text-center pb-5 sm:pb-6 border-b border-slate-200">
+                  <span className="text-[11px] sm:text-xs uppercase tracking-wider text-slate-500 font-bold">
                     Cumulative Impact Metrics
                   </span>
-                  <div className="text-4xl sm:text-5xl font-black text-amber-600 mt-2">
+                  <div className="text-3xl sm:text-5xl font-black text-amber-600 mt-2">
                     {statPlaced}
                   </div>
-                  <div className="text-sm text-slate-600 mt-1 font-semibold">
+                  <div className="text-xs sm:text-sm text-slate-600 mt-1 font-semibold">
                     {statPlacedLabel}
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-6 text-center">
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                    <div className="text-2xl sm:text-3xl font-extrabold text-slate-900">{statUni}</div>
-                    <div className="text-xs text-slate-500 mt-1 font-medium">{statUniLabel}</div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-6 text-center">
+                  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="text-xl sm:text-3xl font-extrabold text-slate-900 truncate">{statUni}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium leading-tight">{statUniLabel}</div>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                    <div className="text-2xl sm:text-3xl font-extrabold text-emerald-600">{statVisa}</div>
-                    <div className="text-xs text-slate-500 mt-1 font-medium">{statVisaLabel}</div>
+                  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="text-xl sm:text-3xl font-extrabold text-emerald-600 truncate">{statVisa}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium leading-tight">{statVisaLabel}</div>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                    <div className="text-2xl sm:text-3xl font-extrabold text-cyan-600">{statScholarships}</div>
-                    <div className="text-xs text-slate-500 mt-1 font-medium">{statScholarshipsLabel}</div>
+                  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="text-xl sm:text-3xl font-extrabold text-cyan-600 truncate">{statScholarships}</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium leading-tight">{statScholarshipsLabel}</div>
                   </div>
-                  <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200">
-                    <div className="text-2xl sm:text-3xl font-extrabold text-amber-600">7–10 Days</div>
-                    <div className="text-xs text-slate-500 mt-1 font-medium">Average Offer Turnaround</div>
+                  <div className="p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200">
+                    <div className="text-xl sm:text-3xl font-extrabold text-amber-600 truncate">7–10 Days</div>
+                    <div className="text-[10px] sm:text-xs text-slate-500 mt-1 font-medium leading-tight">Average Offer Turnaround</div>
                   </div>
                 </div>
 
                 <div className="pt-2 text-center">
                   <Link
                     href="/book-appointment"
-                    className="w-full inline-flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/20 hover:from-amber-300 hover:to-amber-500 transition-all"
+                    className="w-full inline-flex items-center justify-center gap-2 py-3 sm:py-3.5 px-4 sm:px-6 rounded-xl font-bold text-xs sm:text-sm bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-slate-950 shadow-md shadow-amber-500/20 hover:from-amber-300 hover:to-amber-500 transition-all text-center"
                   >
                     <span>Claim Your Free Profile Assessment</span>
                     <ArrowRight className="w-4 h-4" />

@@ -136,26 +136,28 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
               )}
             </div>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
               {uni.name}
             </h1>
 
-            <div className="flex items-center gap-2 text-slate-600 text-sm font-semibold">
-              <MapPin className="w-4 h-4 text-amber-600" />
-              <span>{uni.city}</span>
+            <div className="flex flex-wrap items-center gap-2 text-slate-600 text-xs sm:text-sm font-semibold">
+              <span className="flex items-center gap-1">
+                <MapPin className="w-4 h-4 text-amber-600 shrink-0" />
+                <span>{uni.city}</span>
+              </span>
               <span>•</span>
               <span className="text-emerald-700 font-bold">{acceptance} Acceptance Rate</span>
             </div>
 
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed font-medium">
+            <p className="text-slate-600 text-xs sm:text-base leading-relaxed font-medium">
               {uni.overview}
             </p>
 
             {/* CTAs */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center gap-4">
+            <div className="pt-2 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
               <Link
                 href="/book-appointment"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-xl shadow-amber-500/25 hover:from-amber-300 hover:to-amber-400 transition-all"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3.5 rounded-xl font-bold text-sm bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 shadow-xl shadow-amber-500/25 hover:from-amber-300 hover:to-amber-400 transition-all"
               >
                 <span>Apply to {uni.name}</span>
                 <ArrowRight className="w-4 h-4" />
@@ -187,10 +189,10 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
                 {highlightsList.map((point: string, idx: number) => (
                   <div
                     key={idx}
-                    className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm"
+                    className="flex items-start gap-3 p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200/90 shadow-sm"
                   >
                     <CheckCircle2 className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
-                    <span className="text-sm text-slate-700 leading-relaxed font-medium">
+                    <span className="text-xs sm:text-sm text-slate-700 leading-relaxed font-medium">
                       {point}
                     </span>
                   </div>
@@ -200,7 +202,7 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
 
             {/* Popular Programs */}
             <div>
-              <h3 className="text-xl font-bold text-slate-900 mb-3">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-3">
                 Flagship Academic Disciplines
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -217,8 +219,8 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
             </div>
 
             {/* Entry Requirements Detailed */}
-            <div className="rounded-3xl bg-white border border-slate-200/90 p-6 sm:p-8 shadow-sm space-y-4">
-              <h3 className="text-xl font-bold text-slate-900 pb-2 border-b border-slate-100 flex items-center gap-2">
+            <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-8 shadow-sm space-y-4">
+              <h3 className="text-lg sm:text-xl font-bold text-slate-900 pb-2 border-b border-slate-100 flex items-center gap-2">
                 <FileCheck className="w-5 h-5 text-blue-600" />
                 <span>Admission & Entry Requirements</span>
               </h3>
@@ -272,7 +274,7 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
           {/* Right Column: Tuition, Cost, and Scholarships */}
           <div className="lg:col-span-5 space-y-6">
             {/* Tuition Breakdown Card */}
-            <div className="rounded-3xl bg-slate-900 text-white p-6 sm:p-8 border border-slate-800 shadow-xl space-y-4">
+            <div className="rounded-3xl bg-slate-900 text-white p-5 sm:p-8 border border-slate-800 shadow-xl space-y-4">
               <h3 className="text-lg font-bold text-white pb-3 border-b border-slate-800 flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-amber-400" />
                 <span>Tuition & Living Costs</span>
@@ -311,7 +313,7 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
             </div>
 
             {/* Scholarships Available */}
-            <div className="rounded-3xl bg-amber-50 border border-amber-200 p-6 sm:p-8 space-y-4">
+            <div className="rounded-3xl bg-amber-50 border border-amber-200 p-5 sm:p-8 space-y-4">
               <div className="flex items-center gap-2 text-amber-900 font-bold text-base">
                 <Award className="w-5 h-5 text-amber-600" />
                 <span>Scholarships & Grants</span>
@@ -325,7 +327,7 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
                   const deadline = typeof sch === 'object' ? sch.deadline : 'Check intake dates';
 
                   return (
-                    <div key={idx} className="p-4 rounded-2xl bg-white border border-amber-200/80 shadow-sm space-y-1.5">
+                    <div key={idx} className="p-3.5 sm:p-4 rounded-2xl bg-white border border-amber-200/80 shadow-sm space-y-1.5">
                       <div className="text-xs font-bold text-slate-900">{title}</div>
                       {amount && <div className="text-xs font-extrabold text-emerald-700">{amount}</div>}
                       <p className="text-[11px] text-slate-600 leading-relaxed">{eligibility}</p>
@@ -350,12 +352,12 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
             <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
               Verified Admitted Students
             </span>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               FCC Global Education Scholars at {uni.name}
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {uniStories.map((story) => (
               <SuccessStoryCard key={story.id} story={story} />
             ))}
@@ -372,12 +374,12 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
 
       {/* Pre-Footer Application CTA */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-[#0B1528] text-white p-8 sm:p-12 text-center border border-slate-800 shadow-2xl">
+        <div className="rounded-3xl bg-[#0B1528] text-white p-5 sm:p-8 lg:p-12 text-center border border-slate-800 shadow-2xl">
           <div className="max-w-2xl mx-auto space-y-4">
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
               Ready to Submit Your Application to {uni.name}?
             </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               Our Oxbridge and Ivy League trained writing mentors will help draft your SOP, review recommendations, and secure expedited conditional offers.
             </p>
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">

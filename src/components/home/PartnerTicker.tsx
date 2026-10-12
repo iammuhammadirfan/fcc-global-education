@@ -43,22 +43,22 @@ export default function PartnerTicker({ universities = [] }: PartnerTickerProps)
   const infiniteLoop = [...partnersList, ...partnersList];
 
   return (
-    <div className="relative bg-white border-y border-slate-200/90 py-3.5 sm:py-4 overflow-hidden shadow-2xs z-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row items-center gap-4 lg:gap-6">
+    <div className="relative bg-white border-y border-slate-200/90 py-3.5 sm:py-4 overflow-hidden shadow-2xs z-20 w-full max-w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full max-w-full overflow-hidden">
+        <div className="flex flex-col lg:flex-row items-center gap-3 sm:gap-4 lg:gap-6 w-full max-w-full overflow-hidden min-w-0">
           
           {/* Left Fixed Badge / Label */}
-          <div className="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 text-slate-900 shrink-0 whitespace-nowrap shadow-2xs">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 shadow-xs">
-              <Award className="w-3.5 h-3.5 text-slate-950" />
+          <div className="flex items-center justify-center gap-2 sm:gap-2.5 px-3 sm:px-3.5 py-1.5 rounded-full bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/20 text-slate-900 shrink-0 text-center max-w-full shadow-2xs">
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-slate-950 shadow-xs shrink-0">
+              <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-slate-950" />
             </div>
-            <span className="text-[11px] sm:text-xs font-extrabold uppercase tracking-wider text-slate-800">
+            <span className="text-[10px] sm:text-xs font-extrabold uppercase tracking-wider text-slate-800 text-center truncate sm:whitespace-normal">
               Official Representatives & Global Alumni Networks
             </span>
           </div>
 
           {/* Right Sliding Ribbon Marquee Track ("Pati") */}
-          <div className="relative flex-1 w-full overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
+          <div className="relative flex-1 w-full max-w-full min-w-0 overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_5%,black_95%,transparent)]">
             <div className="animate-infinite-marquee flex items-center gap-3 py-1 cursor-pointer">
               {infiniteLoop.map((p, idx) => (
                 <div

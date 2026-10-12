@@ -222,7 +222,7 @@ export default function AiChatWidget() {
     <>
       {/* Floating Launcher Button - Visible ONLY when chat window is closed */}
       {!isOpen && (
-        <div className="fixed bottom-24 right-6 z-40 flex items-center justify-end">
+        <div className="fixed bottom-16 sm:bottom-24 right-3 sm:right-6 z-40 flex items-center justify-end">
           {/* Unread teaser tooltip */}
           {hasUnread && (
             <div
@@ -240,16 +240,16 @@ export default function AiChatWidget() {
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="relative group flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-300 text-slate-950 shadow-xl shadow-amber-500/35 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer focus:outline-none"
+            className="relative group flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-amber-300 text-slate-950 shadow-xl shadow-amber-500/35 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer focus:outline-none"
             aria-label="Open AI Admissions Counselor"
             title="FCC AI Admissions Counselor"
           >
             <span className="absolute -inset-1 rounded-full bg-amber-400/40 animate-ping pointer-events-none" />
             <div className="relative flex items-center justify-center">
-              <Sparkles className="w-6 h-6 fill-slate-950/20" />
-              <span className="absolute -top-1 -right-1 flex h-3 w-3">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 fill-slate-950/20" />
+              <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5 sm:h-3 sm:w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500 border border-white" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-emerald-500 border border-white" />
               </span>
             </div>
           </button>
@@ -258,7 +258,7 @@ export default function AiChatWidget() {
 
       {/* Luxury Chat Window Modal - Elegantly anchored on screen */}
       {isOpen && (
-        <div className="fixed bottom-4 sm:bottom-6 right-3 sm:right-6 z-50 w-[94vw] sm:w-[400px] max-w-[420px] h-[min(540px,calc(100vh-60px))] flex flex-col bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-950/30 overflow-hidden animate-in zoom-in-95 duration-200">
+        <div className="fixed bottom-14 sm:bottom-6 right-2 sm:right-6 z-50 w-[calc(100vw-16px)] sm:w-[400px] max-w-[420px] h-[min(540px,calc(100vh-80px))] flex flex-col bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-950/30 overflow-hidden animate-in zoom-in-95 duration-200">
           {/* Header Bar */}
           <div className="bg-slate-950 p-3.5 px-4 text-white flex items-center justify-between border-b border-amber-500/20 shrink-0">
             <div className="flex items-center gap-2.5">

@@ -118,25 +118,25 @@ export default function SuccessStoriesClient({
       {/* Video Success Stories Spotlight */}
       {videoTestimonials.length > 0 && (
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" id="student-videos">
-          <div className="rounded-3xl bg-slate-900 border border-slate-800 p-8 sm:p-12 text-white shadow-2xl space-y-8">
+          <div className="rounded-3xl bg-slate-900 border border-slate-800 p-5 sm:p-8 lg:p-12 text-white shadow-2xl space-y-8">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
               <div>
                 <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-400">
                   <Play className="w-3.5 h-3.5 fill-current" /> Student Video Testimonials
                 </span>
-                <h2 className="text-2xl sm:text-3xl font-bold text-white mt-1">
+                <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mt-1">
                   Hear Directly From Our Placed Scholars
                 </h2>
               </div>
-              <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-500/30">
-                <ShieldCheck className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-lg border border-emerald-500/30 w-fit">
+                <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>100% Genuine Recorded Student Videos</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {videoTestimonials.map((vid) => (
-                <VideoCard key={vid.id} testimonial={vid} theme="dark" />
+                <VideoCard key={vid} testimonial={vid} theme="dark" />
               ))}
             </div>
           </div>
@@ -145,9 +145,9 @@ export default function SuccessStoriesClient({
 
       {/* Student Testimonials Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900">
+            <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
               Showing {filteredStories.length} Student {filteredStories.length === 1 ? 'Review' : 'Reviews'}
             </h2>
             <p className="text-xs text-slate-500 mt-0.5">
@@ -160,7 +160,7 @@ export default function SuccessStoriesClient({
                 setSelectedCountry('All');
                 setSelectedDegree('All');
               }}
-              className="text-xs font-semibold text-amber-600 hover:underline"
+              className="text-xs font-semibold text-amber-600 hover:underline self-start sm:self-auto"
             >
               Reset Filters
             </button>
@@ -168,18 +168,18 @@ export default function SuccessStoriesClient({
         </div>
 
         {filteredStories.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {filteredStories.map((story) => (
               <SuccessStoryCard key={story.id} story={story} />
             ))}
           </div>
         ) : (
-          <div className="text-center py-16 px-6 bg-white border border-slate-200/90 rounded-3xl shadow-sm space-y-4 max-w-xl mx-auto">
+          <div className="text-center py-12 sm:py-16 px-4 sm:px-6 bg-white border border-slate-200/90 rounded-3xl shadow-sm space-y-4 max-w-xl mx-auto">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200">
               <Award className="w-8 h-8" />
             </div>
-            <h3 className="text-xl font-bold text-slate-900">No Student Reviews Published Yet</h3>
-            <p className="text-sm text-slate-500 leading-relaxed">
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900">No Student Reviews Published Yet</h3>
+            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
               Approved student reviews and ratings will appear here once published from Admin → Student Reviews.
             </p>
             <div className="pt-2">
@@ -197,15 +197,15 @@ export default function SuccessStoriesClient({
 
       {/* Pre-Footer Conversion Callout */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-[#0B1528] text-white p-8 sm:p-12 text-center border border-slate-800 shadow-2xl">
+        <div className="rounded-3xl bg-[#0B1528] text-white p-5 sm:p-8 lg:p-12 text-center border border-slate-800 shadow-2xl">
           <div className="max-w-2xl mx-auto space-y-4">
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest bg-amber-400/10 px-3 py-1 rounded-full">
               Your Journey Starts Here
             </span>
-            <h2 className="text-3xl font-extrabold text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
               Start Your Educational Journey with FCC Global Education
             </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               Whether you need to boost your test score, fix an academic gap, or prepare for a rigorous consular visa interview, our mentors have guided thousands across the finish line.
             </p>
             <div className="pt-4">
