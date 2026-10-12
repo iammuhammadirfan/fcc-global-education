@@ -1,0 +1,3164 @@
+{
+  "users": [
+    {
+      "id": "usr_counselor",
+      "name": "Priya Sharma",
+      "email": "counselor@auraglobal.com",
+      "passwordHash": "4f0189e0177bf4d549ea8f5bc012a9a6:8325c27f11ef9c0098738a1397cdf609abd36ee9aafc3d0ecfa462efa4b1c6fd29cbfffe7eb925103f8e78872c87c9cd1841164435c401e0348a0aa72251cebf",
+      "role": "counselor",
+      "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200",
+      "createdAt": "2026-10-04T18:26:16.000Z"
+    },
+    {
+      "id": "usr_editor",
+      "name": "Marcus Sterling",
+      "email": "editor@auraglobal.com",
+      "passwordHash": "4f0189e0177bf4d549ea8f5bc012a9a6:8325c27f11ef9c0098738a1397cdf609abd36ee9aafc3d0ecfa462efa4b1c6fd29cbfffe7eb925103f8e78872c87c9cd1841164435c401e0348a0aa72251cebf",
+      "role": "editor",
+      "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=200",
+      "createdAt": "2026-10-04T18:26:16.000Z"
+    },
+    {
+      "id": "usr_super_admin",
+      "name": "Dr. Evelyn Montgomery",
+      "email": "admin@auraglobal.com",
+      "passwordHash": "4f0189e0177bf4d549ea8f5bc012a9a6:8325c27f11ef9c0098738a1397cdf609abd36ee9aafc3d0ecfa462efa4b1c6fd29cbfffe7eb925103f8e78872c87c9cd1841164435c401e0348a0aa72251cebf",
+      "role": "super_admin",
+      "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200",
+      "createdAt": "2026-10-04T18:26:16.000Z"
+    }
+  ],
+  "countries": [
+    {
+      "id": "uk",
+      "slug": "uk",
+      "name": "United Kingdom",
+      "flag": "🇬🇧",
+      "code": "GB",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "World-Leading Heritage, 1-Year Master Degrees & Global Prestige",
+      "overview": "The United Kingdom boasts some of the oldest and most prestigious universities in the world. With globally recognized qualifications, cutting-edge research infrastructure, and the Graduate Route Visa offering 2 years of post-study work, the UK remains the premier choice for ambitious international scholars.",
+      "whyStudy": [
+        "Shorter degree duration: 3-year Bachelor’s and 1-year Master’s programmes save both time and living expenses",
+        "Home to 4 of the world’s top 10 universities (QS World University Rankings)",
+        "The Graduate Route Visa permits international students to work in the UK for at least 2 years post-graduation (3 years for PhD)",
+        "Rich multicultural student community with over 680,000 international students",
+        "Extensive NHS healthcare coverage and student welfare support systems"
+      ],
+      "popularCourses": [
+        "Business Analytics & Finance",
+        "Data Science & Artificial Intelligence",
+        "Law & International Dispute Resolution",
+        "Mechanical & Aerospace Engineering",
+        "Biomedical Sciences & Public Health",
+        "Creative Media & Architecture"
+      ],
+      "averageTuition": "£14,000 – £32,000 / year",
+      "livingCosts": "£1,015 – £1,334 / month (London: £1,334+)",
+      "currency": "GBP (£)",
+      "intakes": [
+        "September / October (Major)",
+        "January / February (Secondary)",
+        "May (Select courses)"
+      ],
+      "postStudyWork": "2 Years (Graduate Route) / 3 Years for PhD graduates",
+      "visaSuccessRate": "98.6%",
+      "workWhileStudying": "20 hours/week during term-time, full-time during official vacation periods",
+      "topUniversityNames": [
+        "University of Oxford",
+        "University of Cambridge",
+        "Imperial College London",
+        "University College London (UCL)",
+        "University of Manchester",
+        "University of Edinburgh",
+        "King’s College London",
+        "University of Warwick"
+      ],
+      "scholarshipsOverview": "Chevening Scholarships, Commonwealth Scholarships, GREAT Scholarships, and university-specific merit bursaries of up to £10,000 off tuition.",
+      "visaRequirements": [
+        "Confirmation of Acceptance for Studies (CAS) from a licensed UK sponsor",
+        "Financial proof demonstrating maintenance funds for 9 months plus outstanding tuition",
+        "IELTS / PTE Academic or approved UKVI English proficiency",
+        "Tuberculosis (TB) test certificate from an approved clinic",
+        "Valid passport with at least 6 months validity"
+      ],
+      "postStudyOpportunities": [
+        "Fast progression to Skilled Worker Visa sponsorship upon securing eligible employment",
+        "Global financial and tech capital access in London, Manchester, and Edinburgh",
+        "World-class professional certifications (ACCA, CIPD, RIBA, GMC)"
+      ],
+      "applicationDeadlines": "UCAS Undergraduate: 15 Oct (Oxbridge/Med) / 29 Jan (Equal Consideration). Postgraduate: Rolling (April–July recommended)",
+      "sortOrder": 1,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "usa",
+      "slug": "usa",
+      "name": "United States",
+      "flag": "🇺🇸",
+      "code": "US",
+      "region": "North America",
+      "heroImage": "https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Innovation Capital, Ivy League Excellence & 3-Year STEM OPT",
+      "overview": "The United States is the epicenter of global higher education, hosting more top 100 universities than any other nation. From Silicon Valley engineering to Wall Street finance, US universities blend academic rigor with world-changing internships and up to 3 years of post-graduation STEM OPT work rights.",
+      "whyStudy": [
+        "Unrivaled research funding and world-leading faculty in technology, AI, and biotech",
+        "Flexible academic system allowing students to explore double majors and switch concentrations",
+        "Up to 36 months of Optional Practical Training (STEM OPT extension) for qualifying degree programs",
+        "Massive campus ecosystems with state-of-the-art labs, sports arenas, and alumni networks",
+        "Generous merit scholarships, TA/RA assistantships, and on-campus fellowships"
+      ],
+      "popularCourses": [
+        "Computer Science & Machine Learning",
+        "MBA & Quantitative Finance",
+        "Biomedical Engineering & Robotics",
+        "Data Analytics & Information Systems",
+        "Liberal Arts & Global Governance",
+        "Cybersecurity & Cloud Computing"
+      ],
+      "averageTuition": "$22,000 – $55,000 / year",
+      "livingCosts": "$1,200 – $2,200 / month",
+      "currency": "USD ($)",
+      "intakes": [
+        "Fall (August / September - Primary)",
+        "Spring (January - Secondary)",
+        "Summer (Limited)"
+      ],
+      "postStudyWork": "1 Year standard OPT + 24 Month STEM extension (3 Years Total)",
+      "visaSuccessRate": "95.4%",
+      "workWhileStudying": "20 hours/week on-campus during academic sessions, 40 hours/week during holidays",
+      "topUniversityNames": [
+        "Harvard University",
+        "Massachusetts Institute of Technology (MIT)",
+        "Stanford University",
+        "Columbia University",
+        "University of California, Berkeley",
+        "University of Michigan",
+        "New York University (NYU)",
+        "Carnegie Mellon University"
+      ],
+      "scholarshipsOverview": "Fulbright Foreign Student Program, University Merit Fellowships, Graduate Assistantships (covering 50-100% tuition + stipend).",
+      "visaRequirements": [
+        "Form I-20 issued by SEVP-certified institution and paid SEVIS I-901 fee",
+        "DS-160 visa application confirmation and scheduled embassy interview",
+        "Proof of liquid financial capability to fund at least the first academic year",
+        "Academic transcripts, standardized test scores (GRE/GMAT/SAT where applicable), and TOEFL/IELTS",
+        "Strong ties to home country demonstrating non-immigrant intent"
+      ],
+      "postStudyOpportunities": [
+        "Direct pathway from STEM OPT to H-1B specialty occupation sponsorship",
+        "Unmatched recruitment by Fortune 500 tech, biotech, banking, and consulting giants",
+        "Campus startup incubators and VC funding access"
+      ],
+      "applicationDeadlines": "Early Action/Decision: Nov 1–15; Regular Decision: Jan 1–Feb 1; Grad: Dec–Feb",
+      "sortOrder": 2,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "canada",
+      "slug": "canada",
+      "name": "Canada",
+      "flag": "🇨🇦",
+      "code": "CA",
+      "region": "North America",
+      "heroImage": "https://images.unsplash.com/photo-1517935703635-271905454b30?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "High Quality of Life, Welcoming Society & Clear Immigration Pathways",
+      "overview": "Canada combines world-class universities with a globally celebrated safety index, multicultural society, and student-centric post-graduation work permits (PGWP) of up to 3 years. Canadian credentials are internationally respected and offer clear bridges to permanent residency through Express Entry.",
+      "whyStudy": [
+        "Post-Graduation Work Permit (PGWP) allows graduates to gain valuable Canadian work experience for up to 3 years",
+        "Affordable tuition compared to other major English-speaking destinations with high ROI",
+        "Safe, welcoming, and diverse cities consistently ranked in the top 10 most livable worldwide",
+        "Strong co-op and paid internship programs integrated into degree curriculums",
+        "Clear Express Entry and Provincial Nominee Program (PNP) pathways for skilled international graduates"
+      ],
+      "popularCourses": [
+        "Software Engineering & Cloud Computing",
+        "Business Administration & Supply Chain",
+        "Health Informatics & Nursing",
+        "Civil & Environmental Engineering",
+        "Digital Marketing & Media Production",
+        "Hospitality & Tourism Management"
+      ],
+      "averageTuition": "CAD $18,000 – $38,000 / year",
+      "livingCosts": "CAD $1,100 – $1,800 / month",
+      "currency": "CAD ($)",
+      "intakes": [
+        "Fall (September - Primary)",
+        "Winter (January - Secondary)",
+        "Summer (May - Select programs)"
+      ],
+      "postStudyWork": "Up to 3 Years open Post-Graduation Work Permit (PGWP)",
+      "visaSuccessRate": "96.2%",
+      "workWhileStudying": "20 hours/week off-campus during terms, full-time during scheduled study breaks",
+      "topUniversityNames": [
+        "University of Toronto",
+        "McGill University",
+        "University of British Columbia (UBC)",
+        "University of Alberta",
+        "McMaster University",
+        "University of Waterloo",
+        "Western University",
+        "Queen’s University"
+      ],
+      "scholarshipsOverview": "Vanier Canada Graduate Scholarships, Ontario Graduate Scholarship, University President’s International Scholar Awards.",
+      "visaRequirements": [
+        "Provincial Attestation Letter (PAL) and official Letter of Acceptance (LOA) from DLI",
+        "Guaranteed Investment Certificate (GIC) of required living expense deposit",
+        "Proof of first-year tuition payment receipt",
+        "Medical clearance and police character certificate",
+        "Comprehensive Statement of Purpose (SOP) demonstrating study trajectory"
+      ],
+      "postStudyOpportunities": [
+        "Direct Canadian Experience Class (CEC) eligibility under Express Entry",
+        "Rapidly growing tech corridors in Toronto, Vancouver, Montreal, and Calgary",
+        "High average graduate starting salaries in engineering and IT"
+      ],
+      "applicationDeadlines": "Fall: Dec 15–March 1; Winter: Sept 1–Nov 1",
+      "sortOrder": 3,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "australia",
+      "slug": "australia",
+      "name": "Australia",
+      "flag": "🇦🇺",
+      "code": "AU",
+      "region": "Asia-Pacific",
+      "heroImage": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "World Top-Ranked Group of Eight & Spectacular Lifestyle",
+      "overview": "Australia is famed for its prestigious Group of Eight (Go8) research universities, high standard of living, and thriving multinational job market. Offering post-study work rights, generous minimum wage safeguards, and an enviable outdoor lifestyle, Australia attracts over half a million international students every year.",
+      "whyStudy": [
+        "7 Australian universities rank in the QS Global Top 100, including Melbourne, Sydney, and UNSW",
+        "Subclass 485 Temporary Graduate Visa provides generous post-study work rights",
+        "World-leading hourly minimum wage ($24.10+ AUD) protects international student part-time employment",
+        "Safe, sunny, and cosmopolitan cities with pristine beaches and vibrant cultural scenes",
+        "Pioneering research facilities in renewable energy, biotechnology, quantum computing, and mining"
+      ],
+      "popularCourses": [
+        "Information Technology & Cybersecurity",
+        "Professional Accounting & FinTech",
+        "Mining & Renewable Energy Engineering",
+        "Nursing & Occupational Therapy",
+        "Data Analytics & Enterprise Systems",
+        "Marine Biology & Environmental Science"
+      ],
+      "averageTuition": "AUD $25,000 – $45,000 / year",
+      "livingCosts": "AUD $1,400 – $2,200 / month",
+      "currency": "AUD ($)",
+      "intakes": [
+        "Semester 1 (February / March - Main)",
+        "Semester 2 (July / August - Main)",
+        "Term 3 (November - Select)"
+      ],
+      "postStudyWork": "2 to 4 Years Post-Higher Education Work Stream (Subclass 485)",
+      "visaSuccessRate": "97.1%",
+      "workWhileStudying": "48 hours per fortnight during study semesters; unlimited during holidays",
+      "topUniversityNames": [
+        "The University of Melbourne",
+        "The University of Sydney",
+        "The University of New South Wales (UNSW)",
+        "Australian National University (ANU)",
+        "Monash University",
+        "The University of Queensland",
+        "The University of Western Australia",
+        "The University of Adelaide"
+      ],
+      "scholarshipsOverview": "Australia Awards, Destination Australia Scholarships, Vice-Chancellor’s International Excellence Scholarships (20–50% tuition reduction).",
+      "visaRequirements": [
+        "Confirmation of Enrolment (CoE) from registered CRICOS institution",
+        "Genuine Student (GS) assessment questionnaire showing verified academic career progression",
+        "Overseas Student Health Cover (OSHC) for the full visa duration",
+        "Financial evidence of at least 1 year living expenses plus remaining tuition",
+        "English proficiency (IELTS, PTE, or TOEFL)"
+      ],
+      "postStudyOpportunities": [
+        "Pathways through Subclass 189 / 190 skilled migration streams",
+        "Strong regional migration bonuses in Adelaide, Perth, Brisbane, and Gold Coast",
+        "High employer demand in healthcare, aged care, software, and construction"
+      ],
+      "applicationDeadlines": "Semester 1: Oct–Nov; Semester 2: April–May",
+      "sortOrder": 4,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "germany",
+      "slug": "germany",
+      "name": "Germany",
+      "flag": "🇩🇪",
+      "code": "DE",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Tuition-Free Public Universities & Europe’s Economic Powerhouse",
+      "overview": "Germany is Europe’s industrial and technological engine. Public universities charge almost zero tuition fees for international students, offering cutting-edge engineering, computing, and business degrees taught in English, supported by an 18-month job-seeker visa after graduation.",
+      "whyStudy": [
+        "Zero or low tuition fees at public universities across 15 of 16 German federal states",
+        "Engineering and technical prowess: home to TU9, BMW, Siemens, SAP, and BASF",
+        "18-month post-study work visa (Jobseeker Residence Permit) upon graduation",
+        "Over 2,000 international degree programs fully taught in English",
+        "EU Blue Card eligibility with fast-track permanent residency within 21–27 months"
+      ],
+      "popularCourses": [
+        "Automotive & Mechanical Engineering",
+        "Artificial Intelligence & Informatics",
+        "Renewable Energy & Power Systems",
+        "International Management & Supply Chain",
+        "Molecular Bioengineering",
+        "Architecture & Urban Planning"
+      ],
+      "averageTuition": "€0 – €3,000 / year (Nominal semester fee €150–€350)",
+      "livingCosts": "€934 – €1,200 / month (Blocked Account: €11,904/year)",
+      "currency": "EUR (€)",
+      "intakes": [
+        "Winter Semester (October - Primary)",
+        "Summer Semester (April - Secondary)"
+      ],
+      "postStudyWork": "18 Months post-study work residence permit to secure qualified employment",
+      "visaSuccessRate": "97.8%",
+      "workWhileStudying": "140 full days or 280 half days per calendar year",
+      "topUniversityNames": [
+        "Technical University of Munich (TUM)",
+        "Ludwig Maximilian University of Munich (LMU)",
+        "Heidelberg University",
+        "RWTH Aachen University",
+        "Karlsruhe Institute of Technology (KIT)",
+        "Free University of Berlin",
+        "Humboldt University of Berlin"
+      ],
+      "scholarshipsOverview": "DAAD Scholarships, Deutschlandstipendium (€300/month), Heinrich Böll Foundation grants.",
+      "visaRequirements": [
+        "Official Letter of Admission or uni-assist preliminary documentation",
+        "Blocked Account (Sperrkonto) with minimum required German statutory sum",
+        "Proof of statutory or private German health insurance (e.g. TK, Barmer, or Mawista)",
+        "German or English language certificate (IELTS/TestDaF/Goethe depending on language of instruction)",
+        "Aps Certificate (for select nationalities)"
+      ],
+      "postStudyOpportunities": [
+        "Direct conversion to EU Blue Card with lowered salary thresholds for STEM fields",
+        "Huge talent shortage across IT, mechanical engineering, and healthcare sectors",
+        "Freedom of movement across the entire Schengen Zone"
+      ],
+      "applicationDeadlines": "Winter: May 1–July 15; Summer: Dec 1–Jan 15",
+      "sortOrder": 5,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "ireland",
+      "slug": "ireland",
+      "name": "Ireland",
+      "flag": "🇮🇪",
+      "code": "IE",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "European Tech Hub, Only Native English-Speaking EU Nation",
+      "overview": "Ireland is the only English-speaking member of the Eurozone and acts as the European headquarters for Google, Apple, Meta, Pfizer, and Microsoft. Its universities offer 1-year master’s programs and an automatic 2-year Third Level Graduate Scheme visa.",
+      "whyStudy": [
+        "European Headquarters for 9 of the top 10 global software companies and US tech giants",
+        "Automatic 2-year post-study work visa for Master’s and PhD graduates (Third Level Graduate Scheme)",
+        "Only native English-speaking nation within the European Union",
+        "Rich literary and academic traditions led by Trinity College Dublin and UCD",
+        "High starting graduate salaries and fast pathways to Critical Skills Employment Permits"
+      ],
+      "popularCourses": [
+        "Cloud Computing & Big Data Analytics",
+        "Pharmaceutical Science & Biotechnology",
+        "Financial Technology (FinTech)",
+        "Digital Marketing & Business Strategy",
+        "Biomedical Engineering"
+      ],
+      "averageTuition": "€11,000 – €26,000 / year",
+      "livingCosts": "€1,000 – €1,600 / month",
+      "currency": "EUR (€)",
+      "intakes": [
+        "Autumn (September - Main)",
+        "Spring (January - Select courses)"
+      ],
+      "postStudyWork": "24 Months (Master’s graduates) / 12 Months (Bachelor’s)",
+      "visaSuccessRate": "98.2%",
+      "workWhileStudying": "20 hours/week during term, 40 hours/week during June–September and Christmas",
+      "topUniversityNames": [
+        "Trinity College Dublin (TCD)",
+        "University College Dublin (UCD)",
+        "University of Galway",
+        "University College Cork (UCC)",
+        "Dublin City University (DCU)",
+        "University of Limerick"
+      ],
+      "scholarshipsOverview": "Government of Ireland International Education Scholarships (Full tuition + €10,000 stipend), Global Excellence Scholarships.",
+      "visaRequirements": [
+        "Letter of Acceptance from recognized Irish higher education institution",
+        "Proof of fees paid to university (minimum €6,000 or full amount)",
+        "Evidence of sufficient funds (€10,000 minimum readily accessible)",
+        "Private medical insurance coverage",
+        "English language certification (IELTS 6.5+ or equivalent)"
+      ],
+      "postStudyOpportunities": [
+        "Transition to 2-year Critical Skills Employment Permit leading to Stamp 4 permanent residency",
+        "Direct recruitment events from Dublin’s \"Silicon Docks\""
+      ],
+      "applicationDeadlines": "Rolling admissions: February to June",
+      "sortOrder": 6,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "france",
+      "slug": "france",
+      "name": "France",
+      "flag": "🇫🇷",
+      "code": "FR",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Art, High Fashion, Elite Grandes Écoles & 5-Year Alumni Visas",
+      "overview": "France is renowned for its world-leading business schools, engineering Grandes Écoles, and subsidized student lifestyle. Under new bilateral agreements, Indian and international alumni of French universities enjoy 5-year short-stay Schengen visas.",
+      "whyStudy": [
+        "Top-tier Grandes Écoles consistently topping FT European Business School rankings (HEC Paris, INSEAD, ESSEC)",
+        "Government-subsidized student accommodation (CAF allowance) cutting rent costs by up to 40%",
+        "Over 1,700 English-taught degree programs across management, fashion, tech, and aerospace",
+        "Exclusive 5-year short-stay circulation visa for master’s degree alumni",
+        "Rich cultural heritage, gastronomy, and central access to all Schengen capitals"
+      ],
+      "popularCourses": [
+        "Luxury Brand Management & Fashion",
+        "Master in Management (MiM) & MBA",
+        "Aerospace Engineering & Robotics",
+        "Culinary Arts & Hospitality Management",
+        "Artificial Intelligence & Applied Maths"
+      ],
+      "averageTuition": "€3,770 (Public Universities) – €18,000 / year (Grandes Écoles)",
+      "livingCosts": "€800 – €1,400 / month (Paris higher)",
+      "currency": "EUR (€)",
+      "intakes": [
+        "Fall (September / October)",
+        "Spring (January / February)"
+      ],
+      "postStudyWork": "2 Years APS (Autorisation Provisoire de Séjour) / RECE permit for Master’s graduates",
+      "visaSuccessRate": "96.8%",
+      "workWhileStudying": "Up to 964 hours per year (60% of normal working year)",
+      "topUniversityNames": [
+        "Sorbonne University",
+        "HEC Paris",
+        "École Polytechnique (Institut Polytechnique de Paris)",
+        "Sciences Po Paris",
+        "ESSEC Business School",
+        "Université Paris-Saclay"
+      ],
+      "scholarshipsOverview": "Eiffel Excellence Scholarship, Charpak Scholarships (India), France Excellence Europa.",
+      "visaRequirements": [
+        "Etudes en France (Campus France) verification and EEF interview",
+        "Attestation d’inscription (admission letter) from school",
+        "Proof of minimum €615/month financial support",
+        "Proof of accommodation in France for the first 3 months"
+      ],
+      "postStudyOpportunities": [
+        "Passeport Talent (Talent Passport) for qualified researchers and corporate hires",
+        "Booming startup ecosystem at Station F in Paris"
+      ],
+      "applicationDeadlines": "Campus France: Nov 15–Dec 15; Direct School: Nov–June",
+      "sortOrder": 7,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "italy",
+      "slug": "italy",
+      "name": "Italy",
+      "flag": "🇮🇹",
+      "code": "IT",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1529260830199-42c24126f198?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Heritage, World-Class Design, Medicine & Regional DSU Scholarships",
+      "overview": "Italy is home to the world’s oldest university and world-leading institutions in architecture, automotive design, medicine, and engineering. With regional scholarships (DSU) providing free tuition and living stipends based on family income, studying in Italy is extraordinarily accessible.",
+      "whyStudy": [
+        "Regional DSU Scholarships can cover 100% of university tuition fees plus provide €7,000+ yearly living stipends",
+        "World-famous programs in Architecture, Industrial Design, Automotive Engineering, and Medicine (IMAT)",
+        "Home to the historic University of Bologna (founded 1088) and prestigious Politecnico di Milano",
+        "Affordable cost of living in historic cities like Turin, Bologna, Padua, and Milan",
+        "1-year post-study search permit for master’s and PhD graduates"
+      ],
+      "popularCourses": [
+        "Architecture & Urban Planning",
+        "Automotive & Mechanical Design",
+        "Medicine & Surgery (IMAT in English)",
+        "Fashion Design & Luxury Goods",
+        "Economics & Sustainable Development"
+      ],
+      "averageTuition": "€1,000 – €4,000 / year (Public) / Free with DSU",
+      "livingCosts": "€700 – €1,100 / month",
+      "currency": "EUR (€)",
+      "intakes": [
+        "Autumn (September / October - Main)",
+        "Spring (Limited)"
+      ],
+      "postStudyWork": "12 Months \"Permesso di soggiorno per ricerca lavoro\" (Job Search Permit)",
+      "visaSuccessRate": "95.9%",
+      "workWhileStudying": "20 hours/week, maximum 1,040 hours/year",
+      "topUniversityNames": [
+        "Politecnico di Milano",
+        "University of Bologna",
+        "Sapienza University of Rome",
+        "University of Padua",
+        "Bocconi University",
+        "Politecnico di Torino"
+      ],
+      "scholarshipsOverview": "Regional DSU Scholarships (income-based, up to full ride + stipend), MAECI Italian Government Scholarships, Invest Your Talent in Italy.",
+      "visaRequirements": [
+        "Pre-enrolment summary via Universitaly portal approved by Italian University",
+        "Declaration of Value (DoV) or CIMEA Statement of Comparability",
+        "Proof of financial sustenance (€6,000+ per year)",
+        "Health insurance policy covering minimum €30,000 emergencies in Schengen"
+      ],
+      "postStudyOpportunities": [
+        "Conversion of study permit to Work Permit (Permesso di Soggiorno per Lavoro Subordinato)",
+        "Global prestige in design studios, luxury automotive (Ferrari, Ducati, Lamborghini), and pharmaceuticals"
+      ],
+      "applicationDeadlines": "Universitaly pre-enrolment: March to June",
+      "sortOrder": 8,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "netherlands",
+      "slug": "netherlands",
+      "name": "Netherlands",
+      "flag": "🇳🇱",
+      "code": "NL",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Leading English Taught Hub & 1-Year Search Year (Zoekjaar) Visa",
+      "overview": "The Netherlands was the first non-English speaking country to offer degree courses taught entirely in English. Known for problem-based learning, high tolerance, cycling culture, and the \"Zoekjaar\" (Orientation Year) visa, it provides a seamless pathway into the European tech and trade economy.",
+      "whyStudy": [
+        "Over 2,100 degree programs taught 100% in English with over 95% of Dutch citizens fluent in English",
+        "Orientation Year (Zoekjaar) allows graduates to work without a work permit for 1 full year",
+        "High-ranking research universities: Delft, Amsterdam, Erasmus Rotterdam, Utrecht",
+        "Strategic European logistics and tech gateway (ASML, Philips, Booking.com, ING)",
+        "Progressive, safe, and bike-friendly student cities with international communities"
+      ],
+      "popularCourses": [
+        "Computer Science & Microelectronics",
+        "International Business & Econometrics",
+        "Civil & Hydraulic Engineering",
+        "Agriculture & Food Technology (Wageningen)",
+        "Psychology & Cognitive Neuroscience"
+      ],
+      "averageTuition": "€9,000 – €20,000 / year",
+      "livingCosts": "€1,000 – €1,500 / month",
+      "currency": "EUR (€)",
+      "intakes": [
+        "September (Main)",
+        "February (Select universities)"
+      ],
+      "postStudyWork": "1 Year Zoekjaar (Orientation Year) for recent graduates (can be taken within 3 years of graduating)",
+      "visaSuccessRate": "98.5%",
+      "workWhileStudying": "16 hours/week with work permit, or full-time during June, July, and August",
+      "topUniversityNames": [
+        "Delft University of Technology (TU Delft)",
+        "University of Amsterdam (UvA)",
+        "Utrecht University",
+        "Erasmus University Rotterdam",
+        "Eindhoven University of Technology",
+        "Leiden University"
+      ],
+      "scholarshipsOverview": "NL Scholarship (formerly Holland Scholarship, €5,000), Erasmus+ Grants, University Excellence Scholarships.",
+      "visaRequirements": [
+        "University applies for your MVV entry visa and VVR residence permit directly with IND",
+        "Proof of financial means (approx. €12,200/year deposited with university)",
+        "Legalized and translated academic certificates",
+        "Valid passport and TB test upon arrival (if applicable)"
+      ],
+      "postStudyOpportunities": [
+        "Highly Skilled Migrant (Kennismigrant) visa with reduced salary threshold for Zoekjaar graduates",
+        "Home to semiconductor monopoly ASML, global fintech hubs, and international maritime trade"
+      ],
+      "applicationDeadlines": "Numerus Fixus: Jan 15; Regular: April 1–May 1",
+      "sortOrder": 9,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "new-zealand",
+      "slug": "new-zealand",
+      "name": "New Zealand",
+      "flag": "🇳🇿",
+      "code": "NZ",
+      "region": "Asia-Pacific",
+      "heroImage": "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Safe Haven, World Top 3% Universities & Up to 3-Year Post-Study Visa",
+      "overview": "All eight New Zealand universities rank in the QS World Top 500. Known for stunning landscapes, unmatched safety, welcoming Maori hospitality, and post-study work visas for up to 3 years, New Zealand provides an exceptional quality of education and lifestyle.",
+      "whyStudy": [
+        "100% of New Zealand universities rank in the top 3% worldwide",
+        "Post-Study Work Visa granted for up to 3 years for eligible degree qualifications",
+        "Consistently ranked #1 or #2 globally on the Global Peace Index",
+        "Masters and PhD students pay domestic fees for PhDs and their spouses can get full-time open work visas",
+        "High demand for skilled graduates in civil engineering, healthcare, agriculture, and IT"
+      ],
+      "popularCourses": [
+        "Environmental Science & Ecology",
+        "Agribusiness & Viticulture",
+        "Civil & Structural Engineering",
+        "Data Science & Software Development",
+        "Tourism & Hospitality Management"
+      ],
+      "averageTuition": "NZD $26,000 – $42,000 / year",
+      "livingCosts": "NZD $1,400 – $2,000 / month",
+      "currency": "NZD ($)",
+      "intakes": [
+        "Semester 1 (February / March - Main)",
+        "Semester 2 (July - Main)"
+      ],
+      "postStudyWork": "Up to 3 Years Post-Study Work Visa (duration matching degree level)",
+      "visaSuccessRate": "96.5%",
+      "workWhileStudying": "20 hours/week during term, full-time during vacations",
+      "topUniversityNames": [
+        "The University of Auckland",
+        "University of Otago",
+        "Victoria University of Wellington",
+        "University of Canterbury",
+        "Massey University",
+        "University of Waikato"
+      ],
+      "scholarshipsOverview": "New Zealand International Excellence Scholarships, Manaaki New Zealand Scholarships, University of Auckland International Student Excellence.",
+      "visaRequirements": [
+        "Offer of Place from NZQA-accredited education provider",
+        "Proof of sufficient funds (NZD $20,000/year living funds plus tuition)",
+        "Chest X-ray and medical examination",
+        "Police clearance certificate"
+      ],
+      "postStudyOpportunities": [
+        "Straight to Residence and Work to Residence pathways under Green List occupations",
+        "Spousal full-time work visa rights during post-graduate studies"
+      ],
+      "applicationDeadlines": "Semester 1: Nov–Dec; Semester 2: April–May",
+      "sortOrder": 10,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "sweden",
+      "slug": "sweden",
+      "name": "Sweden",
+      "flag": "🇸🇪",
+      "code": "SE",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1509356843151-3e7d96241e11?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "Home of the Nobel Prize, Sustainability & Tech Unicorns (Spotify, Klarna)",
+      "overview": "Sweden is the birthplace of the Nobel Prize and a pioneer in sustainability, design, and tech innovation. International students benefit from team-based, critical-thinking education and a 1-year residence permit to seek employment or start a business post-graduation.",
+      "whyStudy": [
+        "Birthplace of global unicorns: Spotify, Klarna, Mojang (Minecraft), Skype, and King",
+        "12-month post-study residence permit to find work or explore startup ventures",
+        "World-leading focus on green technology, sustainability, and renewable circular economy",
+        "Top institutions: KTH Royal Institute of Technology, Lund University, Uppsala University",
+        "No legal limit on the number of hours international students can work while studying"
+      ],
+      "popularCourses": [
+        "Sustainable Energy & CleanTech",
+        "Information & Communication Technology",
+        "Industrial Design & Ergonomics",
+        "Biomedicine & Molecular Medicine",
+        "Global Public Health"
+      ],
+      "averageTuition": "SEK 90,000 – 170,000 / year (approx. €8,000–€15,000)",
+      "livingCosts": "SEK 9,500 – 13,000 / month",
+      "currency": "SEK (kr)",
+      "intakes": [
+        "Autumn (August / September - Primary)",
+        "Spring (January - Limited)"
+      ],
+      "postStudyWork": "12 Months residence permit after completed higher education to seek employment",
+      "visaSuccessRate": "97.2%",
+      "workWhileStudying": "Unlimited hours permitted as long as full-time academic progress is maintained",
+      "topUniversityNames": [
+        "KTH Royal Institute of Technology",
+        "Lund University",
+        "Uppsala University",
+        "Chalmers University of Technology",
+        "Karolinska Institute",
+        "Stockholm University"
+      ],
+      "scholarshipsOverview": "Swedish Institute Scholarships for Global Professionals (full tuition + monthly SEK 12,000 living allowance), University Tuition waivers.",
+      "visaRequirements": [
+        "Letter of Acceptance via UniversityAdmissions.se",
+        "Tuition fee first installment payment confirmed by Swedish university",
+        "Proof of financial means (SEK 10,314/month for living expenses)",
+        "Comprehensive health insurance policy"
+      ],
+      "postStudyOpportunities": [
+        "Fast-track Swedish work permit after obtaining a job offer meeting union standard salary",
+        "Progress to permanent residency after 4 years of work permit status"
+      ],
+      "applicationDeadlines": "First Admission Round: Jan 15 for Autumn semester",
+      "sortOrder": 11,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "finland",
+      "slug": "finland",
+      "name": "Finland",
+      "flag": "🇫🇮",
+      "code": "FI",
+      "region": "Europe",
+      "heroImage": "https://images.unsplash.com/photo-1517411032315-54ef2cb783bb?auto=format&fit=crop&w=1600&q=80",
+      "tagline": "World’s Happiest Country & 2-Year Post-Study Jobseeker Visa",
+      "overview": "Ranked the Happiest Country in the World for 7 consecutive years, Finland offers an egalitarian, student-centered education system. International students enjoy an incredible 2-year post-study residence permit, 30 hours/week working rights, and strong tech ecosystem ties.",
+      "whyStudy": [
+        "Consistently ranked #1 Happiest Country in the World with unbeatable safety and clean air",
+        "Generous 2-year post-study residence permit for job seeking, valid up to 5 years after graduating",
+        "30 hours/week part-time work rights during studies (increased from 25 hours)",
+        "Direct pathway: time spent on a continuous student residence permit counts 50% toward permanent residency",
+        "Leading technology hub in 5G/6G, gaming (Rovio, Supercell), and clean technologies"
+      ],
+      "popularCourses": [
+        "Mobile & 6G Telecommunications",
+        "Game Design & Interactive Technologies",
+        "Clean Energy & Circular Bioeconomy",
+        "International Business Management",
+        "Software Engineering & Cloud Architectures"
+      ],
+      "averageTuition": "€8,000 – €16,000 / year",
+      "livingCosts": "€700 – €1,100 / month",
+      "currency": "EUR (€)",
+      "intakes": [
+        "Autumn (August / September - Primary)",
+        "Spring (January - Limited)"
+      ],
+      "postStudyWork": "2-Year Post-Graduation Jobseeker Residence Permit",
+      "visaSuccessRate": "98.1%",
+      "workWhileStudying": "30 hours per week during term-time",
+      "topUniversityNames": [
+        "University of Helsinki",
+        "Aalto University",
+        "Tampere University",
+        "University of Oulu",
+        "LUT University",
+        "University of Turku"
+      ],
+      "scholarshipsOverview": "Finland Scholarship (funded by Finnish Ministry of Education, covers 100% first-year tuition + €5,000 relocation grant), University Merit Waivers (50–100%).",
+      "visaRequirements": [
+        "Certificate of Admission from Finnish University via Studyinfo.fi",
+        "Proof of financial sustenance (€560/month or €6,720/year)",
+        "Private health insurance policy covering medical treatments up to €40,000–€120,000",
+        "Tuition fee payment receipt"
+      ],
+      "postStudyOpportunities": [
+        "Fast progression to Permanent Residence (P permit) — continuous student permit years count towards the 4-year requirement",
+        "Huge industrial partnerships with Nokia, Wärtsilä, Kone, and game studios"
+      ],
+      "applicationDeadlines": "Joint Application Period: Early January for Autumn semester",
+      "sortOrder": 12,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    }
+  ],
+  "universities": [
+    {
+      "id": "oxford",
+      "slug": "oxford",
+      "name": "University of Oxford",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "city": "Oxford, England",
+      "worldRank": 3,
+      "rankingBadge": "QS World #3 | Times Higher Ed #1",
+      "acceptanceRate": "14.2%",
+      "logo": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+      "overview": "The oldest university in the English-speaking world, Oxford is a collegiate research university with a unique tutorial teaching system. It has educated 30 British prime ministers, 55 Nobel Prize laureates, and 120 Olympic medalists.",
+      "tuition": {
+        "undergraduate": "£28,950 – £44,240 / year",
+        "postgraduate": "£30,050 – £48,500 / year"
+      },
+      "livingCostEstimate": "£1,290 – £1,840 / month",
+      "popularPrograms": [
+        "Philosophy, Politics and Economics (PPE)",
+        "Computer Science & Advanced Software",
+        "MSc Financial Economics (MFE)",
+        "Biomedical Sciences & Genetics",
+        "Bachelor of Civil Law (BCL)"
+      ],
+      "studyFields": [
+        "Business & Economics",
+        "Computer Science",
+        "Law",
+        "Life Sciences",
+        "Humanities"
+      ],
+      "entryRequirements": {
+        "academic": "AAA to A*A*A at A-level (or 38–40 IB points / 90%+ in High School Board exams). For Masters: UK First Class or 2:1 equivalent (3.7+ CGPA).",
+        "english": "IELTS Academic: 7.5 overall with minimum 7.0 in each sub-component (or TOEFL iBT 110).",
+        "standardizedTests": "UCAT, LNAT, MAT, or TSA depending on undergraduate program."
+      },
+      "scholarships": [
+        {
+          "title": "Clarendon Fund Scholarships",
+          "amount": "100% Tuition Fee + Annual Living Grant (£18,622)",
+          "deadline": "December / January admissions deadline",
+          "eligibility": "Outstanding academic merit and research potential; open to all nationalities."
+        },
+        {
+          "title": "Rhodes Scholarship",
+          "amount": "Full university fees + living stipend + flights",
+          "deadline": "Early October",
+          "eligibility": "Exceptional young leaders demonstrating civic commitment and academic brilliance."
+        }
+      ],
+      "intakes": [
+        "October (Michaelmas Term)"
+      ],
+      "highlights": [
+        "World-famous one-on-one tutorial pedagogy",
+        "38 historic constituent colleges with self-governing communities",
+        "Bodleian Library housing over 13 million printed volumes",
+        "Massive global alumni network with direct industry pipelines"
+      ],
+      "officialRep": true,
+      "featured": true,
+      "sortOrder": 1,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "cambridge",
+      "slug": "cambridge",
+      "name": "University of Cambridge",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "city": "Cambridge, England",
+      "worldRank": 2,
+      "rankingBadge": "QS World #2 | Global Top Tier",
+      "acceptanceRate": "15.8%",
+      "logo": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Founded in 1209, Cambridge is a global leader in scientific breakthroughs, mathematics, and humanities. Home to the Cavendish Laboratory and \"Silicon Fen\", Europe’s largest technology cluster.",
+      "tuition": {
+        "undergraduate": "£25,734 – £63,990 / year",
+        "postgraduate": "£27,000 – £45,000 / year"
+      },
+      "livingCostEstimate": "£1,250 – £1,750 / month",
+      "popularPrograms": [
+        "Engineering Tripos",
+        "Natural Sciences Tripos",
+        "Master of Finance (MFin)",
+        "Computer Science",
+        "Law & Legal Studies"
+      ],
+      "studyFields": [
+        "Engineering",
+        "Computer Science",
+        "Natural Sciences",
+        "Finance & Business",
+        "Law"
+      ],
+      "entryRequirements": {
+        "academic": "A*A*A at A-Level (or 40–42 in IB with 776 at Higher Level). Masters: UK First Class Honors or equivalent (85%+ or 3.8+ GPA).",
+        "english": "IELTS 7.5 (minimum 7.0 in all bands) or TOEFL 110 (25+ in all sections).",
+        "standardizedTests": "College-specific written assessments & academic interview."
+      },
+      "scholarships": [
+        {
+          "title": "Gates Cambridge Scholarship",
+          "amount": "Full cost of study + Maintenance allowance (£20,000/yr) + Airfare",
+          "deadline": "Early December",
+          "eligibility": "Outstanding intellectual ability, leadership, and commitment to improving others’ lives."
+        },
+        {
+          "title": "Cambridge Trust International Scholarship",
+          "amount": "Full tuition fee + living stipend",
+          "deadline": "January funding round",
+          "eligibility": "Merit-based for international postgraduate scholars."
+        }
+      ],
+      "intakes": [
+        "October (Michaelmas Term)"
+      ],
+      "highlights": [
+        "121 Nobel Laureates affiliated with the University",
+        "Heart of Europe’s Silicon Fen with over 5,000 tech companies",
+        "Centuries-old collegiate rivalry with Oxford (\"The Varsity Match\")"
+      ],
+      "officialRep": true,
+      "featured": true,
+      "sortOrder": 2,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "imperial",
+      "slug": "imperial",
+      "name": "Imperial College London",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "city": "London, England",
+      "worldRank": 6,
+      "rankingBadge": "QS World #6 | #1 in Europe for STEM",
+      "acceptanceRate": "12.9%",
+      "logo": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Located in the heart of South Kensington, London, Imperial College London is exclusively dedicated to Science, Engineering, Medicine, and Business. Renowned for translating ground-breaking research into enterprise.",
+      "tuition": {
+        "undergraduate": "£35,100 – £45,000 / year",
+        "postgraduate": "£34,000 – £42,500 / year"
+      },
+      "livingCostEstimate": "£1,400 – £2,000 / month (London Zone 1–2)",
+      "popularPrograms": [
+        "MSc Advanced Computing & Machine Learning",
+        "Aeronautical Engineering",
+        "MSc Financial Technology & Quantitative Risk",
+        "Biomedical Engineering",
+        "Imperial MBA"
+      ],
+      "studyFields": [
+        "Engineering",
+        "Computer Science",
+        "Medicine",
+        "Business & Economics",
+        "Natural Sciences"
+      ],
+      "entryRequirements": {
+        "academic": "A*A*A to A*AA in Mathematics and Sciences. For Masters: UK 2:1 or First Class (80%+ / 3.5+ GPA).",
+        "english": "IELTS 7.0 (6.5 minimum in all elements) or Duolingo 125+.",
+        "standardizedTests": "TMUA or ESAT for engineering candidates."
+      },
+      "scholarships": [
+        {
+          "title": "President’s PhD Scholarships",
+          "amount": "Full tuition fee + £25,150 annual tax-free stipend",
+          "deadline": "Rolling round deadlines (Nov, Jan, March)",
+          "eligibility": "High-achieving students across the globe admitted to PhD programs."
+        },
+        {
+          "title": "Imperial Business School Dean’s Excellence Award",
+          "amount": "Up to £20,000 fee reduction",
+          "deadline": "Round 2 MBA deadline",
+          "eligibility": "Demonstrated professional leadership and academic excellence."
+        }
+      ],
+      "intakes": [
+        "September / October"
+      ],
+      "highlights": [
+        "White City Innovation Hub with direct incubator funding for student startups",
+        "Located adjacent to the Science Museum, Natural History Museum, and Hyde Park",
+        "Top average starting salary of any UK university graduate body"
+      ],
+      "officialRep": true,
+      "featured": true,
+      "sortOrder": 3,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "ucl",
+      "slug": "ucl",
+      "name": "University College London (UCL)",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "city": "London, England",
+      "worldRank": 9,
+      "rankingBadge": "QS World #9 | London’s Global University",
+      "acceptanceRate": "15.0%",
+      "logo": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+      "overview": "London’s leading multidisciplinary university, UCL was founded in 1826 as the first university in England to admit students regardless of their religion and the first to admit women on equal terms.",
+      "tuition": {
+        "undergraduate": "£26,200 – £37,500 / year",
+        "postgraduate": "£29,000 – £41,000 / year"
+      },
+      "livingCostEstimate": "£1,350 – £1,950 / month",
+      "popularPrograms": [
+        "MSc Data Science & Public Policy",
+        "Architecture (The Bartlett School)",
+        "MSc Management",
+        "Law (LLM)",
+        "Artificial Intelligence for Sustainable Development"
+      ],
+      "studyFields": [
+        "Architecture",
+        "Computer Science",
+        "Business & Economics",
+        "Law",
+        "Life Sciences"
+      ],
+      "entryRequirements": {
+        "academic": "A*AA – AAB at A level or 36–39 IB points. Masters: Minimum upper second-class Bachelor’s degree (60–65%+ in Indian/US curricula).",
+        "english": "IELTS 7.0–7.5 depending on UCL English Level 1 to 5."
+      },
+      "scholarships": [
+        {
+          "title": "UCL Global Masters Scholarship",
+          "amount": "£15,000 towards tuition",
+          "deadline": "Early May",
+          "eligibility": "Financial need and academic excellence for international students."
+        }
+      ],
+      "intakes": [
+        "September"
+      ],
+      "highlights": [
+        "The Bartlett School of Architecture ranked #1 in the world",
+        "Campus located right in central Bloomsbury, steps from the British Museum"
+      ],
+      "officialRep": true,
+      "featured": true,
+      "sortOrder": 4,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "manchester",
+      "slug": "manchester",
+      "name": "University of Manchester",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "city": "Manchester, England",
+      "worldRank": 32,
+      "rankingBadge": "QS World #32 | Russell Group Leader",
+      "acceptanceRate": "27.0%",
+      "logo": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "overview": "A historic powerhouse of innovation where the atom was first split and graphene was discovered. Manchester is the most targeted university by the UK’s leading graduate employers (High Fliers Research).",
+      "tuition": {
+        "undergraduate": "£24,000 – £34,500 / year",
+        "postgraduate": "£26,000 – £35,000 / year"
+      },
+      "livingCostEstimate": "£950 – £1,300 / month",
+      "popularPrograms": [
+        "MSc Advanced Computer Science",
+        "Alliance Manchester Business School MBA / Finance",
+        "Mechanical & Aerospace Engineering",
+        "Biotechnology & Genomics",
+        "International Development"
+      ],
+      "studyFields": [
+        "Engineering",
+        "Computer Science",
+        "Business & Economics",
+        "Life Sciences",
+        "Humanities"
+      ],
+      "entryRequirements": {
+        "academic": "AAA to ABB at A Level. Masters: UK 2:1 honours degree or international equivalent.",
+        "english": "IELTS 6.5–7.0 (no band less than 6.0)."
+      },
+      "scholarships": [
+        {
+          "title": "Global Futures Scholarship",
+          "amount": "Up to £8,000 tuition fee reduction",
+          "deadline": "End of April",
+          "eligibility": "Awarded to high-achieving international applicants."
+        }
+      ],
+      "intakes": [
+        "September"
+      ],
+      "highlights": [
+        "25 Nobel Laureates associated with the University",
+        "Ranked #1 UK university targeted by top 100 employers",
+        "Vibrant music, arts, and sports culture in dynamic Manchester"
+      ],
+      "officialRep": true,
+      "featured": true,
+      "sortOrder": 5,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "harvard",
+      "slug": "harvard",
+      "name": "Harvard University",
+      "country": "United States",
+      "countrySlug": "usa",
+      "city": "Cambridge, Massachusetts",
+      "worldRank": 4,
+      "rankingBadge": "Ivy League | Global Pioneer",
+      "acceptanceRate": "3.4%",
+      "logo": "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Established in 1636, Harvard is the oldest higher education institution in the United States and member of the prestigious Ivy League. It boasts the world’s largest academic endowment and legendary faculty.",
+      "tuition": {
+        "undergraduate": "$57,261 / year",
+        "postgraduate": "$52,000 – $78,000 / year (HBS / HLS)"
+      },
+      "livingCostEstimate": "$1,800 – $2,600 / month",
+      "popularPrograms": [
+        "Harvard Business School MBA",
+        "Harvard Law School LLM / JD",
+        "MS Computational Science and Engineering (SEAS)",
+        "Master in Public Policy (Kennedy School)",
+        "Biomedical Informatics"
+      ],
+      "studyFields": [
+        "Business & Economics",
+        "Law",
+        "Computer Science",
+        "Medicine",
+        "Humanities"
+      ],
+      "entryRequirements": {
+        "academic": "Near-perfect high school GPA (3.9+ unweighted) or undergraduate transcript (3.8+ GPA / First Class Honours).",
+        "english": "TOEFL iBT 105+ or IELTS 7.5+.",
+        "standardizedTests": "SAT / ACT for undergrad; GRE / GMAT for graduate programs."
+      },
+      "scholarships": [
+        {
+          "title": "Harvard Need-Blind Financial Aid (Undergraduate)",
+          "amount": "100% Demonstrated Need Covered (Free tuition for family income <$85,000)",
+          "deadline": "Regular Decision: Jan 1",
+          "eligibility": "All admitted undergraduate students, including international applicants."
+        }
+      ],
+      "intakes": [
+        "August / September (Fall)"
+      ],
+      "highlights": [
+        "$50+ Billion endowment powering unrivaled lab resources",
+        "Widener Library holding over 20 million items",
+        "Historic Boston-Cambridge collegiate ecosystem"
+      ],
+      "officialRep": false,
+      "featured": true,
+      "sortOrder": 6,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "mit",
+      "slug": "mit",
+      "name": "Massachusetts Institute of Technology (MIT)",
+      "country": "United States",
+      "countrySlug": "usa",
+      "city": "Cambridge, Massachusetts",
+      "worldRank": 1,
+      "rankingBadge": "QS World #1 Globally (13 Consecutive Years)",
+      "acceptanceRate": "3.9%",
+      "logo": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=1200&q=80",
+      "overview": "MIT is the undisputed world leader in science, engineering, and technology innovation. Known for its motto \"Mens et Manus\" (Mind and Hand), MIT fosters audacious problem solvers who transform industries.",
+      "tuition": {
+        "undergraduate": "$59,750 / year",
+        "postgraduate": "$57,000 – $84,000 / year"
+      },
+      "livingCostEstimate": "$1,900 – $2,700 / month",
+      "popularPrograms": [
+        "Electrical Engineering and Computer Science (EECS)",
+        "MIT Sloan Master of Finance & MBA",
+        "Aerospace, Aeronautical & Astronautical Engineering",
+        "Mechanical Engineering",
+        "Artificial Intelligence & Robotics"
+      ],
+      "studyFields": [
+        "Computer Science",
+        "Engineering",
+        "Business & Economics",
+        "Natural Sciences"
+      ],
+      "entryRequirements": {
+        "academic": "Top 1% academic percentile, deep STEM research and Olympiad achievements.",
+        "english": "IELTS 7.5+ or TOEFL 100+.",
+        "standardizedTests": "Mandatory SAT/ACT for UG; GRE for select grad programs."
+      },
+      "scholarships": [
+        {
+          "title": "MIT Need-Based Undergraduate Scholarship",
+          "amount": "Full tuition + living assistance based on family income",
+          "deadline": "February 15",
+          "eligibility": "Need-blind admissions for international applicants."
+        },
+        {
+          "title": "MIT Graduate Research & Teaching Assistantships",
+          "amount": "100% Tuition waiver + Monthly living stipend ($3,500+)",
+          "deadline": "Program application deadline",
+          "eligibility": "Admitted graduate PhD and MS thesis students."
+        }
+      ],
+      "intakes": [
+        "September (Fall)"
+      ],
+      "highlights": [
+        "101 Nobel laureates, 26 Turing Award winners",
+        "Over 30,000 active companies founded by MIT alumni generating $2+ Trillion revenue",
+        "Home to the famous MIT Media Lab and CSAIL"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 7,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "stanford",
+      "slug": "stanford",
+      "name": "Stanford University",
+      "country": "United States",
+      "countrySlug": "usa",
+      "city": "Stanford, California",
+      "worldRank": 5,
+      "rankingBadge": "QS World #5 | Silicon Valley Engine",
+      "acceptanceRate": "3.6%",
+      "logo": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Located in the heart of Silicon Valley, Stanford is one of the world’s leading research and teaching institutions. Stanford alumni have founded Google, Yahoo, Nike, Hewlett-Packard, Sun Microsystems, and Netflix.",
+      "tuition": {
+        "undergraduate": "$61,731 / year",
+        "postgraduate": "$58,000 – $79,000 / year"
+      },
+      "livingCostEstimate": "$2,100 – $2,900 / month",
+      "popularPrograms": [
+        "Computer Science (AI, Systems, Human-Computer Interaction)",
+        "Stanford Graduate School of Business (GSB) MBA",
+        "Bioengineering & Biotechnology",
+        "Symbolic Systems",
+        "Sustainable Energy Sciences"
+      ],
+      "studyFields": [
+        "Computer Science",
+        "Business & Economics",
+        "Engineering",
+        "Life Sciences",
+        "Law"
+      ],
+      "entryRequirements": {
+        "academic": "Unweighted GPA 3.9+, rigorous AP/IB courses, standout entrepreneurial impact.",
+        "english": "TOEFL iBT 100+ (IELTS not preferred for undergraduate).",
+        "standardizedTests": "GRE / GMAT for graduate programs."
+      },
+      "scholarships": [
+        {
+          "title": "Knight-Hennessy Scholars Program",
+          "amount": "Full tuition + living stipend + travel grant for up to 3 years",
+          "deadline": "Early October",
+          "eligibility": "Graduate students with outstanding leadership and civic focus."
+        }
+      ],
+      "intakes": [
+        "September (Fall)"
+      ],
+      "highlights": [
+        "Sprawling 8,180-acre sunlit Mediterranean-style campus",
+        "Unsurpassed access to Silicon Valley venture capital and tech founders",
+        "Home to Stanford d.school (Hasso Plattner Institute of Design)"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 8,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "toronto",
+      "slug": "toronto",
+      "name": "University of Toronto",
+      "country": "Canada",
+      "countrySlug": "canada",
+      "city": "Toronto, Ontario",
+      "worldRank": 21,
+      "rankingBadge": "QS World #21 | #1 in Canada",
+      "acceptanceRate": "43.0%",
+      "logo": "https://images.unsplash.com/photo-1568792923760-d70635a89fa9?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1568792923760-d70635a89fa9?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Canada’s flagship university, U of T has produced four Canadian prime ministers and 10 Nobel laureates. Renowned for its breakthroughs in artificial intelligence (Geoffrey Hinton), stem cells, and the discovery of insulin.",
+      "tuition": {
+        "undergraduate": "CAD $42,000 – $64,000 / year",
+        "postgraduate": "CAD $28,000 – $52,000 / year"
+      },
+      "livingCostEstimate": "CAD $1,400 – $2,100 / month",
+      "popularPrograms": [
+        "MSc Applied Computing (MScAC)",
+        "Rotman School of Management MBA / MFin",
+        "Engineering Science & Robotics",
+        "Life Sciences & Biotechnology",
+        "Global Affairs (Munk School)"
+      ],
+      "studyFields": [
+        "Computer Science",
+        "Business & Economics",
+        "Engineering",
+        "Life Sciences",
+        "Humanities"
+      ],
+      "entryRequirements": {
+        "academic": "Minimum 85%+ in Class 12 / High School (Competitive programs: 92%+). Masters: Mid-B or B+ average in senior years (approx 3.3+ GPA).",
+        "english": "IELTS 6.5 overall (minimum 6.0 in each band) or TOEFL 100."
+      },
+      "scholarships": [
+        {
+          "title": "Lester B. Pearson International Scholarship",
+          "amount": "100% Tuition, books, incidental fees, and full residence support for 4 years",
+          "deadline": "School nomination: Nov 30; Application: Dec 15",
+          "eligibility": "Exceptional academic achievers and creative leaders nominated by their high schools."
+        },
+        {
+          "title": "International Scholar Award",
+          "amount": "Up to CAD $100,000 ($25,000/year renewable)",
+          "deadline": "Automatic consideration upon admission",
+          "eligibility": "High-merit applicants across Arts & Science and Engineering faculties."
+        }
+      ],
+      "intakes": [
+        "September (Fall)"
+      ],
+      "highlights": [
+        "Three vibrant campuses across the Greater Toronto Area (St. George, Mississauga, Scarborough)",
+        "Vector Institute partnership driving global AI development",
+        "Ranked #1 in Canada for graduate employability"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 9,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "mcgill",
+      "slug": "mcgill",
+      "name": "McGill University",
+      "country": "Canada",
+      "countrySlug": "canada",
+      "city": "Montreal, Quebec",
+      "worldRank": 30,
+      "rankingBadge": "QS World #30 | Canada’s Ivy",
+      "acceptanceRate": "38.0%",
+      "logo": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Often referred to as the \"Harvard of Canada\", McGill is situated at the foot of Mount Royal in multicultural Montreal. McGill boasts the highest average entering grades of any Canadian university.",
+      "tuition": {
+        "undergraduate": "CAD $31,000 – $61,000 / year",
+        "postgraduate": "CAD $21,000 – $38,000 / year"
+      },
+      "livingCostEstimate": "CAD $1,100 – $1,600 / month (Montreal is highly affordable)",
+      "popularPrograms": [
+        "Computer Science & Software Engineering",
+        "Desautels Faculty of Management (BCom / MBA)",
+        "Neuroscience & Molecular Biology",
+        "Mechanical Engineering",
+        "Law (BCL / JD)"
+      ],
+      "studyFields": [
+        "Computer Science",
+        "Life Sciences",
+        "Business & Economics",
+        "Engineering",
+        "Law"
+      ],
+      "entryRequirements": {
+        "academic": "High school graduation with 85–92% in prerequisite subjects. Graduate: Minimum 3.2/4.0 GPA.",
+        "english": "IELTS 6.5 (minimum 6.0 in each band) or TOEFL 90 (21 in each component)."
+      },
+      "scholarships": [
+        {
+          "title": "Major Entrance Scholarships",
+          "amount": "CAD $3,000 to $12,000 annually (renewable)",
+          "deadline": "February 1",
+          "eligibility": "Demonstrated top-tier academic excellence and civic leadership."
+        },
+        {
+          "title": "McCall MacBain Scholarships",
+          "amount": "Full tuition and fees + CAD $2,000 monthly living stipend",
+          "deadline": "Late August / September",
+          "eligibility": "Comprehensive scholarship for master’s and professional degree candidates."
+        }
+      ],
+      "intakes": [
+        "September (Fall)"
+      ],
+      "highlights": [
+        "Montreal voted one of the world’s top student cities (QS Best Student Cities)",
+        "Home to 12 Nobel Prize winners and 145 Rhodes Scholars",
+        "Bilingual French/English cultural environment"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 10,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "melbourne",
+      "slug": "melbourne",
+      "name": "The University of Melbourne",
+      "country": "Australia",
+      "countrySlug": "australia",
+      "city": "Melbourne, Victoria",
+      "worldRank": 13,
+      "rankingBadge": "QS World #13 | #1 in Australia",
+      "acceptanceRate": "35.0%",
+      "logo": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Established in 1853, the University of Melbourne is Australia’s #1 ranked university. Its distinctive Melbourne Curriculum provides broad foundation studies followed by specialized graduate degrees.",
+      "tuition": {
+        "undergraduate": "AUD $36,000 – $52,000 / year",
+        "postgraduate": "AUD $38,000 – $55,000 / year"
+      },
+      "livingCostEstimate": "AUD $1,500 – $2,300 / month",
+      "popularPrograms": [
+        "Master of Information Technology",
+        "Melbourne Business School MBA / Master of Management",
+        "Master of Engineering (Software / Civil / Biomedical)",
+        "Bachelor of Biomedicine",
+        "Master of Data Science"
+      ],
+      "studyFields": [
+        "Computer Science",
+        "Business & Economics",
+        "Engineering",
+        "Life Sciences",
+        "Architecture"
+      ],
+      "entryRequirements": {
+        "academic": "Australian ATAR 85–98 equivalent (85%+ CBSE/ISC or 32+ IB). Masters: Equivalent of 65–75%+ WAM from recognized institution.",
+        "english": "IELTS 6.5 overall (no band less than 6.0) or PTE 58."
+      },
+      "scholarships": [
+        {
+          "title": "Melbourne International Undergraduate Scholarship",
+          "amount": "Up to 100% fee remission (valued at up to AUD $140,000)",
+          "deadline": "Automatic assessment upon admission",
+          "eligibility": "High achieving international undergraduate students."
+        },
+        {
+          "title": "Graduate Research Scholarships",
+          "amount": "100% Tuition Fee waiver + AUD $37,000/year living allowance",
+          "deadline": "October 31",
+          "eligibility": "All domestic and international research students."
+        }
+      ],
+      "intakes": [
+        "February (Semester 1)",
+        "July (Semester 2)"
+      ],
+      "highlights": [
+        "Located in Parkville, Melbourne’s renowned biomedical and research precinct",
+        "Parkville campus just 10 minutes from Melbourne CBD",
+        "Member of the prestigious Group of Eight (Go8) and Universitas 21"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 11,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "sydney",
+      "slug": "sydney",
+      "name": "The University of Sydney",
+      "country": "Australia",
+      "countrySlug": "australia",
+      "city": "Sydney, New South Wales",
+      "worldRank": 18,
+      "rankingBadge": "QS World #18 | Top Group of Eight",
+      "acceptanceRate": "30.0%",
+      "logo": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Australia’s first university, founded in 1850. Consistently ranked among the top 20 universities worldwide and ranked #4 globally for graduate employability.",
+      "tuition": {
+        "undergraduate": "AUD $42,000 – $56,000 / year",
+        "postgraduate": "AUD $44,000 – $54,000 / year"
+      },
+      "livingCostEstimate": "AUD $1,600 – $2,400 / month",
+      "popularPrograms": [
+        "Master of Commerce & Business Analytics",
+        "Master of Computer Science (AI and Cloud)",
+        "Sydney Law School LLM",
+        "Biomedical Engineering & Mechatronics",
+        "Master of Architecture"
+      ],
+      "studyFields": [
+        "Business & Economics",
+        "Computer Science",
+        "Engineering",
+        "Law",
+        "Architecture"
+      ],
+      "entryRequirements": {
+        "academic": "Australian ATAR 80–95 equivalent. Masters: Australian Bachelor’s degree or equivalent with minimum credit average (65%+).",
+        "english": "IELTS 7.0 (minimum 6.0 in all bands) or PTE 68."
+      },
+      "scholarships": [
+        {
+          "title": "Vice-Chancellor’s International Scholarships Scheme",
+          "amount": "Up to AUD $40,000 fee contribution",
+          "deadline": "Automatic assessment with offer",
+          "eligibility": "High-ranking international students across all programs."
+        }
+      ],
+      "intakes": [
+        "February (Semester 1)",
+        "July (Semester 2)"
+      ],
+      "highlights": [
+        "Iconic neo-Gothic Quadrangle campus ranked among the world’s most beautiful",
+        "Ranked #4 globally for graduate employability (QS Graduate Employability Rankings)",
+        "Over 250 student clubs and societies"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 12,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "tum",
+      "slug": "tum",
+      "name": "Technical University of Munich (TUM)",
+      "country": "Germany",
+      "countrySlug": "germany",
+      "city": "Munich, Bavaria",
+      "worldRank": 28,
+      "rankingBadge": "QS World #28 | #1 in Germany",
+      "acceptanceRate": "8.0%",
+      "logo": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1200&q=80",
+      "overview": "TUM is Germany’s premier university of technology and entrepreneurship. Renowned for its direct partnerships with BMW, Audi, Siemens, and Airbus, producing game-changing tech leaders.",
+      "tuition": {
+        "undergraduate": "€2,000 – €3,000 / semester (International)",
+        "postgraduate": "€4,000 – €6,000 / semester"
+      },
+      "livingCostEstimate": "€1,000 – €1,400 / month (Munich)",
+      "popularPrograms": [
+        "MSc Informatics / Computer Science",
+        "MSc Automotive Engineering",
+        "MSc Robotics, Cognition, Intelligence",
+        "Master in Management & Technology (TUM-BWL)",
+        "MSc Aerospace Engineering"
+      ],
+      "studyFields": [
+        "Engineering",
+        "Computer Science",
+        "Business & Economics",
+        "Natural Sciences"
+      ],
+      "entryRequirements": {
+        "academic": "German Abitur equivalent or 4-year Bachelor’s in related engineering/STEM discipline with German Grade 1.5–2.0 (equivalent to 80%+).",
+        "english": "IELTS 6.5+ or TOEFL 88+ (For English tracks); TestDaF for German tracks.",
+        "standardizedTests": "TUM Aptitude Assessment / Academic Interview."
+      },
+      "scholarships": [
+        {
+          "title": "Deutschlandstipendium",
+          "amount": "€300/month living subsidy",
+          "deadline": "July 15",
+          "eligibility": "Awarded to both incoming and current international students based on merit and engagement."
+        }
+      ],
+      "intakes": [
+        "October (Winter Semester - Primary)",
+        "April (Summer Semester)"
+      ],
+      "highlights": [
+        "18 Nobel Prize laureates affiliated with TUM",
+        "Unmatched corporate sponsorship with BMW, Siemens, and Google Munich Hub",
+        "Vibrant startup incubator \"UnternehmerTUM\", Europe’s largest center for founders"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 13,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "trinity-dublin",
+      "slug": "trinity-dublin",
+      "name": "Trinity College Dublin",
+      "country": "Ireland",
+      "countrySlug": "ireland",
+      "city": "Dublin, Ireland",
+      "worldRank": 81,
+      "rankingBadge": "QS World #81 | #1 in Ireland",
+      "acceptanceRate": "33.0%",
+      "logo": "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=200&q=80",
+      "image": "https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?auto=format&fit=crop&w=1200&q=80",
+      "overview": "Founded in 1592 by Queen Elizabeth I, Trinity is Ireland’s historic flagship university. Located right in the heart of Dublin, adjacent to Silicon Docks and the European headquarters of major tech companies.",
+      "tuition": {
+        "undergraduate": "€20,600 – €37,600 / year",
+        "postgraduate": "€18,000 – €27,000 / year"
+      },
+      "livingCostEstimate": "€1,200 – €1,700 / month",
+      "popularPrograms": [
+        "MSc Computer Science (Data Science / Future Networked Systems)",
+        "Trinity Business School MSc Finance & Marketing",
+        "Immunology & Global Health",
+        "LLM International and Comparative Law",
+        "Bioengineering"
+      ],
+      "studyFields": [
+        "Computer Science",
+        "Business & Economics",
+        "Life Sciences",
+        "Law",
+        "Engineering"
+      ],
+      "entryRequirements": {
+        "academic": "Class 12 / High School: 85–90%+. Masters: Minimum 2:1 Honours degree (60–65%+ in Indian/US curricula).",
+        "english": "IELTS 6.5 overall (no band below 6.0) or TOEFL 90."
+      },
+      "scholarships": [
+        {
+          "title": "Global Excellence Postgraduate Scholarship",
+          "amount": "€2,000 to €5,000 tuition fee deduction",
+          "deadline": "March 31",
+          "eligibility": "Assessed on academic achievement and potential contribution to Trinity."
+        }
+      ],
+      "intakes": [
+        "September (Autumn)"
+      ],
+      "highlights": [
+        "Famous 18th-century Old Library housing the Book of Kells",
+        "Ranked #1 in Europe for producing venture-backed entrepreneurs for 7 straight years",
+        "Located 15 minutes walk from Google, Meta, and Twitter EMEA headquarters"
+      ],
+      "officialRep": true,
+      "featured": false,
+      "sortOrder": 14,
+      "published": true,
+      "website": null,
+      "seoTitle": null,
+      "seoDescription": null
+    }
+  ],
+  "services": [
+    {
+      "id": "university-selection",
+      "slug": "university-selection",
+      "title": "University Selection & Profiling",
+      "shortDesc": "Data-driven profiling matching your academic transcripts, career trajectory, budget, and immigration goals with top-tier universities.",
+      "fullDesc": "Choosing the right institution is the single most critical decision of your international education journey. Our seasoned senior counselors conduct a multi-dimensional assessment of your GPA, test scores, research background, financial parameters, and post-study career goals. We categorize universities into \"Dream\", \"Target\", and \"Safe\" tiers, maximizing your chance of receiving prestigious offers while guaranteeing high admission certainty.",
+      "icon": "Compass",
+      "benefits": [
+        "Comprehensive profile evaluation by Ivy League & Russell Group alumni",
+        "Realistic Dream-Target-Safe university shortlist (6 to 10 universities)",
+        "Course syllabus matching against future employment and PR regulations",
+        "Tuition fee versus ROI comparison matrices"
+      ],
+      "deliverables": [
+        "Personalized University Strategy Dossier",
+        "Direct admissions likelihood calculation report",
+        "Comprehensive intake timelines & prerequisite checklists"
+      ],
+      "targetAudience": "High school seniors, undergraduate students, and working professionals planning abroad studies.",
+      "turnaroundTime": "3–5 business days",
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "admission-guidance",
+      "slug": "admission-guidance",
+      "title": "Admission Guidance & Global Strategy",
+      "shortDesc": "End-to-end strategic oversight through every phase of the university admissions cycle to secure fast-track offer letters.",
+      "fullDesc": "Top universities review tens of thousands of international applications each cycle. Standing out requires strategic narrative framing, immaculate document presentation, and strict adherence to institutional guidelines. We guide you through prerequisite fulfillment, credit transfer evaluations, portfolio reviews, and referee selection to craft an undeniable candidate profile.",
+      "icon": "GraduationCap",
+      "benefits": [
+        "Dedicated Senior Admissions Advisor overseeing your portfolio",
+        "Faculty-specific advice on departmental expectations",
+        "Guidance on securing high-impact Academic Letters of Recommendation (LORs)",
+        "Direct liaison with university international recruitment offices"
+      ],
+      "deliverables": [
+        "Application timeline roadmap with strict internal milestone deadlines",
+        "Curated Academic CV formatted to international hiring/academic standards",
+        "Letters of Recommendation (LOR) structure and faculty briefing kits"
+      ],
+      "targetAudience": "Prospective Bachelor’s, Master’s, MBA, and PhD scholars.",
+      "turnaroundTime": "Ongoing support throughout application cycles",
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "application-processing",
+      "slug": "application-processing",
+      "title": "Application Processing & Portal Management",
+      "shortDesc": "Flawless submission across UCAS, Common App, OUAC, Uni-Assist, and direct institutional portals with zero errors.",
+      "fullDesc": "A single administrative mistake or miscategorized document can result in an instant rejection or months of delay. Our specialized application processing unit audits every document, verifies credential notarizations, formats transcripts, and executes portal submissions with 100% precision.",
+      "icon": "FileCheck",
+      "benefits": [
+        "Zero-error guarantee on portal submissions (UCAS, Common App, Uni-Assist, Direct Portals)",
+        "Fee waiver access for select partner universities saving $100–$500 in fees",
+        "Expedited offer letter follow-ups through official university partnerships",
+        "Real-time application status dashboard tracking every stage"
+      ],
+      "deliverables": [
+        "Complete portal submission confirmation packages",
+        "Offer letter analysis and conditional offer fulfillment management",
+        "Confirmation of Acceptance for Studies (CAS) / I-20 / CoE tracking"
+      ],
+      "targetAudience": "Students ready to submit applications across UK, USA, Canada, Australia, and Europe.",
+      "turnaroundTime": "24–48 hours for document dispatch upon file readiness",
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "scholarship-guidance",
+      "slug": "scholarship-guidance",
+      "title": "Scholarship Guidance & Financial Aid",
+      "shortDesc": "Identify and apply for merit bursaries, government scholarships, and departmental fellowships to minimize study costs.",
+      "fullDesc": "International education is a major investment, but millions in scholarships go unclaimed every year due to lack of student awareness. Our financial aid team tracks over 1,500 active scholarships, including prestigious awards like Chevening, Fulbright, DAAD, Erasmus+, and university-specific merit waivers reducing tuition by 20% to 100%.",
+      "icon": "Award",
+      "benefits": [
+        "Access to exclusive institutional partner bursaries (up to £10,000 / $15,000)",
+        "Assistance with competitive scholarship essays and diversity statements",
+        "Need-based financial aid profile guidance (CSS Profile, ISFAA)",
+        "Graduate assistantship (TA/RA) application strategies for STEM students"
+      ],
+      "deliverables": [
+        "Personalized scholarship matrix with eligibility criteria and deadlines",
+        "Edited and polished scholarship motivational essays",
+        "Guidance on educational loan sanction letters with competitive interest rates"
+      ],
+      "targetAudience": "High-merit students and students seeking financial sponsorship.",
+      "turnaroundTime": "1–2 weeks prior to scholarship deadlines",
+      "sortOrder": 4,
+      "active": true
+    },
+    {
+      "id": "visa-consultancy",
+      "slug": "visa-consultancy",
+      "title": "Visa Consultancy & Mock Interviews",
+      "shortDesc": "Industry-leading 98.6% visa approval record with certified immigration advisors and rigorous mock interview simulations.",
+      "fullDesc": "Securing your offer letter is only half the battle; obtaining your student visa requires strict compliance with immigration laws, foolproof financial documentation, and convincing communication during embassy interviews. Our licensed visa specialists prepare your financial portfolio and conduct realistic one-on-one mock interviews.",
+      "icon": "Stamp",
+      "benefits": [
+        "98.6% verified visa success rate across 20+ countries",
+        "Full financial dossier vetting (bank statements, tax returns, sponsor affidavits, GIC/Blocked Accounts)",
+        "One-on-one mock interviews simulating US F-1 embassy officers and UKVI credibility checks",
+        "Immediate crisis management and emergency appointment scheduling"
+      ],
+      "deliverables": [
+        "Complete visa application file with indexed supporting evidence",
+        "Statement of Purpose for Visa (SOP) tailored to immigration officer standards",
+        "3 recorded mock interview sessions with corrective feedback"
+      ],
+      "targetAudience": "All offer holders preparing for student visa filings.",
+      "turnaroundTime": "3–7 days from offer letter reception",
+      "sortOrder": 5,
+      "active": true
+    },
+    {
+      "id": "sop-essay-assistance",
+      "slug": "sop-essay-assistance",
+      "title": "SOP & Personal Statement Assistance",
+      "shortDesc": "Compelling, plagiarism-free storytelling that transforms your background into an unforgettable admissions essay.",
+      "fullDesc": "Admissions committees read thousands of essays; generic templates get rejected instantly. Our team of native English editors and Oxbridge/Ivy League writing coaches help you unearth your authentic story, articulate your academic passions, and explain any career gaps or anomalies with compelling professionalism.",
+      "icon": "PenTool",
+      "benefits": [
+        "One-on-one brainstorming call to discover your unique voice and narrative angle",
+        "Rigorous multi-round structural, grammatical, and thematic editing",
+        "Strict zero-AI generation, zero-plagiarism originality policy (with Turnitin report)",
+        "Alignment with specific department professors and curriculum focal points"
+      ],
+      "deliverables": [
+        "Master Statement of Purpose (SOP) tailored to your primary target",
+        "Adaptive modular paragraphs for university-specific prompt questions",
+        "Official Turnitin plagiarism and AI authenticity certificate"
+      ],
+      "targetAudience": "Applicants seeking top-tier admissions and scholarship consideration.",
+      "turnaroundTime": "5–7 business days per draft cycle",
+      "sortOrder": 6,
+      "active": true
+    },
+    {
+      "id": "test-guidance",
+      "slug": "ielts-test-guidance",
+      "title": "IELTS / PTE / English Test Guidance",
+      "shortDesc": "Targeted preparation strategies, diagnostic mocks, and score booster techniques to achieve Band 7.5+ or PTE 70+.",
+      "fullDesc": "English language proficiency is non-negotiable for university admissions and visa approvals. Whether you need to crack IELTS Academic, PTE Academic, TOEFL iBT, or Duolingo English Test, our certified trainers provide diagnostic benchmarking, customized study plans, and proven test-taking hacks.",
+      "icon": "Languages",
+      "benefits": [
+        "Comprehensive diagnostic test identifying your speaking, writing, and listening gaps",
+        "Speaking mock evaluations with certified IELTS examiners",
+        "Scoring templates for Academic Task 1 & Task 2 essay writing",
+        "Strategies for test waiver requests at select UK and US institutions"
+      ],
+      "deliverables": [
+        "Personalized 4-week or 8-week test prep roadmap",
+        "Access to 20+ computer-delivered full-length practice tests",
+        "Detailed analytical score improvement feedback reports"
+      ],
+      "targetAudience": "Students preparing to take or retake English language certifications.",
+      "turnaroundTime": "Flexible 2 to 8 week learning tracks",
+      "sortOrder": 7,
+      "active": true
+    },
+    {
+      "id": "accommodation-guidance",
+      "slug": "accommodation-guidance",
+      "title": "Student Accommodation Guidance",
+      "shortDesc": "Safe, verified, and budget-friendly student housing near campus with vetted private providers and on-campus dorms.",
+      "fullDesc": "Securing clean, safe, and reasonably priced housing in international cities like London, New York, Melbourne, or Toronto can be daunting. We partner directly with leading Purpose-Built Student Accommodation (PBSA) providers like AmberStudent, Student.com, and Unite Students to book verified studios, ensuite rooms, and shared apartments before you land.",
+      "icon": "Building2",
+      "benefits": [
+        "Exclusive student booking discounts and waived security deposit deals",
+        "Direct comparison between On-Campus Halls vs. Off-Campus PBSA apartments",
+        "Lease agreement verification preventing rental fraud and scams",
+        "Roommate matching service connecting you with peers from your intake"
+      ],
+      "deliverables": [
+        "Curated accommodation shortlists within 15–30 minutes transit from campus",
+        "Confirmed tenancy agreement assistance with utility bill inclusions",
+        "Neighborhood safety and commute route analysis"
+      ],
+      "targetAudience": "All admitted students preparing for relocation.",
+      "turnaroundTime": "2–4 days after offer confirmation",
+      "sortOrder": 8,
+      "active": true
+    },
+    {
+      "id": "pre-departure-guidance",
+      "slug": "pre-departure-guidance",
+      "title": "Pre-Departure Guidance & Briefings",
+      "shortDesc": "Comprehensive relocation readiness: packing lists, foreign exchange cards, student SIM cards, and transit protocols.",
+      "fullDesc": "Transitioning to a foreign country involves countless practical logistics. Our interactive Pre-Departure Briefings prepare you for international flights, customs border control, currency exchange, opening a local bank account, getting student discounts, and adapting to cultural nuances.",
+      "icon": "PlaneTakeoff",
+      "benefits": [
+        "Live interactive pre-departure briefings with current international alumni",
+        "Discounted student flight bookings with 40kg+ baggage allowances",
+        "Pre-activated international eSIM cards with instant data on arrival",
+        "Foreign exchange (Forex) student travel cards with zero mark-up fees"
+      ],
+      "deliverables": [
+        "Comprehensive Pre-Departure Handbook (Customized by country)",
+        "Immigration Border Control Checklist & Port of Entry dossier",
+        "Local student banking and national health registration guides"
+      ],
+      "targetAudience": "Students with approved visas preparing to travel.",
+      "turnaroundTime": "Organized 4–6 weeks prior to intake commencement",
+      "sortOrder": 9,
+      "active": true
+    },
+    {
+      "id": "post-admission-support",
+      "slug": "post-admission-support",
+      "title": "Post-Admission & On-Arrival Support",
+      "shortDesc": "Airport pickups, local city orientation, part-time job hunting strategies, and long-term alumni mentorship.",
+      "fullDesc": "Our relationship does not end when your flight takes off. We maintain an active overseas alumni network across the UK, North America, Australia, and Europe to assist you upon landing with airport pickups, city transit cards, NIN/SIN registration, and CV formatting for part-time job applications.",
+      "icon": "HeartHandshake",
+      "benefits": [
+        "Airport meet-and-greet coordination and emergency on-ground helpline",
+        "Assistance with local tax numbers (NIN in UK, SIN in Canada, TFN in Australia)",
+        "Part-time job search workshops (hospitality, retail, campus tutoring)",
+        "Access to local city WhatsApp groups with fellow senior students"
+      ],
+      "deliverables": [
+        "On-ground arrival survival kit and metro transit setup",
+        "International CV & cover letter formatted for local part-time hiring",
+        "Invitation to regional student meetups and networking dinners"
+      ],
+      "targetAudience": "Newly arrived international scholars in host countries.",
+      "turnaroundTime": "Available throughout your first semester abroad",
+      "sortOrder": 10,
+      "active": true
+    }
+  ],
+  "successStories": [
+    {
+      "id": "story-1",
+      "studentName": "Aarav Patel",
+      "studentPhoto": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "B.Tech in Computer Engineering (CGPA 8.6)",
+      "cgpa": "8.6 / 10.0",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "university": "Imperial College London",
+      "universitySlug": "imperial",
+      "program": "MSc Advanced Computing & AI",
+      "degreeLevel": "Masters",
+      "visaResult": "UK Student Visa Approved in 9 Days",
+      "visaGrantedDate": "August 2025",
+      "intake": "Fall 2025",
+      "scholarshipAmount": "£10,000 Dean’s Merit Award",
+      "testimonial": "Applying to Imperial was my dream, but my profile lacked international research papers. The team helped me frame my final year project into a compelling SOP and guided my professor on the recommendation letter. The visa filing was so smooth that my priority visa was granted in just 9 days!",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-2",
+      "studentName": "Priya Sharma",
+      "studentPhoto": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "B.Sc Economics (CGPA 3.8 / 4.0)",
+      "cgpa": "3.8 / 4.0",
+      "country": "United States",
+      "countrySlug": "usa",
+      "university": "Columbia University",
+      "universitySlug": "columbia",
+      "program": "MS in Financial Economics",
+      "degreeLevel": "Masters",
+      "visaResult": "US F-1 Visa Approved (Single Attempt)",
+      "visaGrantedDate": "June 2025",
+      "intake": "Fall 2025",
+      "scholarshipAmount": "$24,000 Academic Fellowship",
+      "testimonial": "I was terrified of the US visa interview after hearing about high rejection rates. AuraGlobal arranged three rigorous mock interviews with an ex-visa officer that dismantled all my anxiety. When the officer asked about my post-study plans, my answer was crisp, authentic, and approved right away!",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-3",
+      "studentName": "Tariq Al-Mansoor",
+      "studentPhoto": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "Bachelor of Commerce (CGPA 8.1)",
+      "cgpa": "8.1 / 10.0",
+      "country": "Canada",
+      "countrySlug": "canada",
+      "university": "University of Toronto",
+      "universitySlug": "toronto",
+      "program": "Master of Management Analytics (Rotman)",
+      "degreeLevel": "Masters",
+      "visaResult": "Canada Study Permit Granted",
+      "visaGrantedDate": "July 2025",
+      "intake": "Fall 2025",
+      "scholarshipAmount": "CAD $15,000 Entrance Scholarship",
+      "testimonial": "Despite strict Canadian student caps and the new PAL requirement, the team managed every deadline flawlessly. They reviewed my financial assets, helped my father structure the sponsorship letter, and kept me calm through the entire waiting period. Truly world-class expertise.",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-4",
+      "studentName": "Mei Lin Chen",
+      "studentPhoto": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "IB Diploma (38 points)",
+      "cgpa": "38 / 45 IB",
+      "country": "Australia",
+      "countrySlug": "australia",
+      "university": "The University of Melbourne",
+      "universitySlug": "melbourne",
+      "program": "Bachelor of Biomedicine",
+      "degreeLevel": "Bachelors",
+      "visaResult": "Subclass 500 Visa Approved",
+      "visaGrantedDate": "January 2025",
+      "intake": "Semester 1 2025",
+      "scholarshipAmount": "AUD $10,000 International Award",
+      "testimonial": "From shortlisting Australian Group of Eight universities to drafting the Genuine Student (GS) statement, the guidance was exceptional. I received unconditional offers from both Melbourne and Sydney, and the team helped me choose the best pre-med pathway.",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-5",
+      "studentName": "Zainab Fatima",
+      "studentPhoto": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "B.E. Mechanical Engineering (CGPA 8.9)",
+      "cgpa": "8.9 / 10.0",
+      "country": "Germany",
+      "countrySlug": "germany",
+      "university": "Technical University of Munich (TUM)",
+      "universitySlug": "tum",
+      "program": "MSc Robotics, Cognition, Intelligence",
+      "degreeLevel": "Masters",
+      "visaResult": "German National Visa Granted",
+      "visaGrantedDate": "September 2025",
+      "intake": "Winter Semester 2025",
+      "scholarshipAmount": "Tuition-Free Public Education + €300/mo Stipend",
+      "testimonial": "Navigating the German uni-assist portal, APS certification, and Blocked Account requirements felt like a maze. AuraGlobal’s Europe team handled the APS dispatch in record time and prepped me for TUM’s technical admissions interview. Getting into TUM for robotics is a dream come true!",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-6",
+      "studentName": "David O’Connor",
+      "studentPhoto": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "B.Sc Computer Science (CGPA 7.9)",
+      "cgpa": "7.9 / 10.0",
+      "country": "Ireland",
+      "countrySlug": "ireland",
+      "university": "Trinity College Dublin",
+      "universitySlug": "trinity-dublin",
+      "program": "MSc Computer Science (Data Science)",
+      "degreeLevel": "Masters",
+      "visaResult": "Irish Study Visa Approved in 3 Weeks",
+      "visaGrantedDate": "June 2025",
+      "intake": "Autumn 2025",
+      "scholarshipAmount": "€4,000 Global Excellence Award",
+      "testimonial": "I had a gap year after my Bachelor’s and was worried it would hurt my chances. My advisor helped me document my freelance engineering projects and client testimonials into a strong portfolio. Today I am studying right next to Google and Meta in Dublin!",
+      "rating": 5,
+      "featured": false,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-7",
+      "studentName": "Ananya Deshmukh",
+      "studentPhoto": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "Class 12 CBSE (96.4% in Science)",
+      "cgpa": "96.4%",
+      "country": "United Kingdom",
+      "countrySlug": "uk",
+      "university": "University of Oxford",
+      "universitySlug": "oxford",
+      "program": "BA Philosophy, Politics and Economics (PPE)",
+      "degreeLevel": "Bachelors",
+      "visaResult": "UK Student Visa Approved",
+      "visaGrantedDate": "August 2025",
+      "intake": "October 2025",
+      "scholarshipAmount": "College Bursary Award",
+      "testimonial": "Cracking the Oxford TSA test and tutorial interview required intellectual agility that standard tutoring simply does not provide. AuraGlobal connected me with an Oxford alumnus who put me through rigorous mock academic tutorials. Their belief in me made all the difference.",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    },
+    {
+      "id": "story-8",
+      "studentName": "Rohan Verma",
+      "studentPhoto": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80",
+      "previousEducation": "B.Tech Electrical & Electronics (CGPA 8.4)",
+      "cgpa": "8.4 / 10.0",
+      "country": "United States",
+      "countrySlug": "usa",
+      "university": "Massachusetts Institute of Technology (MIT)",
+      "universitySlug": "mit",
+      "program": "MS in Electrical Engineering and Computer Science",
+      "degreeLevel": "Masters",
+      "visaResult": "US F-1 Visa Approved with Full RA Stipend",
+      "visaGrantedDate": "May 2025",
+      "intake": "Fall 2025",
+      "scholarshipAmount": "Full Tuition Waiver + $3,800/mo RA Stipend",
+      "testimonial": "Securing a funded graduate research assistantship at MIT felt almost impossible. My counselor worked relentlessly with me on contacting professors, refining research proposals, and perfecting my SOP. Getting a 100% funded offer was beyond my wildest imagination.",
+      "rating": 5,
+      "featured": true,
+      "published": true,
+      "videoUrl": null
+    }
+  ],
+  "videos": [
+    {
+      "id": "vid-1",
+      "studentName": "Siddharth Rao",
+      "university": "Imperial College London",
+      "country": "United Kingdom",
+      "program": "MSc Financial Technology",
+      "thumbnailUrl": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=800&q=80",
+      "videoEmbedUrl": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+      "duration": "2:45",
+      "quote": "\"How AuraGlobal turned my 3 rejected university applications into an Imperial College offer & £10k scholarship.\"",
+      "visaGrantedYear": "2025",
+      "category": "Success Stories",
+      "featured": true,
+      "published": true
+    },
+    {
+      "id": "vid-2",
+      "studentName": "Natasha Romanova",
+      "university": "University of Toronto",
+      "country": "Canada",
+      "program": "Master of Data Science",
+      "thumbnailUrl": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=800&q=80",
+      "videoEmbedUrl": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+      "duration": "3:12",
+      "quote": "\"My step-by-step Canada study permit journey during the 2025 quota cap — why professional help is vital.\"",
+      "visaGrantedYear": "2025",
+      "category": "Success Stories",
+      "featured": true,
+      "published": true
+    },
+    {
+      "id": "vid-3",
+      "studentName": "Kavya Krishnan",
+      "university": "The University of Melbourne",
+      "country": "Australia",
+      "program": "Master of Information Systems",
+      "thumbnailUrl": "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=800&q=80",
+      "videoEmbedUrl": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+      "duration": "1:58",
+      "quote": "\"From IELTS Band 6.5 to 8.0, and getting unconditional offers from Melbourne and Sydney.\"",
+      "visaGrantedYear": "2025",
+      "category": "Success Stories",
+      "featured": true,
+      "published": true
+    },
+    {
+      "id": "vid-4",
+      "studentName": "Farhan Zaidi",
+      "university": "Technical University of Munich",
+      "country": "Germany",
+      "program": "MSc Automotive Engineering",
+      "thumbnailUrl": "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80",
+      "videoEmbedUrl": "https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ",
+      "duration": "4:05",
+      "quote": "\"Studying in Germany tuition-free: How I tackled APS verification, Blocked Account, and Munich housing.\"",
+      "visaGrantedYear": "2025",
+      "category": "Success Stories",
+      "featured": true,
+      "published": true
+    }
+  ],
+  "blogPosts": [
+    {
+      "id": "post-1",
+      "slug": "uk-graduate-route-visa-complete-guide-2026",
+      "title": "The UK Graduate Route Visa: Comprehensive 2026/2027 Policy Guide for International Students",
+      "excerpt": "Everything you need to know about post-study work rights in the UK: 2-year work permit eligibility, transitioning to Skilled Worker sponsorship, and recent Home Office updates.",
+      "content": "\n### Understanding the UK Graduate Route\n\nThe Graduate Route is an unsponsored post-study work visa that allows international students who have successfully completed an undergraduate or master’s degree at a UK higher education provider with a track record of compliance to stay in the UK for at least **two years** (or **three years** for PhD graduates).\n\n#### Key Highlights of the Policy:\n1. **No Job Offer Required**: You do not need a job offer or company sponsorship to apply. You are free to work in almost any role, gain valuable career experience, or work as a freelancer.\n2. **Flexible Career Exploration**: You can switch employers freely without notifying the Home Office or applying for a new visa.\n3. **Transition to Skilled Worker Visa**: When you secure a qualifying permanent job paying the relevant salary threshold, you can switch seamlessly onto a Skilled Worker Visa directly from within the UK.\n\n#### What Are the Eligibility Criteria?\nTo qualify for the Graduate Route, you must:\n* Currently be in the UK on a valid Student Visa.\n* Have studied a UK bachelor’s degree, postgraduate degree, or other eligible course for a minimum period of time.\n* Have your education provider notify the Home Office that you have completed your qualification before your Student Visa expires.\n\n#### Essential Tips for Prospective Scholars\n* **Plan Your Finances**: The visa application fee is currently £822, plus the Immigration Health Surcharge (IHS) of £1,035 per year (£2,070 total for 2 years).\n* **Network Early**: Begin attending university career fairs, corporate networking dinners, and alumni roundtables during your second term.\n* **Leverage the 1-Year Master's Advantage**: A 1-year UK master's saves an entire year of living expenses while delivering the exact same 2-year post-study work entitlement.\n    ",
+      "category": "Visa Updates",
+      "author": {
+        "name": "Eleanor Vance",
+        "role": "Head of UK & Europe Immigration",
+        "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
+      },
+      "publishedAt": "February 18, 2026",
+      "readTime": "6 min read",
+      "coverImage": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=1200&q=80",
+      "tags": [
+        "UK Visa",
+        "Graduate Route",
+        "Post-Study Work",
+        "UK Education"
+      ],
+      "featured": true,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "post-2",
+      "slug": "how-to-win-chevening-fulbright-scholarships",
+      "title": "How to Win Fully Funded Chevening and Fulbright Scholarships: Insider Advice from Former Reviewers",
+      "excerpt": "Master the art of leadership essays, civic responsibility framing, and academic interview techniques to secure 100% funded global education grants.",
+      "content": "\n### Unlocking Fully Funded International Scholarships\n\nSecuring prestigious government-funded awards like the UK’s **Chevening Scholarship** or the US **Fulbright Foreign Student Program** is the holy grail for ambitious students. With acceptance rates typically hovering between 2% and 4%, success demands strategic storytelling and demonstrable leadership impact.\n\n#### 1. Deconstructing the Leadership Question\nBoth Chevening and Fulbright place immense weight on demonstrable leadership. Scholarship committees are not seeking passive observers; they seek catalytic change-makers who will return to their home countries to drive systemic progress.\n* **Use the STAR Method**: Frame your experiences through Situation, Task, Action, and Result.\n* **Demonstrate Influence, Not Just Authority**: You do not need to be a CEO. Highlight how you influenced peers, resolved community bottlenecks, or pioneered an initiative against resistance.\n\n#### 2. The Power of Networking\nChevening explicitly asks for your networking approach. Detail how you cultivate professional relationships, how you maintain them across borders, and how you will leverage the global scholar network to forge partnerships between your home country and the host nation.\n\n#### 3. Defining a Concrete 5-Year Career Trajectory\nVague aspirations (\"I want to help underprivileged communities\") lead to instant rejections. Articulate tangible milestones:\n* Year 1–2: Post-graduation role at a specific national policy agency or multilateral institution.\n* Year 3–5: Launching a measurable health or tech program impacting identified beneficiaries.\n    ",
+      "category": "Scholarships",
+      "author": {
+        "name": "Dr. Alistair Sterling",
+        "role": "Senior Academic Strategist & Former Oxbridge Fellow",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+      },
+      "publishedAt": "January 24, 2026",
+      "readTime": "8 min read",
+      "coverImage": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80",
+      "tags": [
+        "Scholarships",
+        "Chevening",
+        "Fulbright",
+        "Financial Aid"
+      ],
+      "featured": true,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "post-3",
+      "slug": "cracking-ielts-band-8-proven-study-plan",
+      "title": "Cracking IELTS Academic Band 8.0: A Step-by-Step 4-Week Blueprint",
+      "excerpt": "Proven frameworks for Task 2 essays, speaking fluency without stuttering, and avoiding listening trapdoors in the computer-delivered exam.",
+      "content": "\n### How to Reach Band 8.0 in 30 Days\n\nAchieving a Band 7.5 or 8.0 in IELTS Academic unlocks admission to Oxford, Cambridge, Harvard, and top medical and law faculties worldwide. Here is the daily discipline followed by our top-scoring students.\n\n#### Reading: The Skim and Scan Fallacy\nMany students fail Reading because they attempt to read the entire 900-word passage before inspecting questions. Instead:\n* Spend 60 seconds reading only the title, subheadings, and first sentence of each paragraph to build a mental map.\n* Pay ruthless attention to qualifying words like *always*, *sometimes*, *predominantly*, and *unlikely*. These words almost always differentiate 'True' from 'Not Given'.\n\n#### Writing Task 2: The 4-Paragraph Rule\nDo not over-complicate your essay structure:\n1. **Introduction (40 words)**: Paraphrase the prompt + explicit thesis statement stating your position.\n2. **Body Paragraph 1 (90 words)**: Primary argument + concrete real-world evidence/example.\n3. **Body Paragraph 2 (90 words)**: Counter-perspective or secondary argument + analytical elaboration.\n4. **Conclusion (35 words)**: Summary of main findings + forward-looking closing thought.\n\n#### Speaking: Coherence Over Complex Vocabulary\nExaminers penalize forced idioms used out of context. Focus on cadence, pausing naturally at thought-boundaries, and expanding answers with personal anecdotes using connectors like *consequently*, *in retrospection*, and *predominantly*.\n    ",
+      "category": "IELTS",
+      "author": {
+        "name": "Sarah Jenkins",
+        "role": "Lead English Language Coach (CELTA Certified)",
+        "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=200&q=80"
+      },
+      "publishedAt": "February 5, 2026",
+      "readTime": "5 min read",
+      "coverImage": "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1200&q=80",
+      "tags": [
+        "IELTS",
+        "Language Prep",
+        "Study Tips",
+        "Band 8"
+      ],
+      "featured": false,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "post-4",
+      "slug": "studying-in-germany-tuition-free-guide",
+      "title": "Studying in Germany for Free: The Comprehensive Guide to Public Universities and APS Certification",
+      "excerpt": "How international students can study for zero tuition fees at German world-class universities, manage Blocked Accounts, and secure post-study residency.",
+      "content": "\n### Zero Tuition Fees at World-Class Institutions\n\nGermany remains one of the few developed economies where high-ranking higher education is treated as a public good rather than a commercial product. At institutions like TU Munich, Heidelberg, and RWTH Aachen, international students pay only nominal administrative semester fees (€150–€350).\n\n#### 1. What is the APS Certificate?\nThe Academic Evaluation Centre (APS) verifies the authenticity of academic documents for students from select countries prior to visa filing.\n* Ensure you obtain your APS certificate early, as processing times can range from 4 to 8 weeks during peak intake cycles.\n\n#### 2. Managing the German Blocked Account (Sperrkonto)\nTo prove financial self-sufficiency for the National Visa (Type D), you must deposit the statutory maintenance amount (approx. €11,904) into a regulated German blocked account provider (such as Expatrio, Coracle, or Fintiba).\n* This sum is released to your German current account in monthly installments of €992 once you arrive.\n\n#### 3. Post-Study Work: The 18-Month Jobseeker Visa\nUpon graduation, you are granted an 18-month residence permit to secure full-time qualified employment. Once employed in your field, you can swiftly transition to an **EU Blue Card**, offering permanent residency within as little as 21 months with basic German proficiency (B1 level).\n    ",
+      "category": "Country Guides",
+      "author": {
+        "name": "Marcus Weber",
+        "role": "Director of European Admissions",
+        "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80"
+      },
+      "publishedAt": "January 12, 2026",
+      "readTime": "7 min read",
+      "coverImage": "https://images.unsplash.com/photo-1467269204594-9661b134dd2b?auto=format&fit=crop&w=1200&q=80",
+      "tags": [
+        "Germany",
+        "Free Tuition",
+        "Blocked Account",
+        "TUM"
+      ],
+      "featured": false,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "post-5",
+      "slug": "canada-student-visa-regulations-2026-caps-pal",
+      "title": "Canada Study Permits in 2026: Navigating Provincial Attestation Letters (PAL) and the New Caps",
+      "excerpt": "Detailed analysis of IRCC’s latest student visa regulations, Provincial Attestation Letters, PGWP eligibility rules, and master’s degree exemptions.",
+      "content": "\n### Understanding the New Canadian Immigration Landscape\n\nOver the past two years, Immigration, Refugees and Citizenship Canada (IRCC) introduced strategic reforms to preserve the integrity of the international student ecosystem. For serious, genuine scholars targeting public universities and master’s degrees, the opportunities remain exceptional.\n\n#### Master’s and Doctoral Degree Safeguards\n* **Exemptions**: Master’s and PhD graduates are protected and prioritized under the revised framework.\n* **3-Year PGWP**: Graduates of master’s programs—even those lasting only 16 to 20 months—remain eligible for a full 3-year Post-Graduation Work Permit (PGWP).\n* **Spousal Open Work Permits**: Spouses of master’s and doctoral degree students continue to qualify for open work permits.\n\n#### What is the Provincial Attestation Letter (PAL)?\nMost undergraduate and college diploma applicants must now obtain a Provincial Attestation Letter (PAL) issued by the province through their Designated Learning Institution (DLI) before submitting their study permit application.\n* Public universities receive the lion's share of provincial allocations, making university pathways significantly safer than private vocational colleges.\n    ",
+      "category": "Visa Updates",
+      "author": {
+        "name": "Eleanor Vance",
+        "role": "Head of Immigration Affairs",
+        "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80"
+      },
+      "publishedAt": "March 1, 2026",
+      "readTime": "6 min read",
+      "coverImage": "https://images.unsplash.com/photo-1517935703635-271905454b30?auto=format&fit=crop&w=1200&q=80",
+      "tags": [
+        "Canada Visa",
+        "IRCC",
+        "PGWP",
+        "Study Permit"
+      ],
+      "featured": false,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    },
+    {
+      "id": "post-6",
+      "slug": "sop-writing-masterclass-ivy-league-oxbridge",
+      "title": "Statement of Purpose (SOP) Masterclass: What Top Admissions Committees Actually Look For",
+      "excerpt": "Transform your academic essay from a dry resume recap into a captivating narrative that compels admissions officers to hit \"Accept\".",
+      "content": "\n### The Difference Between Rejection and Acceptance\n\nMost students view the Statement of Purpose as an expanded CV written in paragraph form. This is the single quickest way to get rejected by Ivy League, Russell Group, and Group of Eight admissions committees.\n\n#### 1. The \"Hook\" That Works\nAvoid starting with childhood anecdotes like: *\"Ever since I dismantled my first computer at age six, I knew I was destined to be a software engineer.\"* Admissions officers have read this sentence ten thousand times.\n* Start with an intellectual question, a laboratory challenge, or an industry paradox that you encountered during your undergraduate capstone or professional career that currently keeps you up at night.\n\n#### 2. Specificity With Faculty and Labs\nDemonstrate that you have done your homework. Mention:\n* Specific research centers at the university (e.g., the Oxford Internet Institute, or MIT CSAIL).\n* Recent papers published by departmental professors and how your intended thesis or capstone directly interfaces with their ongoing research.\n\n#### 3. Explaining Anomalies Gracefully\nIf you had a dip in grades during a semester due to personal adversity or illness, address it directly, without excuses, in two sentences: acknowledge the circumstance, explain the corrective actions you instituted, and highlight your subsequent upward academic trajectory.\n    ",
+      "category": "University Guides",
+      "author": {
+        "name": "Dr. Alistair Sterling",
+        "role": "Senior Academic Strategist",
+        "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80"
+      },
+      "publishedAt": "February 28, 2026",
+      "readTime": "7 min read",
+      "coverImage": "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80",
+      "tags": [
+        "SOP",
+        "Personal Statement",
+        "Ivy League",
+        "Oxbridge"
+      ],
+      "featured": false,
+      "published": true,
+      "seoTitle": null,
+      "seoDescription": null
+    }
+  ],
+  "teamMembers": [
+    {
+      "id": "team-1",
+      "name": "Dr. Evelyn Montgomery",
+      "role": "Founder & Chief Executive Officer",
+      "experience": "18+ Years in International Higher Education",
+      "credentials": [
+        "PhD in International Education (Oxford)",
+        "Former Admissions Dean",
+        "PIER Certified (QEAC)"
+      ],
+      "image": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80",
+      "bio": "Former senior admissions evaluator at top UK and Canadian institutions with nearly two decades of experience guiding over 4,000 students to world-class academic institutions.",
+      "specializations": [
+        "Oxbridge Admissions",
+        "Institutional Strategy",
+        "Global Scholarships"
+      ],
+      "sortOrder": 1,
+      "active": true
+    },
+    {
+      "id": "team-2",
+      "name": "Julian Vance, Esq.",
+      "role": "Director of Global Immigration & Visa Compliance",
+      "experience": "14+ Years in Immigration Law",
+      "credentials": [
+        "LL.M. International Law (LSE)",
+        "OISC Level 3 Regulated",
+        "Former Consular Officer Advisor"
+      ],
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80",
+      "bio": "Specialist in student visa jurisprudence across the UK, USA, Australia, and the Schengen zone. Oversees our 98.6% visa approval audit pipeline and interview preparation clinics.",
+      "specializations": [
+        "US F-1 Visa Credibility",
+        "UKVI CAS Compliance",
+        "Financial Dossier Auditing"
+      ],
+      "sortOrder": 2,
+      "active": true
+    },
+    {
+      "id": "team-3",
+      "name": "Samantha Rao",
+      "role": "Head of North American Admissions (USA & Canada)",
+      "experience": "11+ Years in US/Canada College Counseling",
+      "credentials": [
+        "M.Ed. Higher Education (Harvard)",
+        "NACAC Member",
+        "AIRC Certified Counselor"
+      ],
+      "image": "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80",
+      "bio": "Helped place hundreds of scholars into Ivy League and top Canadian universities with over $8 million in institutional scholarships and graduate assistantships.",
+      "specializations": [
+        "Ivy League Admissions",
+        "STEM OPT Extensions",
+        "Common App Strategy"
+      ],
+      "sortOrder": 3,
+      "active": true
+    },
+    {
+      "id": "team-4",
+      "name": "Henrik Lindqvist",
+      "role": "Head of European & Nordic Higher Education",
+      "experience": "9+ Years in Continental European Admissions",
+      "credentials": [
+        "M.Sc. Munich (TUM)",
+        "DAAD Alumni Network",
+        "Study in Sweden Certified"
+      ],
+      "image": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80",
+      "bio": "Pioneered zero-tuition German and regional Italian scholarship pathways for international students, with unmatched expertise in APS certification and uni-assist processing.",
+      "specializations": [
+        "Germany Tuition-Free Admissions",
+        "APS Procedures",
+        "DSU Scholarships Italy"
+      ],
+      "sortOrder": 4,
+      "active": true
+    }
+  ],
+  "faqs": [
+    {
+      "id": "faq-1",
+      "question": "When should I start preparing my study abroad applications?",
+      "answer": "We strongly recommend beginning your preparation 10 to 14 months prior to your intended intake. For example, for a September/Fall intake, you should start university shortlisting, English test preparation (IELTS/TOEFL/PTE), and drafting your Statement of Purpose (SOP) by October to December of the previous year. Most top-tier universities open applications in September/October and begin offering places on a rolling basis.",
+      "category": "Admissions",
+      "sortOrder": 1,
+      "published": true
+    },
+    {
+      "id": "faq-2",
+      "question": "Can I apply for a Master’s degree if I have a 3-year Bachelor’s degree?",
+      "answer": "Yes! In the UK, Australia, Ireland, and New Zealand, a 3-year Bachelor’s degree (such as BA, BSc, BCom, or BBA) from a recognized university is directly accepted for Master’s programs. For the USA and Canada, while traditional universities traditionally required 16 years of education (4-year degree), hundreds of leading institutions now accept 3-year degrees evaluated by WES (World Education Services) with high NAAC grade accreditations.",
+      "category": "Admissions",
+      "sortOrder": 2,
+      "published": true
+    },
+    {
+      "id": "faq-3",
+      "question": "What is your visa success rate and how do you ensure high approval?",
+      "answer": "AuraGlobal maintains an audited 98.6% visa success rate across 20+ countries. We achieve this through meticulous document indexing: we verify that financial assets comply precisely with embassy regulations (such as UKVI 28-day holding rules, German Blocked Accounts, and US liquid funds), conduct rigorous 1-on-1 mock interviews simulating real visa officer queries, and draft airtight Statements of Purpose for visas that clearly prove non-immigrant intent.",
+      "category": "Visa",
+      "sortOrder": 3,
+      "published": true
+    },
+    {
+      "id": "faq-4",
+      "question": "How much money do I need to show in my bank account for a student visa?",
+      "answer": "This varies strictly by destination: For the UK, you must show remaining first-year tuition plus 9 months of living expenses (£12,006 outside London, £14,805 inside London) held continuously in a verified bank account for at least 28 consecutive days. For the USA, you need liquid funds covering the first full year listed on your I-20 (typically $35,000–$65,000). For Germany, you must deposit the statutory blocked amount (€11,904). Our financial advisory team gives you exact, tailored checklists.",
+      "category": "Visa",
+      "sortOrder": 4,
+      "published": true
+    },
+    {
+      "id": "faq-5",
+      "question": "Are full-ride scholarships available for international students?",
+      "answer": "Yes, full-ride scholarships exist through several avenues: government programs like Chevening (UK), Fulbright (USA), DAAD (Germany), and Australia Awards cover 100% of tuition plus monthly living allowances and airfare. Additionally, top US universities offer need-blind financial aid covering 100% of demonstrated financial need. For STEM graduate students, Research Assistantships (RA) and Teaching Assistantships (TA) frequently provide full tuition waivers plus monthly stipends.",
+      "category": "Scholarships",
+      "sortOrder": 5,
+      "published": true
+    },
+    {
+      "id": "faq-6",
+      "question": "Does AuraGlobal charge an extra fee to assist with scholarship applications?",
+      "answer": "No. Comprehensive scholarship guidance and essay alignment are integrated directly into our core advisory packages. We actively identify every institutional bursary, merit award, and competitive grant you are eligible for as part of your application strategy.",
+      "category": "Scholarships",
+      "sortOrder": 6,
+      "published": true
+    },
+    {
+      "id": "faq-7",
+      "question": "Can I study abroad without IELTS or TOEFL?",
+      "answer": "Yes, in several circumstances! Many UK, Australian, and European universities grant English Language Proficiency Waivers if you scored 70%+ in High School English (CBSE/ISC/State Boards) or completed your previous degree at an institution where the medium of instruction (MOI) was English. Duolingo English Test (DET) and PTE Academic are also widely accepted alternative computerized exams.",
+      "category": "IELTS",
+      "sortOrder": 7,
+      "published": true
+    },
+    {
+      "id": "faq-8",
+      "question": "What is the minimum IELTS score required for top universities?",
+      "answer": "Most leading universities require an overall IELTS Academic band score of 6.5 with no individual band below 6.0 for Master’s programs. Highly competitive institutions like Oxford, Cambridge, Imperial, Harvard, and Columbia typically demand Band 7.0 to 7.5 with minimum 6.5 or 7.0 in each sub-component (Listening, Reading, Writing, Speaking).",
+      "category": "IELTS",
+      "sortOrder": 8,
+      "published": true
+    },
+    {
+      "id": "faq-9",
+      "question": "What are your consultancy charges for students?",
+      "answer": "Our initial comprehensive profile assessment and strategy consultation are 100% FREE. For standard partner university applications across the UK, Australia, Canada, and Europe, our core admission processing is completely free of charge as we are officially funded university representatives. For bespoke Ivy League, Oxbridge, and elite PhD/Scholarship coaching, we offer transparent, flat-fee premium mentoring packages with zero hidden costs.",
+      "category": "Fees",
+      "sortOrder": 9,
+      "published": true
+    },
+    {
+      "id": "faq-10",
+      "question": "How do you help me choose the right university?",
+      "answer": "We deploy a scientific matching methodology evaluating your academic GPA, test scores, target specialization, career aspirations, budgetary boundaries, and post-study work visa ambitions. We construct a balanced portfolio of 6 to 10 universities categorized into \"Dream\" (ambitious top-tier), \"Target\" (strong alignment), and \"Safe\" (guaranteed admission and scholarship likelihood) tiers.",
+      "category": "Universities",
+      "sortOrder": 10,
+      "published": true
+    },
+    {
+      "id": "faq-11",
+      "question": "Do you help students find housing before they travel?",
+      "answer": "Absolutely. We partner with the world’s leading Purpose-Built Student Accommodation (PBSA) providers—including AmberStudent, Student.com, and Unite Students—to help you compare, tour virtually, and legally secure private studios, ensuite apartments, or university on-campus halls with zero booking fees and student cancellation protections.",
+      "category": "Accommodation",
+      "sortOrder": 11,
+      "published": true
+    },
+    {
+      "id": "faq-12",
+      "question": "Can I apply if my final year university results are still pending?",
+      "answer": "Yes! You can apply with your 5th or 6th semester provisional transcripts. Universities will issue a \"Conditional Offer Letter\" securing your seat. Once your final semester marks and degree certificate are published, your offer converts into an Unconditional Offer Letter, allowing you to proceed with your CAS/I-20 and visa application.",
+      "category": "Applications",
+      "sortOrder": 12,
+      "published": true
+    }
+  ],
+  "leads": [
+    {
+      "id": "lead_1791138857156",
+      "fullName": "Bilal Ahmed",
+      "email": "bilal.ahmed@example.com",
+      "phone": "+923015556677",
+      "currentCountry": null,
+      "targetCountry": "United States",
+      "studyLevel": "Bachelors",
+      "program": null,
+      "academicScore": null,
+      "englishTest": null,
+      "message": "Booked appointment for 2026-10-20 at 03:00 PM - 03:30 PM (Visa & Compliance Consultation)",
+      "sourcePage": "/book-appointment",
+      "status": "new",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:17.000Z",
+      "updatedAt": "2026-10-04T18:34:17.000Z"
+    },
+    {
+      "id": "lead-1",
+      "fullName": "Alexander Wright",
+      "email": "alex.wright@example.com",
+      "phone": "+44 7700 900542",
+      "currentCountry": "United Kingdom",
+      "targetCountry": "United States",
+      "studyLevel": "Masters",
+      "program": "MS Computer Science (AI Track)",
+      "academicScore": "First Class Honours (GPA 3.8)",
+      "englishTest": "Native / Exempt",
+      "message": "Interested in Fall 2027 applications to Stanford and Columbia with potential RA funding.",
+      "sourcePage": "/contact",
+      "status": "new",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:03.000Z",
+      "updatedAt": "2026-10-04T18:34:03.000Z"
+    },
+    {
+      "id": "lead-2",
+      "fullName": "Fatima Al-Zahra",
+      "email": "fatima.zahra@example.com",
+      "phone": "+971 50 123 4567",
+      "currentCountry": "United Arab Emirates",
+      "targetCountry": "United Kingdom",
+      "studyLevel": "Masters",
+      "program": "MSc Financial Technology & Banking",
+      "academicScore": "84% (B.Com)",
+      "englishTest": "IELTS Band 7.5",
+      "message": "Looking for 1-year master courses in London and scholarship guidance.",
+      "sourcePage": "/eligibility-calculator",
+      "status": "qualified",
+      "notes": "Followed up via WhatsApp. High merit candidate for Imperial and UCL.",
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:03.000Z",
+      "updatedAt": "2026-10-04T18:34:03.000Z"
+    },
+    {
+      "id": "lead-3",
+      "fullName": "Rajesh Patel",
+      "email": "rajesh.patel@example.com",
+      "phone": "+91 98200 12345",
+      "currentCountry": "India",
+      "targetCountry": "Germany",
+      "studyLevel": "Masters",
+      "program": "MSc Automotive Engineering",
+      "academicScore": "8.8 / 10 CGPA (B.E. Mechanical)",
+      "englishTest": "IELTS Band 7.0",
+      "message": "Need help with TUM admissions and APS certificate verification.",
+      "sourcePage": "/destinations/germany",
+      "status": "contacted",
+      "notes": "Requested document checklist sent.",
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:03.000Z",
+      "updatedAt": "2026-10-04T18:34:03.000Z"
+    },
+    {
+      "id": "lead-4",
+      "fullName": "Chloe Dupont",
+      "email": "chloe.dupont@example.com",
+      "phone": "+33 6 12 34 56 78",
+      "currentCountry": "France",
+      "targetCountry": "Canada",
+      "studyLevel": "Bachelors",
+      "program": "Bachelor of Commerce / Business",
+      "academicScore": "French Baccalaureate (16/20)",
+      "englishTest": null,
+      "message": "Planning to enroll at McGill or Toronto.",
+      "sourcePage": "/universities/mcgill",
+      "status": "follow_up",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:03.000Z",
+      "updatedAt": "2026-10-04T18:34:03.000Z"
+    },
+    {
+      "id": "lead_1791129708974_ttysq",
+      "fullName": "John Test Doe",
+      "email": "johndoe@test.com",
+      "phone": "+447000111222",
+      "currentCountry": "Not Specified",
+      "targetCountry": "Canada",
+      "studyLevel": "Masters",
+      "program": null,
+      "academicScore": null,
+      "englishTest": null,
+      "message": "Test inquiry from public form",
+      "sourcePage": "/contact",
+      "status": "new",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:03.000Z",
+      "updatedAt": "2026-10-04T18:34:03.000Z"
+    },
+    {
+      "id": "lead_1791138843711_ia8gn",
+      "fullName": "Zainab Bibi",
+      "email": "zainab.bibi@example.com",
+      "phone": "+923331122334",
+      "currentCountry": "Not Specified",
+      "targetCountry": "Germany",
+      "studyLevel": "Masters",
+      "program": "Robotics Engineering",
+      "academicScore": null,
+      "englishTest": null,
+      "message": null,
+      "sourcePage": "/contact",
+      "status": "new",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:34:03.000Z",
+      "updatedAt": "2026-10-04T18:34:03.000Z"
+    },
+    {
+      "id": "test_lead_1791138640013",
+      "fullName": "Hamza Khan",
+      "email": "hamza.khan@test.com",
+      "phone": "+92 300 1234567",
+      "currentCountry": "Pakistan",
+      "targetCountry": "United Kingdom",
+      "studyLevel": "Masters",
+      "program": "MSc Data Science",
+      "academicScore": "3.6 CGPA",
+      "englishTest": "IELTS 7.5",
+      "message": "Looking for full scholarship universities in UK.",
+      "sourcePage": "/eligibility-calculator",
+      "status": "new",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:30:40.000Z",
+      "updatedAt": "2026-10-04T18:30:40.000Z"
+    },
+    {
+      "id": "test_lead_1791138623379",
+      "fullName": "Hamza Khan",
+      "email": "hamza.khan@test.com",
+      "phone": "+92 300 1234567",
+      "currentCountry": "Pakistan",
+      "targetCountry": "United Kingdom",
+      "studyLevel": "Masters",
+      "program": "MSc Data Science",
+      "academicScore": "3.6 CGPA",
+      "englishTest": "IELTS 7.5",
+      "message": "Looking for full scholarship universities in UK.",
+      "sourcePage": "/eligibility-calculator",
+      "status": "new",
+      "notes": null,
+      "assignedTo": null,
+      "createdAt": "2026-10-04T18:30:23.000Z",
+      "updatedAt": "2026-10-04T18:30:23.000Z"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "apt-1",
+      "fullName": "Alexander Wright",
+      "email": "alex.wright@example.com",
+      "phone": "+44 7700 900542",
+      "whatsapp": null,
+      "targetCountry": "United States",
+      "studyLevel": "Masters",
+      "consultationType": "University Selection & Profiling",
+      "preferredDate": "2026-10-06",
+      "preferredTime": "11:00 AM – 11:30 AM",
+      "message": "Stanford & Columbia MS Computer Science strategy call.",
+      "status": "confirmed",
+      "notes": "Assigned to Samantha Rao (US Lead).",
+      "meetingLink": "https://meet.google.com/aur-aglb-edu",
+      "createdAt": "2026-10-04T18:34:17.000Z",
+      "updatedAt": "2026-10-04T18:34:17.000Z"
+    },
+    {
+      "id": "apt-2",
+      "fullName": "Tanya Sharma",
+      "email": "tanya.sharma@example.com",
+      "phone": "+91 98111 22334",
+      "whatsapp": null,
+      "targetCountry": "United Kingdom",
+      "studyLevel": "Masters",
+      "consultationType": "Free Initial Profile Evaluation",
+      "preferredDate": "2026-10-07",
+      "preferredTime": "02:00 PM – 02:30 PM",
+      "message": "Oxford & Cambridge master admissions feasibility.",
+      "status": "pending",
+      "notes": null,
+      "meetingLink": null,
+      "createdAt": "2026-10-04T18:34:17.000Z",
+      "updatedAt": "2026-10-04T18:34:17.000Z"
+    },
+    {
+      "id": "apt-3",
+      "fullName": "Marcus Becker",
+      "email": "marcus.b@example.de",
+      "phone": "+49 170 1234567",
+      "whatsapp": null,
+      "targetCountry": "Australia",
+      "studyLevel": "Masters",
+      "consultationType": "Visa & Compliance Consultation",
+      "preferredDate": "2026-10-08",
+      "preferredTime": "03:30 PM – 04:00 PM",
+      "message": "Subclass 500 Visa documentation review.",
+      "status": "confirmed",
+      "notes": null,
+      "meetingLink": "https://meet.google.com/aur-visa-oz",
+      "createdAt": "2026-10-04T18:34:17.000Z",
+      "updatedAt": "2026-10-04T18:34:17.000Z"
+    },
+    {
+      "id": "apt_1791129918592_1emqd",
+      "fullName": "Jane Test Smith",
+      "email": "janesmith@test.com",
+      "phone": "+14165551234",
+      "whatsapp": "+14165551234",
+      "targetCountry": "United States",
+      "studyLevel": "Undergraduate",
+      "consultationType": "University Selection & Profiling",
+      "preferredDate": "2026-10-15",
+      "preferredTime": "02:00 PM",
+      "message": "Need advice on Ivy League apps",
+      "status": "pending",
+      "notes": null,
+      "meetingLink": "https://meet.google.com/aur-aglb-edu",
+      "createdAt": "2026-10-04T18:34:17.000Z",
+      "updatedAt": "2026-10-04T18:34:17.000Z"
+    },
+    {
+      "id": "apt_1791138857144_y9ba1",
+      "fullName": "Bilal Ahmed",
+      "email": "bilal.ahmed@example.com",
+      "phone": "+923015556677",
+      "whatsapp": "+923015556677",
+      "targetCountry": "United States",
+      "studyLevel": "Bachelors",
+      "consultationType": "Visa & Compliance Consultation",
+      "preferredDate": "2026-10-20",
+      "preferredTime": "03:00 PM - 03:30 PM",
+      "message": null,
+      "status": "pending",
+      "notes": null,
+      "meetingLink": "https://meet.google.com/aur-aglb-edu",
+      "createdAt": "2026-10-04T18:34:17.000Z",
+      "updatedAt": "2026-10-04T18:34:17.000Z"
+    },
+    {
+      "id": "test_apt_1791138640023",
+      "fullName": "Amina Tariq",
+      "email": "amina.tariq@test.com",
+      "phone": "+92 321 9876543",
+      "whatsapp": "+92 321 9876543",
+      "targetCountry": "Canada",
+      "studyLevel": "Bachelors",
+      "consultationType": "Free Initial Profile Evaluation",
+      "preferredDate": "2026-10-15",
+      "preferredTime": "11:00 AM – 11:30 AM",
+      "message": "Admission guidance for University of Toronto and McGill.",
+      "status": "pending",
+      "notes": null,
+      "meetingLink": null,
+      "createdAt": "2026-10-04T18:30:40.000Z",
+      "updatedAt": "2026-10-04T18:30:40.000Z"
+    },
+    {
+      "id": "test_apt_1791138623390",
+      "fullName": "Amina Tariq",
+      "email": "amina.tariq@test.com",
+      "phone": "+92 321 9876543",
+      "whatsapp": "+92 321 9876543",
+      "targetCountry": "Canada",
+      "studyLevel": "Bachelors",
+      "consultationType": "Free Initial Profile Evaluation",
+      "preferredDate": "2026-10-15",
+      "preferredTime": "11:00 AM – 11:30 AM",
+      "message": "Admission guidance for University of Toronto and McGill.",
+      "status": "pending",
+      "notes": null,
+      "meetingLink": null,
+      "createdAt": "2026-10-04T18:30:23.000Z",
+      "updatedAt": "2026-10-04T18:30:23.000Z"
+    }
+  ],
+  "media": [
+    {
+      "id": "med_1791181249874_p15w",
+      "name": "Screenshot 2026-10-05 112040.png",
+      "url": "/uploads/Screenshot_2026-10-05_112040_1791181249868.png",
+      "category": "team",
+      "sizeBytes": 26514,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-05T06:20:49.000Z"
+    },
+    {
+      "id": "med_1791178438069_e30x",
+      "name": "FCC Global Education Logo (1).png",
+      "url": "/uploads/FCC_Global_Education_Logo__1__1791178438060.png",
+      "category": "general",
+      "sizeBytes": 888590,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-05T05:33:58.000Z"
+    },
+    {
+      "id": "med_1791178431525_75b6",
+      "name": "FCC Global Education Logo (1).png",
+      "url": "/uploads/FCC_Global_Education_Logo__1__1791178431513.png",
+      "category": "general",
+      "sizeBytes": 888590,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-05T05:33:51.000Z"
+    },
+    {
+      "id": "med_1791173099011_uqnr",
+      "name": "FCC Global Education Logo (1).png",
+      "url": "/uploads/FCC_Global_Education_Logo__1__1791173099002.png",
+      "category": "general",
+      "sizeBytes": 888590,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-05T04:04:59.000Z"
+    },
+    {
+      "id": "med_1791173041161_x4op",
+      "name": "FCC Global Education Logo (1).png",
+      "url": "/uploads/FCC_Global_Education_Logo__1__1791173041145.png",
+      "category": "general",
+      "sizeBytes": 888590,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-05T04:04:01.000Z"
+    }
+  ],
+  "customPages": [
+    {
+      "id": "page-terms",
+      "slug": "terms-and-conditions",
+      "title": "Terms & Conditions",
+      "heroImage": "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=1200",
+      "content": "### Terms & Conditions\n\nAll advisory and admissions consultancy terms of engagement.",
+      "published": true,
+      "seoTitle": "Terms & Conditions | AuraGlobal Education",
+      "seoDescription": "Official terms and conditions of AuraGlobal Education.",
+      "updatedAt": "2026-10-04T18:26:17.000Z"
+    },
+    {
+      "id": "page-privacy",
+      "slug": "privacy-policy",
+      "title": "Privacy Policy",
+      "heroImage": "https://images.unsplash.com/photo-1450133064473-71024230f91b?q=80&w=1200",
+      "content": "### AuraGlobal Education - Privacy Policy\n\nWe prioritize student privacy and comply with global GDPR regulations.",
+      "published": true,
+      "seoTitle": "Privacy Policy | AuraGlobal Education",
+      "seoDescription": "Official privacy policy of AuraGlobal Education Consultants.",
+      "updatedAt": "2026-10-04T18:26:17.000Z"
+    }
+  ],
+  "appointmentSettings": {
+    "availableDays": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "workingHoursStart": "10:00 AM",
+    "workingHoursEnd": "06:00 PM",
+    "slotDurationMinutes": 30,
+    "timeZone": "Europe/London (GMT)",
+    "defaultMeetingLink": "https://meet.google.com/aur-aglb-edu",
+    "consultationTypes": [
+      "Free Initial Profile Evaluation",
+      "University Selection & Profiling",
+      "Visa & Compliance Consultation",
+      "Scholarship & Financial Aid Strategy"
+    ]
+  },
+  "emailSettings": {
+    "senderName": "AuraGlobal Admissions",
+    "senderEmail": "admissions@auraglobal.com",
+    "replyToEmail": "support@auraglobal.com",
+    "smtpHost": "smtp.mailtrap.io",
+    "smtpPort": 587,
+    "adminNotificationEmail": "admin@auraglobal.com"
+  },
+  "footerSettings": {
+    "companyDescription": "AuraGlobal is a premier global education consultancy guiding students toward top-tier university placements and visa approvals.",
+    "disclaimer": "Official partner and authorized recruitment representative for leading institutions in the UK, USA, Canada, Australia, and Europe.",
+    "copyright": "© 2026 AuraGlobal Education Consultants. All rights reserved.",
+    "newsletterText": "Subscribe to get bi-weekly university deadline reminders and scholarship alerts.",
+    "quickLinks": [
+      {
+        "name": "About AuraGlobal",
+        "href": "/about"
+      },
+      {
+        "name": "Admissions Services",
+        "href": "/services"
+      },
+      {
+        "name": "Student Visa Guidance",
+        "href": "/visa-success"
+      },
+      {
+        "name": "Success Stories",
+        "href": "/success-stories"
+      },
+      {
+        "name": "FAQ & Help",
+        "href": "/faq"
+      },
+      {
+        "name": "Book Consultation",
+        "href": "/book-appointment"
+      }
+    ],
+    "destinations": [
+      {
+        "name": "Study in UK",
+        "href": "/destinations/uk"
+      },
+      {
+        "name": "Study in USA",
+        "href": "/destinations/usa"
+      },
+      {
+        "name": "Study in Canada",
+        "href": "/destinations/canada"
+      },
+      {
+        "name": "Study in Australia",
+        "href": "/destinations/australia"
+      },
+      {
+        "name": "Study in Germany",
+        "href": "/destinations/germany"
+      },
+      {
+        "name": "Study in Ireland",
+        "href": "/destinations/ireland"
+      }
+    ],
+    "services": [
+      {
+        "name": "Profile Evaluation",
+        "href": "/services#profile-evaluation"
+      },
+      {
+        "name": "University Profiling",
+        "href": "/services#university-selection"
+      },
+      {
+        "name": "SOP & Essay Editing",
+        "href": "/services#sop-editing"
+      },
+      {
+        "name": "Visa Documentation",
+        "href": "/services#visa-guidance"
+      },
+      {
+        "name": "Mock Interviews",
+        "href": "/services#mock-interviews"
+      },
+      {
+        "name": "Pre-Departure Briefing",
+        "href": "/services#pre-departure"
+      }
+    ]
+  },
+  "generalSettings": {
+    "companyName": "FCC Global Education",
+    "tagline": "World-Class Study Abroad Counseling",
+    "logoUrl": "/uploads/FCC_Global_Education_Logo__1__1791173099002.png",
+    "phone": "+44 (0) 20 7946 0912",
+    "whatsapp": "+447946091200",
+    "email": "admissions@auraglobal.com",
+    "address": "London, UK",
+    "officeHours": "09:00 - 18:00",
+    "googleMapsUrl": "https://maps.google.com/?q=Berkeley+Square+House+London",
+    "websiteUrl": "https://auraglobal.com",
+    "shortDescription": "Premier international education consultancy facilitating admissions to top-ranked institutions across 12 countries.",
+    "copyrightText": "© 2026 AuraGlobal Education Consultants. All rights reserved.",
+    "mapsUrl": "https://maps.google.com"
+  },
+  "homepageSettings": {
+    "hero": {
+      "badge": "British Council & PIER Certified Global Education Counselors",
+      "title": "Your Global Education Journey Starts Here ?",
+      "subtitle": "Expert guidance, university admissions, visa support, and personalized counseling to help you study at leading universities around the world.",
+      "primaryCtaText": "Book a Free Consultation",
+      "primaryCtaUrl": "/book-appointment",
+      "secondaryCtaUrl": "/destinations",
+      "heroImage": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1000&q=80"
+    },
+    "stats": [
+      {
+        "number": "5,000+",
+        "label": "Students Placed"
+      },
+      {
+        "number": "98.6%",
+        "label": "Visa Approval Rate"
+      },
+      {
+        "number": "120+",
+        "label": "Partner Universities"
+      },
+      {
+        "number": "$14.2M+",
+        "label": "Scholarships Secured"
+      }
+    ],
+    "sections": [
+      {
+        "id": "hero",
+        "name": "Hero Banner",
+        "enabled": true,
+        "order": 1
+      },
+      {
+        "id": "marquee",
+        "name": "Partner University Ticker",
+        "enabled": true,
+        "order": 2
+      },
+      {
+        "id": "pathway",
+        "name": "4-Step Journey Pathway",
+        "enabled": true,
+        "order": 3
+      },
+      {
+        "id": "destinations",
+        "name": "Study Destinations Showcase",
+        "enabled": true,
+        "order": 4
+      },
+      {
+        "id": "services",
+        "name": "Services Portfolio",
+        "enabled": true,
+        "order": 5
+      },
+      {
+        "id": "universities",
+        "name": "Top Universities Spotlight",
+        "enabled": true,
+        "order": 6
+      },
+      {
+        "id": "calculator",
+        "name": "Admission & Visa Calculator",
+        "enabled": true,
+        "order": 7
+      },
+      {
+        "id": "stories",
+        "name": "Success Stories & Videos",
+        "enabled": true,
+        "order": 8
+      },
+      {
+        "id": "why_us",
+        "name": "Why Students Trust AuraGlobal",
+        "enabled": true,
+        "order": 9
+      },
+      {
+        "id": "cta_banner",
+        "name": "Pre-Footer Conversion Banner",
+        "enabled": true,
+        "order": 10
+      }
+    ],
+    "ceoSection": {
+      "enabled": true,
+      "name": "IMRAN GUJJAR",
+      "title": "Founder & Chief Executive Officer",
+      "badge": "Founder's Vision & Leadership",
+      "heading": "Empowering Global Aspirations With Proven Expertise and Honesty",
+      "quote": "Every student who walks through our doors is not just an application — they are a future leader with unique potential. We exist to open the world's most prestigious university doors for them.",
+      "bio": "With over 15 years of distinguished leadership in global education counseling, student visa strategy, and university admissions partnerships, our team has steered thousands of candidates to top-ranked institutions across the UK, USA, Canada, Australia, and Europe.",
+      "photoUrl": "/uploads/Screenshot_2026-10-05_112040_1791181249868.png",
+      "experienceYears": "15+",
+      "statsLabel": "Years of Global Admissions Leadership",
+      "credentials": [
+        "PIER (QEAC) Certified Education Counselor",
+        "British Council Certified Global Agent",
+        "100% Transparency & Direct University Partnerships"
+      ],
+      "signatureText": "Farhan Chaudhry",
+      "ctaText": "Book Consultation with Leadership",
+      "ctaHref": "/book-appointment"
+    }
+  },
+  "navigationSettings": {
+    "items": [
+      {
+        "label": "Home",
+        "href": "/",
+        "enabled": true
+      },
+      {
+        "label": "Destinations",
+        "href": "/destinations",
+        "badge": "12 Countries",
+        "enabled": true
+      },
+      {
+        "label": "Universities",
+        "href": "/universities",
+        "enabled": true
+      },
+      {
+        "label": "Services",
+        "href": "/services",
+        "enabled": true
+      },
+      {
+        "label": "Success Stories",
+        "href": "/success-stories",
+        "enabled": true
+      },
+      {
+        "label": "Visa Success",
+        "href": "/visa-success",
+        "enabled": true
+      },
+      {
+        "label": "About Us",
+        "href": "/about",
+        "enabled": true
+      },
+      {
+        "label": "Blog",
+        "href": "/blog",
+        "enabled": true
+      },
+      {
+        "label": "Contact",
+        "href": "/contact",
+        "enabled": true
+      }
+    ],
+    "ctaButton": {
+      "text": "Book Free Consultation",
+      "href": "/book-appointment",
+      "enabled": true
+    }
+  },
+  "seoSettings": {
+    "defaultTitle": "AuraGlobal Education | Study Abroad Consultants",
+    "titleTemplate": "%s | AuraGlobal Education",
+    "defaultDescription": "Premier international education consultancy providing university admissions, scholarship guidance, and 98.6% student visa approvals.",
+    "keywords": [
+      "study abroad",
+      "overseas education",
+      "student visa",
+      "university admissions",
+      "study in uk",
+      "study in usa"
+    ],
+    "ogImage": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1200",
+    "twitterImage": "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1200",
+    "googleSiteVerification": "",
+    "googleAnalyticsId": ""
+  },
+  "socialLinks": {
+    "facebook": "https://facebook.com/auraglobaledu",
+    "instagram": "https://instagram.com/auraglobaledu",
+    "youtube": "https://youtube.com/@auraglobaledu",
+    "tiktok": "https://tiktok.com/@auraglobaledu",
+    "linkedin": "https://linkedin.com/company/auraglobaledu",
+    "whatsapp": "https://wa.me/447946091200",
+    "twitter": "https://x.com/auraglobaledu"
+  }
+}
