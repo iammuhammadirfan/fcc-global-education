@@ -243,7 +243,7 @@ export default function ImageUploadInput({
               {uploading ? 'Uploading image...' : 'Click to upload or drag image here'}
             </p>
             <p className="text-[10px] text-slate-500 mt-0.5">
-              JPG, PNG, WebP up to 10MB (saved to /public/uploads/)
+              JPG, PNG, WebP, SVG, ICO up to 10MB (saved to database)
             </p>
           </div>
         )}

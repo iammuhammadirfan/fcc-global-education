@@ -317,6 +317,17 @@ export async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
+    // 12b. Persistent Media Binary Files Table (LONGBLOB)
+    await p.execute(`
+      CREATE TABLE IF NOT EXISTS media_files (
+        id VARCHAR(100) PRIMARY KEY,
+        mime_type VARCHAR(100),
+        size_bytes INT,
+        data LONGBLOB,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
     // 13. Custom & Legal Pages Table
     await p.execute(`
       CREATE TABLE IF NOT EXISTS custom_pages (
@@ -1961,3 +1972,74 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
     return null;
   }
 }
+
+// ==========================================
+// Persistent Binary Media Storage (media_files table)
+// ==========================================
+
+export async function ensureMediaFilesTable(pool?: mysql.Pool): Promise<void> {
+  const p = pool || getPool();
+  await p.execute(`
+    CREATE TABLE IF NOT EXISTS media_files (
+      id VARCHAR(100) PRIMARY KEY,
+      mime_type VARCHAR(100),
+      size_bytes INT,
+      data LONGBLOB,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `);
+}
+
+export async function saveMediaFile(
+  id: string,
+  mimeType: string,
+  sizeBytes: number,
+  dataBuffer: Buffer
+): Promise<void> {
+  await ensureMediaFilesTable();
+  const p = getPool();
+  await p.execute(
+    `INSERT INTO media_files (id, mime_type, size_bytes, data)
+     VALUES (?, ?, ?, ?)
+     ON DUPLICATE KEY UPDATE
+       mime_type = VALUES(mime_type),
+       size_bytes = VALUES(size_bytes),
+       data = VALUES(data)`,
+    [id, mimeType, sizeBytes, dataBuffer]
+  );
+}
+
+export async function getMediaFile(
+  id: string
+): Promise<{ id: string; mimeType: string; sizeBytes: number; data: Buffer } | null> {
+  try {
+    await ensureMediaFilesTable();
+    const p = getPool();
+    const [rows]: any = await p.execute(
+      'SELECT id, mime_type, size_bytes, data FROM media_files WHERE id = ? LIMIT 1',
+      [id]
+    );
+    if (!rows || rows.length === 0) return null;
+    const row = rows[0];
+    return {
+      id: row.id,
+      mimeType: row.mime_type || 'application/octet-stream',
+      sizeBytes: Number(row.size_bytes || 0),
+      data: Buffer.isBuffer(row.data) ? row.data : Buffer.from(row.data),
+    };
+  } catch (err: any) {
+    console.error(`[MySQL getMediaFile Error for ${id}]:`, err?.message || err);
+    return null;
+  }
+}
+
+export async function deleteMediaFile(id: string): Promise<void> {
+  try {
+    await ensureMediaFilesTable();
+    const p = getPool();
+    await p.execute('DELETE FROM media_files WHERE id = ?', [id]);
+  } catch (err: any) {
+    console.warn(`[MySQL deleteMediaFile warning for ${id}]:`, err?.message || err);
+  }
+}
+

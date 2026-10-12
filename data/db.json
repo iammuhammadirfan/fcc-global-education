@@ -2631,6 +2631,33 @@
   ],
   "media": [
     {
+      "id": "med_1791830209683_szx7b0",
+      "name": "FCC_Global_Education_Logo__1__1791173099002.png",
+      "url": "/api/media/file/med_1791830209683_szx7b0",
+      "category": "general",
+      "sizeBytes": 888590,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-12T18:36:49.000Z"
+    },
+    {
+      "id": "med_1791830203753_dp897t",
+      "name": "FCC_Global_Education_Logo__1__1791173099002.png",
+      "url": "/api/media/file/med_1791830203753_dp897t",
+      "category": "general",
+      "sizeBytes": 888590,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-12T18:36:43.000Z"
+    },
+    {
+      "id": "med_1791829924926_cgaqg2",
+      "name": "test_logo.png",
+      "url": "/api/media/file/med_1791829924926_cgaqg2",
+      "category": "branding",
+      "sizeBytes": 70,
+      "mimeType": "image/png",
+      "createdAt": "2026-10-12T18:32:04.000Z"
+    },
+    {
       "id": "med_1791805224884_2xik",
       "name": "images (4).jpg",
       "url": "/uploads/images__4__1791805224873.jpg",
@@ -2985,9 +3012,9 @@
     ]
   },
   "generalSettings": {
-    "companyName": "FCC Global Education",
+    "companyName": "FCC Global Education Consultants",
     "tagline": "World-Class Study Abroad Counseling",
-    "logoUrl": "/uploads/FCC_Global_Education_Logo__1__1791173099002.png",
+    "logoUrl": "/api/media/file/med_1791830203753_dp897t",
     "phone": "+44 (0) 20 7946 0912",
     "whatsapp": "+447946091200",
     "email": "admissions@auraglobal.com",
@@ -2997,7 +3024,8 @@
     "websiteUrl": "https://auraglobal.com",
     "shortDescription": "Premier international education consultancy facilitating admissions to top-ranked institutions across 12 countries.",
     "copyrightText": "© 2026 AuraGlobal Education Consultants. All rights reserved.",
-    "mapsUrl": "https://maps.google.com"
+    "mapsUrl": "https://maps.google.com",
+    "faviconUrl": "/api/media/file/med_1791830209683_szx7b0"
   },
   "homepageSettings": {
     "hero": {

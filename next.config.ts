@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   devIndicators: false,
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -11,6 +12,14 @@ const nextConfig: NextConfig = {
       {
         protocol: 'http',
         hostname: '**',
+      },
+    ],
+    localPatterns: [
+      {
+        pathname: '/api/media/file/**',
+      },
+      {
+        pathname: '/uploads/**',
       },
     ],
   },

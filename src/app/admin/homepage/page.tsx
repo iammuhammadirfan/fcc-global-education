@@ -674,7 +674,7 @@ export default function AdminHomepageCMS() {
               placeholder="https://... or upload photo"
               category="team"
               dark={false}
-              helperText="Upload portrait photo of the CEO (saved to /public/uploads/)"
+              helperText="Upload portrait photo of the CEO (saved to database)"
             />
           </div>
 
@@ -1180,7 +1180,7 @@ export default function AdminHomepageCMS() {
                       placeholder="https://... or upload image"
                       category="hero"
                       dark={false}
-                      helperText="Recommended: 1920x1080 (16:9 Landscape) - Saved to /public/uploads/"
+                      helperText="Recommended: 1920x1080 (16:9 Landscape) - Saved to database"
                     />
                   </div>
                 </div>

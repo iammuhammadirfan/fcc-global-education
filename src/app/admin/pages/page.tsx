@@ -290,7 +290,7 @@ export default function AdminPagesCMS() {
                 placeholder="https://... or upload banner image"
                 category="pages"
                 dark={true}
-                helperText="Upload banner header image for this page (saved to /public/uploads/)"
+                helperText="Upload banner header image for this page (saved to database)"
               />
 
               <div>

@@ -366,7 +366,7 @@ export default function AdminCountriesPage() {
                 placeholder="https://... or upload destination image"
                 category="destinations"
                 dark={true}
-                helperText="Upload landscape banner image for this study destination (saved to /public/uploads/)"
+                helperText="Upload landscape banner image for this study destination (saved to database)"
               />
 
               {/* Descriptions */}
