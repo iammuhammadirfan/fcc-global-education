@@ -166,10 +166,12 @@ export default function Navbar({
   };
 
   return (
-    <>
+    <div className="sticky top-0 z-50 w-full">
       {/* Top Announcement & Quick Action Bar */}
       {isTopBarEnabled && (
-        <div className="bg-gradient-to-r from-amber-50 via-white to-amber-50 text-slate-800 text-xs py-1.5 px-2.5 sm:px-4 border-b border-slate-200/90 shadow-2xs relative z-50 w-full max-w-full overflow-hidden">
+        <div className={`bg-gradient-to-r from-amber-50 via-white to-amber-50 text-slate-800 text-xs py-1.5 px-2.5 sm:px-4 border-b border-slate-200/90 shadow-2xs w-full max-w-full overflow-hidden transition-all duration-300 ${
+          isScrolled ? 'hidden sm:block' : 'block'
+        }`}>
           <div className="max-w-7xl mx-auto flex items-center justify-between gap-1.5 sm:gap-2 overflow-hidden w-full">
             {/* Left: Highlight Tag */}
             <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 flex-1 overflow-hidden">
@@ -223,7 +225,7 @@ export default function Navbar({
 
       {/* Main Sticky Navbar */}
       <header
-        className={`sticky top-0 z-40 transition-all duration-300 ${
+        className={`w-full transition-all duration-300 ${
           isScrolled
             ? 'bg-white/95 backdrop-blur-md py-2 sm:py-2.5 shadow-md border-b border-slate-200/80'
             : 'bg-white/95 backdrop-blur-sm py-2.5 sm:py-3 border-b border-slate-200/60'
@@ -604,6 +606,6 @@ export default function Navbar({
           </div>
         )}
       </header>
-    </>
+    </div>
   );
 }

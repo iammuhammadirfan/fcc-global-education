@@ -3,7 +3,7 @@ import { AiChatSettings } from './types';
 export const DEFAULT_AI_CHAT_SETTINGS: AiChatSettings = {
   enabled: true,
   groqApiKey: '',
-  model: 'llama-3.3-70b-versatile',
+  model: 'llama-3.1-8b-instant',
   botName: 'FCC AI Admissions Counselor',
   botAvatar: '',
   welcomeMessage:

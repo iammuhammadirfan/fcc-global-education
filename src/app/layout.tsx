@@ -109,11 +109,11 @@ export default async function RootLayout({
       <head>
         <meta name="theme-color" content="#f59e0b" />
       </head>
-      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-amber-400 selection:text-slate-950 pb-16 sm:pb-0 overflow-x-hidden w-full max-w-full relative">
+      <body className="min-h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-amber-400 selection:text-slate-950 pb-16 sm:pb-0 overflow-x-clip w-full max-w-full relative">
         <Suspense fallback={null}>
           <TopProgressBar />
         </Suspense>
-        <div className="w-full max-w-full overflow-x-hidden flex flex-col min-h-screen">
+        <div className="w-full max-w-full overflow-x-clip flex flex-col min-h-screen">
           <Navbar
             navSettings={navigationSettings}
             generalSettings={generalSettings}
@@ -121,7 +121,7 @@ export default async function RootLayout({
             universities={liveUniversities}
             topBarSettings={homepageSettings?.topBar}
           />
-          <main className="flex-1 w-full max-w-full overflow-x-hidden">{children}</main>
+          <main className="flex-1 w-full max-w-full overflow-x-clip">{children}</main>
           <Footer
             footerSettings={footerSettings}
             generalSettings={generalSettings}

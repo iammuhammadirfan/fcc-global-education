@@ -21,10 +21,15 @@ export async function getBrandSettings() {
       process.env.NEXT_PUBLIC_APP_URL ||
       'https://fccglobaleducation.com';
 
+    const defaultLogo = `${websiteUrl.replace(/\/$/, '')}/uploads/FCC_Global_Education_Logo__1__1791178438060.png`;
     let logoUrl = (generalSettings.logoUrl || '').trim();
-    if (logoUrl && logoUrl.startsWith('/')) {
-      // Relative URL -> convert to absolute URL so email clients like Gmail can load it
-      logoUrl = `${websiteUrl.replace(/\/$/, '')}${logoUrl}`;
+    if (logoUrl) {
+      if (logoUrl.startsWith('/')) {
+        // Relative URL -> convert to absolute URL so email clients like Gmail can load it
+        logoUrl = `${websiteUrl.replace(/\/$/, '')}${logoUrl}`;
+      }
+    } else {
+      logoUrl = defaultLogo;
     }
 
     const address = (generalSettings.address || '').trim() || BRAND.londonAddress;
@@ -55,7 +60,7 @@ export async function getBrandSettings() {
       whatsapp: BRAND.phone,
       email: BRAND.email,
       websiteUrl: BRAND.websiteUrl,
-      logoUrl: '',
+      logoUrl: `${BRAND.websiteUrl}/uploads/FCC_Global_Education_Logo__1__1791178438060.png`,
       googleMapsUrl: 'https://maps.google.com/?q=Berkeley+Square+House+London',
     };
   }
@@ -180,8 +185,8 @@ function wrapHtmlEmail({
   <style>
     body { margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #0f172a; line-height: 1.6; }
     .wrapper { max-width: 620px; margin: 30px auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 35px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
-    .header { background: #0b1528; padding: 34px 32px 28px; text-align: center; border-bottom: 3px solid #f59e0b; }
-    .logo-badge { display: inline-block; background: #f59e0b; color: #0b1528; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+    .header { background: #faf6ed; padding: 30px 28px 24px; text-align: center; border-bottom: 2px solid #e6d7ba; }
+    .logo-badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; border: 1px solid #fde68a; }
     .content { padding: 36px 32px; background: #ffffff; }
     .badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid #fde68a; }
     .headline { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 16px; line-height: 1.3; }
@@ -196,22 +201,20 @@ function wrapHtmlEmail({
       <td align="center">
         <div class="wrapper" style="max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 35px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; text-align: left;">
           
-          {/* Header with Official Logo & Brand Identity */}
-          <div class="header" style="background: #0b1528; padding: 34px 32px 28px; text-align: center; border-bottom: 3px solid #f59e0b;">
+          <div class="header" style="background-color: #faf6ed; padding: 30px 28px 24px; text-align: center; border-bottom: 2px solid #e6d7ba;">
             ${logo ? `
-              <div style="margin-bottom: 14px; text-align: center;">
-                <img src="${logo}" alt="${company}" style="max-height: 54px; max-width: 250px; height: auto; width: auto; display: inline-block; border: 0; outline: none; text-decoration: none;" />
+              <div style="margin-bottom: 12px; text-align: center;">
+                <img src="${logo}" alt="${company}" style="max-height: 56px; max-width: 260px; height: auto; width: auto; display: inline-block; border: 0; outline: none; text-decoration: none;" />
               </div>
             ` : `
-              <div style="margin-bottom: 12px;">
-                <span class="logo-badge" style="display: inline-block; background: #f59e0b; color: #0b1528; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px;">Official Advisory</span>
+              <div style="margin-bottom: 10px;">
+                <span class="logo-badge" style="display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px; border: 1px solid #fde68a;">Official Advisory</span>
               </div>
             `}
-            <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;">${company}</h1>
-            <p style="margin: 6px 0 0; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px;">${tagline}</p>
+            <h1 style="margin: 0; color: #0f172a; font-size: 20px; font-weight: 800; letter-spacing: -0.4px; line-height: 1.25;">${company}</h1>
+            <p style="margin: 5px 0 0; color: #92400e; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px;">${tagline}</p>
           </div>
 
-          {/* Content Body */}
           <div class="content" style="padding: 36px 32px; background: #ffffff;">
             ${badgeText ? `
               <div style="margin-bottom: 14px;">
@@ -221,7 +224,6 @@ function wrapHtmlEmail({
             <h2 class="headline" style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 16px; line-height: 1.3;">${headline}</h2>
             ${bodyHtml}
             ${ctaText && ctaLink ? `
-            {/* Redesigned Luxury High-End CTA Button (Bulletproof HTML Email Standard) */}
             <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 28px auto 14px; text-align: center;">
               <tr>
                 <td align="center" style="border-radius: 12px; background: #0b1528; border: 1.5px solid #f59e0b; box-shadow: 0 6px 18px rgba(11,21,40,0.25);">
@@ -233,7 +235,6 @@ function wrapHtmlEmail({
             </table>` : ''}
           </div>
 
-          {/* Dynamic Footer with CMS Address, Phone, & Email */}
           <div class="footer" style="background: #f8fafc; padding: 26px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #64748b; line-height: 1.6;">
             <p style="margin: 0 0 6px; font-weight: 800; color: #0f172a; font-size: 13px;">${company} &bull; International Advisory Directorate</p>
             <p style="margin: 0 0 8px; color: #475569;">📍 ${address}</p>
@@ -285,7 +286,6 @@ export async function sendAppointmentConfirmation({
         Thank you for scheduling your higher education consultation with <strong>${brand.companyName}</strong>. We have confirmed your strategy appointment with our senior international admissions counselor.
       </p>
 
-      {/* Rock-Solid Email-Client Proof HTML Table with clear spacing */}
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin: 20px 0; overflow: hidden;">
         <tr>
           <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; width: 40%; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
@@ -423,7 +423,6 @@ export async function sendAppointmentRescheduledEmail({
         Please note that your higher education admissions strategy consultation with <strong>${brand.companyName}</strong> has been <strong>rescheduled to a new time slot</strong>.
       </p>
 
-      {/* Reschedule Notice Banner */}
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 18px; background-color: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px 18px;">
         <tr>
           <td>
@@ -437,7 +436,6 @@ export async function sendAppointmentRescheduledEmail({
         </tr>
       </table>
 
-      {/* Rock-Solid Email Table with Clear Spacing */}
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin: 18px 0; overflow: hidden;">
         <tr>
           <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; width: 40%; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
@@ -586,7 +584,7 @@ export async function sendLeadReplyEmail({
 
       <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
         <p style="margin: 0; font-size: 13px; font-weight: 700; color: #0f172a;">${counselorName || 'Senior International Admissions Advisor'}</p>
-        <p style="margin: 2px 0 0; font-size: 12px; color: #64748b;">${brand.companyName} Consultants &bull; Global Directorate</p>
+        <p style="margin: 2px 0 0; font-size: 12px; color: #64748b;">${brand.companyName.replace(/\s*Consultants\s*$/i, '')} Consultants &bull; Global Directorate</p>
       </div>
     `;
 
