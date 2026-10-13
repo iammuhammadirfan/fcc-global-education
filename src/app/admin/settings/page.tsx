@@ -194,6 +194,9 @@ export default function AdminSettingsPage() {
       });
       const data = await res.json();
       if (data.success) {
+        if (data.model && data.model !== aiBot.model) {
+          setAiBot((prev) => ({ ...prev, model: data.model }));
+        }
         setGroqTestResultInSettings({
           success: true,
           message: data.message || 'Groq API connection validated successfully!',
@@ -1393,20 +1396,32 @@ export default function AdminSettingsPage() {
                 <div>
                   <label className="block text-slate-700 mb-1.5 font-bold">AI Model</label>
                   <select
-                    value={aiBot.model || 'llama-3.3-70b-versatile'}
+                    value={aiBot.model || 'llama-3.1-8b-instant'}
                     onChange={(e) => setAiBot({ ...aiBot, model: e.target.value })}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
                   >
-                    <option value="llama-3.3-70b-versatile">
-                      Llama 3.3 70B Versatile (Recommended - Ultra Smart)
-                    </option>
                     <option value="llama-3.1-8b-instant">
-                      Llama 3.1 8B Instant (Lightning Fast Speed)
+                      Llama 3.1 8B Instant (Recommended - 100% Free & Ultra Fast)
+                    </option>
+                    <option value="llama-3.3-70b-versatile">
+                      Llama 3.3 70B Versatile (Meta 70B)
+                    </option>
+                    <option value="llama-3.1-70b-versatile">
+                      Llama 3.1 70B Versatile
+                    </option>
+                    <option value="llama3-70b-8192">
+                      Llama 3 70B (8192 Context)
+                    </option>
+                    <option value="llama3-8b-8192">
+                      Llama 3 8B (8192 Context)
                     </option>
                     <option value="mixtral-8x7b-32768">
                       Mixtral 8x7B (Large Context 32k)
                     </option>
                     <option value="gemma2-9b-it">Gemma 2 9B (Google)</option>
+                    <option value="deepseek-r1-distill-llama-70b">
+                      DeepSeek R1 Distill Llama 70B
+                    </option>
                   </select>
                 </div>
 
@@ -1436,7 +1451,7 @@ export default function AdminSettingsPage() {
 
               {groqTestResultInSettings && (
                 <div
-                  className={`p-3 rounded-xl border text-xs ${
+                  className={`p-3 rounded-xl border text-xs space-y-2 ${
                     groqTestResultInSettings.success
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
                       : 'bg-rose-50 border-rose-200 text-rose-900'
@@ -1454,6 +1469,21 @@ export default function AdminSettingsPage() {
                         : groqTestResultInSettings.message}
                     </span>
                   </div>
+                  {!groqTestResultInSettings.success && aiBot.model !== 'llama-3.1-8b-instant' && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAiBot({ ...aiBot, model: 'llama-3.1-8b-instant' });
+                          setGroqTestResultInSettings(null);
+                        }}
+                        className="px-3 py-1.5 rounded-lg bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        <span>Switch to Llama 3.1 8B Instant (100% Free on all Groq accounts)</span>
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

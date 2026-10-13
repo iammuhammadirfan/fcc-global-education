@@ -908,43 +908,47 @@ export default function BroadcastPage() {
               )}
 
               {/* Action Buttons */}
-              <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-                {/* Test Send */}
-                <div className="flex items-center gap-2">
-                  <input
-                    type="email"
-                    value={testEmail}
-                    onChange={(e) => setTestEmail(e.target.value)}
-                    placeholder="test@example.com"
-                    className="px-3 py-2 rounded-xl border border-slate-300 text-xs w-48 focus:outline-none focus:border-amber-500"
-                  />
-                  <button
-                    type="button"
-                    disabled={isSending}
-                    onClick={() => handleSendBroadcast(true)}
-                    className="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold disabled:opacity-50"
-                  >
-                    Send Test
-                  </button>
-                </div>
+              <div className="pt-4 border-t border-slate-100 space-y-3">
+                {/* Row 1: Test Email & Save Draft */}
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  {/* Test Send */}
+                  <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+                    <input
+                      type="email"
+                      value={testEmail}
+                      onChange={(e) => setTestEmail(e.target.value)}
+                      placeholder="test@example.com"
+                      className="px-3 py-2 rounded-xl border border-slate-300 text-xs w-full max-w-[210px] focus:outline-none focus:border-amber-500"
+                    />
+                    <button
+                      type="button"
+                      disabled={isSending}
+                      onClick={() => handleSendBroadcast(true)}
+                      className="px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-semibold whitespace-nowrap disabled:opacity-50 transition shadow-2xs"
+                    >
+                      Send Test
+                    </button>
+                  </div>
 
-                <div className="flex items-center gap-2">
+                  {/* Save Draft Button */}
                   <button
                     type="button"
                     disabled={isSavingDraft}
                     onClick={() => handleSaveDraft(false)}
-                    className="px-4 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold flex items-center gap-2 transition shadow-sm"
+                    className="px-4 py-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold flex items-center gap-2 whitespace-nowrap transition shadow-2xs disabled:opacity-50"
                   >
-                    <Save className="w-4 h-4 text-slate-500" />
+                    <Save className="w-4 h-4 text-slate-500 shrink-0" />
                     <span>{isSavingDraft ? 'Saving...' : 'Save Draft & Links'}</span>
                   </button>
+                </div>
 
-                  {/* 1-Click Mass Send */}
+                {/* Row 2: Full-Width 1-Click Mass Send */}
+                <div>
                   <button
                     type="button"
                     disabled={isSending}
                     onClick={() => handleSendBroadcast(false)}
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/25 transition-all disabled:opacity-50 flex-shrink-0"
+                    className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm shadow-md shadow-amber-500/20 transition-all disabled:opacity-50"
                   >
                     <Send className={`w-4 h-4 ${isSending ? 'animate-bounce' : ''}`} />
                     <span>
@@ -981,12 +985,16 @@ export default function BroadcastPage() {
               {/* Email Content Body */}
               <div className="p-6 space-y-5 bg-white">
                 {/* Header */}
-                <div className="bg-[#0b1528] -mx-6 -mt-6 p-5 text-center border-b-2 border-amber-500">
-                  <span className="inline-block bg-amber-500 text-[#0b1528] text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider mb-2">
-                    Official Advisory
-                  </span>
-                  <h3 className="text-white text-lg font-extrabold tracking-tight">FCC Global Education</h3>
-                  <p className="text-slate-400 text-[10px] uppercase tracking-wider">
+                <div className="bg-[#faf6ed] -mx-6 -mt-6 p-6 text-center border-b-2 border-[#e6d7ba]">
+                  <div className="mb-2 flex justify-center">
+                    <img
+                      src="/uploads/FCC_Global_Education_Logo__1__1791178438060.png"
+                      alt="FCC Global Education"
+                      className="h-12 w-auto object-contain"
+                    />
+                  </div>
+                  <h3 className="text-slate-900 text-lg font-extrabold tracking-tight">FCC Global Education</h3>
+                  <p className="text-amber-800 text-[10px] font-bold uppercase tracking-wider mt-0.5">
                     Premier International Education & Visa Advisory
                   </p>
                 </div>

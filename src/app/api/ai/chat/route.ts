@@ -123,19 +123,38 @@ ${settings.systemPrompt || ''}
           })),
         ];
 
-        const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        let groqModel = settings.model || 'llama-3.1-8b-instant';
+        let groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
           method: 'POST',
           headers: {
             Authorization: `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: settings.model || 'llama-3.3-70b-versatile',
+            model: groqModel,
             messages: groqMessages,
             temperature: settings.temperature || 0.6,
             max_tokens: 1024,
           }),
         });
+
+        if (!groqResponse.ok && groqModel !== 'llama-3.1-8b-instant') {
+          // Automatic fallback to universal free Groq model
+          groqModel = 'llama-3.1-8b-instant';
+          groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: groqModel,
+              messages: groqMessages,
+              temperature: settings.temperature || 0.6,
+              max_tokens: 1024,
+            }),
+          });
+        }
 
         if (groqResponse.ok) {
           const resData = await groqResponse.json();
@@ -145,7 +164,7 @@ ${settings.systemPrompt || ''}
             return NextResponse.json({
               success: true,
               provider: 'groq',
-              model: settings.model || 'llama-3.3-70b-versatile',
+              model: groqModel,
               message: {
                 role: 'assistant',
                 content: aiReply,
