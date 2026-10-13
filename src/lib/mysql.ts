@@ -390,27 +390,6 @@ export async function initDatabase() {
     const [userRows]: any = await p.execute('SELECT COUNT(*) as count FROM users');
     if (userRows[0].count === 0) {
       await seedDatabase(p);
-    } else {
-      // Ensure visa_success has seed data if empty
-      const [visaRows]: any = await p.execute('SELECT COUNT(*) as count FROM visa_success');
-      if (visaRows[0]?.count === 0) {
-        for (let idx = 0; idx < initialVisaSuccessItems.length; idx++) {
-          const vs = initialVisaSuccessItems[idx];
-          await p.execute(
-            `INSERT INTO visa_success (
-              id, student_name, student_photo, visa_letter_image, country, country_code, country_slug,
-              university, program, intake, visa_type, approval_days, grant_date, testimonial,
-              featured, published, sort_order
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-            [
-              vs.id, vs.studentName, vs.studentPhoto || null, vs.visaLetterImage, vs.country,
-              vs.countryCode || null, vs.countrySlug || null, vs.university, vs.program,
-              vs.intake || null, vs.visaType || null, vs.approvalDays || null, vs.grantDate || null,
-              vs.testimonial || null, vs.featured ?? true, vs.published ?? true, vs.order || idx + 1
-            ]
-          );
-        }
-      }
     }
 
     isInitialized = true;
@@ -1995,7 +1974,7 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
     // 15. Visa Success
     if (table === 'visaSuccess') {
       const [rows]: any = await p.execute('SELECT * FROM visa_success ORDER BY sort_order ASC, id ASC');
-      if (!rows || rows.length === 0) return null;
+      if (!rows || rows.length === 0) return [];
       return rows.map((r: any) => ({
         id: r.id,
         studentName: r.student_name,
