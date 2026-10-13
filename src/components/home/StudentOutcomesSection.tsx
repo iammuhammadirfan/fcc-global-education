@@ -104,38 +104,44 @@ export default function StudentOutcomesSection({
         </div>
       )}
 
-      {/* 4. Student Video Testimonials Showcase */}
+      {/* 4. Student Video Testimonials Showcase (Compact & Modern Design) */}
       {videos.length > 0 && (
         <div
-          className="rounded-3xl bg-gradient-to-br from-slate-950 via-slate-900 to-[#0B1528] p-8 sm:p-12 text-white border border-slate-800 shadow-2xl relative overflow-hidden mt-16"
+          className="rounded-2xl sm:rounded-3xl bg-gradient-to-b from-slate-950 via-slate-900 to-[#0B1528] p-5 sm:p-7 lg:p-8 text-white border border-slate-800/90 shadow-xl relative overflow-hidden mt-10 sm:mt-12"
           id="student-videos"
         >
           {/* Ambient Glow */}
-          <div className="absolute top-0 right-1/4 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-1/4 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-800/80">
+          <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800/80">
             <div>
-              <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 px-3.5 py-1.5 rounded-full border border-amber-400/20">
-                <Play className="w-3.5 h-3.5 fill-current" /> Student Videos
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+                <Play className="w-3 h-3 fill-current" /> Student Videos
               </span>
-              <h3 className="text-2xl sm:text-3xl font-extrabold text-white mt-2.5 tracking-tight">
+              <h3 className="text-xl sm:text-2xl font-bold text-white mt-2 tracking-tight">
                 Student Video Testimonials
               </h3>
-              <p className="text-slate-400 text-xs sm:text-sm mt-1 max-w-xl">
+              <p className="text-slate-400 text-xs sm:text-sm mt-0.5 max-w-xl">
                 Real video feedback, interview experiences, and visa grant stories recorded by our students.
               </p>
             </div>
             <Link
               href="/success-stories#student-videos"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-slate-800/90 border border-slate-700/80 text-amber-400 hover:text-white hover:bg-slate-800 hover:border-amber-400/40 transition-all shrink-0 shadow-sm"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 hover:border-amber-400/40 text-amber-400 hover:text-white transition-all shrink-0 self-start sm:self-center shadow-xs"
             >
               <span>Watch More Student Videos</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div
+            className={`relative z-10 grid gap-4 sm:gap-5 ${
+              videos.length === 2
+                ? 'grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto'
+                : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
+            }`}
+          >
             {videos.map((vid) => (
               <VideoCard key={vid.id} testimonial={vid} theme="dark" />
             ))}
