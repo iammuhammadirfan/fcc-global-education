@@ -66,7 +66,7 @@ export default async function HomePage() {
   const featuredUniversities = allUniversities.filter((u: any) => u.published !== false).slice(0, 6);
   const featuredServices = allServices.filter((s: any) => s.active !== false).slice(0, 6);
   const featuredStories = allStories.filter((s: any) => s.published !== false).slice(0, 3);
-  const featuredVideos = allVideos.filter((v: any) => v.published !== false).slice(0, 2);
+  const featuredVideos = allVideos.filter((v: any) => v.published !== false).slice(0, 3);
 
   return (
     <div className="w-full max-w-full overflow-x-clip space-y-12 sm:space-y-16">

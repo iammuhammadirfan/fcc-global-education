@@ -186,7 +186,7 @@ export default function HeroSection({ settings }: HeroSectionProps) {
         </h1>
 
         {/* Subheadline */}
-        <p className="text-xs sm:text-base text-slate-700 leading-relaxed max-w-xl mx-auto mb-4 sm:mb-5 font-medium px-2 sm:px-0">
+        <p className="text-xs sm:text-base text-slate-900 leading-relaxed max-w-xl mx-auto mb-4 sm:mb-5 font-semibold px-2 sm:px-0 drop-shadow-xs">
           {subheadline}
         </p>
 
