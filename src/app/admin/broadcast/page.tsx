@@ -21,6 +21,7 @@ import {
   ShieldCheck,
   RefreshCw,
   Phone,
+  Save,
 } from 'lucide-react';
 import { Subscriber, BroadcastCampaign } from '@/lib/types';
 
@@ -43,7 +44,7 @@ Selected higher education institutions are offering:
 
 Given the competitive quota on merit awards, scholarship portfolios are assessed on a rolling basis. Our senior advisory council is offering priority eligibility audits this week to fast-track your university admissions and scholarship documentation.`,
     ctaText: 'Claim Your Scholarship Assessment',
-    ctaLink: 'http://localhost:3000/book-appointment',
+    ctaLink: 'https://fccglobaleducation.com/book-appointment',
   },
   {
     id: 'visa-deadline',
@@ -62,7 +63,7 @@ Consular immigration authorities and partner institutions have updated their com
 
 To prevent admission deferrals and avoid consular processing delays, we strongly urge you to submit your pending transcripts and English proficiency certificates immediately. Our accredited immigration solicitors will audit your financial dossier to ensure 100% visa compliance.`,
     ctaText: 'Fast-Track My Application',
-    ctaLink: 'http://localhost:3000/contact',
+    ctaLink: 'https://fccglobaleducation.com/contact',
   },
   {
     id: 'free-consultation',
@@ -82,7 +83,7 @@ This week, FCC Global Education is hosting exclusive 1-on-1 Strategy Clinics via
 
 Spaces are strictly limited to ensure individualized attention for each prospective candidate.`,
     ctaText: 'Reserve Your 1-on-1 Strategy Call',
-    ctaLink: 'http://localhost:3000/book-appointment',
+    ctaLink: 'https://fccglobaleducation.com/book-appointment',
   },
   {
     id: 'fee-waiver',
@@ -104,7 +105,7 @@ What FCC Global Education covers for you:
 
 Connect with your dedicated counselor today to take advantage of this fee waiver window before quota limits are reached.`,
     ctaText: 'Access Fee Waivers Now',
-    ctaLink: 'http://localhost:3000/book-appointment',
+    ctaLink: 'https://fccglobaleducation.com/book-appointment',
   },
   {
     id: 'ad-promotional-mega-offer',
@@ -129,7 +130,7 @@ Mention this promotional advertisement during your initial counseling session to
 
 Quota is strictly limited to the first 50 eligible student applicants this month. Don't wait until international application deadlines close!`,
     ctaText: 'Claim Exclusive Advertisement Offer',
-    ctaLink: 'http://localhost:3000/book-appointment',
+    ctaLink: 'https://fccglobaleducation.com/book-appointment',
   },
   {
     id: 'ad-ielts-waiver-promo',
@@ -151,7 +152,7 @@ As official university representatives, FCC Global Education provides 100% spons
 
 Book your direct advisory session today and take the definitive step towards your global education journey.`,
     ctaText: 'Book Free Advisory Session',
-    ctaLink: 'http://localhost:3000/book-appointment',
+    ctaLink: 'https://fccglobaleducation.com/book-appointment',
   },
 ];
 
@@ -190,7 +191,12 @@ export default function BroadcastPage() {
   const [sendSuccess, setSendSuccess] = useState<string | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
 
-  // Load Data
+  // Persistent Draft State
+  const [isSavingDraft, setIsSavingDraft] = useState(false);
+  const [draftSavedMsg, setDraftSavedMsg] = useState<string | null>(null);
+  const [initialLoaded, setInitialLoaded] = useState(false);
+
+  // Load Data & Saved Draft
   const fetchData = async () => {
     setLoading(true);
     try {
@@ -200,17 +206,89 @@ export default function BroadcastPage() {
         setSubscribers(data.subscribers || []);
         setCampaigns(data.campaigns || []);
         setStats(data.stats || { total: 0, newsletter: 0, appointment: 0, contact: 0, manual: 0 });
+
+        // Restore saved draft if found in DB
+        if (data.draft) {
+          if (data.draft.subject !== undefined) setSubject(data.draft.subject);
+          if (data.draft.campaignTitle !== undefined) setCampaignTitle(data.draft.campaignTitle);
+          if (data.draft.messageBody !== undefined) setMessageBody(data.draft.messageBody);
+          if (data.draft.ctaText !== undefined) setCtaText(data.draft.ctaText);
+          if (data.draft.ctaLink !== undefined) setCtaLink(data.draft.ctaLink);
+        } else {
+          // Fallback to localStorage
+          try {
+            const local = localStorage.getItem('fcc_broadcast_draft');
+            if (local) {
+              const p = JSON.parse(local);
+              if (p.subject !== undefined) setSubject(p.subject);
+              if (p.campaignTitle !== undefined) setCampaignTitle(p.campaignTitle);
+              if (p.messageBody !== undefined) setMessageBody(p.messageBody);
+              if (p.ctaText !== undefined) setCtaText(p.ctaText);
+              if (p.ctaLink !== undefined) setCtaLink(p.ctaLink);
+            }
+          } catch {}
+        }
       }
     } catch (err) {
       console.error(err);
     } finally {
       setLoading(false);
+      setInitialLoaded(true);
     }
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  // Save Draft Helper
+  const handleSaveDraft = async (silent = false) => {
+    setIsSavingDraft(true);
+    try {
+      // 1. Instant local storage persistence
+      try {
+        localStorage.setItem(
+          'fcc_broadcast_draft',
+          JSON.stringify({ subject, campaignTitle, messageBody, ctaText, ctaLink })
+        );
+      } catch {}
+
+      // 2. Database persistence via API
+      const res = await fetch('/api/admin/broadcast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'save_draft',
+          subject,
+          campaignTitle,
+          messageBody,
+          ctaText,
+          ctaLink,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setDraftSavedMsg('Draft & target link saved!');
+        setTimeout(() => setDraftSavedMsg(null), 3500);
+      } else if (!silent) {
+        alert(data.error || 'Failed to save draft.');
+      }
+    } catch (err) {
+      console.error(err);
+      if (!silent) alert('Save failed. Please check network.');
+    } finally {
+      setIsSavingDraft(false);
+    }
+  };
+
+  // Debounced auto-save when user is typing
+  useEffect(() => {
+    if (!initialLoaded) return;
+    const timer = setTimeout(() => {
+      handleSaveDraft(true);
+    }, 1200);
+    return () => clearTimeout(timer);
+  }, [subject, campaignTitle, messageBody, ctaText, ctaLink, initialLoaded]);
 
   // Filter Subscribers
   const filteredSubscribers = subscribers.filter((sub) => {
@@ -280,6 +358,33 @@ export default function BroadcastPage() {
     setMessageBody(tmpl.messageBody);
     setCtaText(tmpl.ctaText);
     setCtaLink(tmpl.ctaLink);
+
+    // Save template selection immediately to DB and localStorage
+    try {
+      localStorage.setItem(
+        'fcc_broadcast_draft',
+        JSON.stringify({
+          subject: tmpl.subject,
+          campaignTitle: tmpl.campaignTitle,
+          messageBody: tmpl.messageBody,
+          ctaText: tmpl.ctaText,
+          ctaLink: tmpl.ctaLink,
+        })
+      );
+    } catch {}
+
+    fetch('/api/admin/broadcast', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'save_draft',
+        subject: tmpl.subject,
+        campaignTitle: tmpl.campaignTitle,
+        messageBody: tmpl.messageBody,
+        ctaText: tmpl.ctaText,
+        ctaLink: tmpl.ctaLink,
+      }),
+    }).catch(console.error);
   };
 
   // Handle Send Broadcast
@@ -660,7 +765,8 @@ export default function BroadcastPage() {
                       `Dear Student,\n\nWe are excited to share a limited-time promotional advertisement offer from FCC Global Education:\n\n🔥 SPECIAL PROMOTION PERKS:\n• 100% University Application Fee Waiver\n• Direct Merit Scholarship Assessment up to £10,000 / $15,000\n• Free SOP Polishing & Visa Dossier Pre-Audit\n• Direct fast-track offers within 48 to 72 hours\n\n⚡ SPECIAL PROMO CODE: FCC-GLOBAL-PROMO-2026\n\nMention this code during your consultation to unlock all promotional fee waivers and priority counseling services.`
                     );
                     setCtaText('Claim Exclusive Advertisement Offer');
-                    setCtaLink('http://localhost:3000/book-appointment');
+                    const link = 'https://fccglobaleducation.com/book-appointment';
+                    setCtaLink(link);
                   }}
                   className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs flex items-center gap-1.5 shadow-sm transition"
                 >
@@ -672,6 +778,41 @@ export default function BroadcastPage() {
 
             {/* Campaign Form */}
             <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs space-y-4">
+              <div className="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 gap-2">
+                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-amber-500" />
+                  <span>Campaign Content & Links</span>
+                </span>
+                <div className="flex items-center gap-2">
+                  {draftSavedMsg ? (
+                    <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1.5 animate-fadeIn">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      {draftSavedMsg}
+                    </span>
+                  ) : isSavingDraft ? (
+                    <span className="text-[11px] font-semibold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1.5">
+                      <Save className="w-3.5 h-3.5 animate-spin text-amber-600" />
+                      Saving changes...
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-slate-600 flex items-center gap-1 font-medium">
+                      <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                      Auto-saves to database
+                    </span>
+                  )}
+                  <button
+                    type="button"
+                    disabled={isSavingDraft}
+                    onClick={() => handleSaveDraft(false)}
+                    className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition"
+                    title="Save current subject, text & target CTA link permanently"
+                  >
+                    <Save className="w-3.5 h-3.5 text-slate-500" />
+                    <span>Save Draft</span>
+                  </button>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Campaign Title / Internal Headline
@@ -680,6 +821,7 @@ export default function BroadcastPage() {
                   type="text"
                   value={campaignTitle}
                   onChange={(e) => setCampaignTitle(e.target.value)}
+                  onBlur={() => handleSaveDraft(true)}
                   placeholder="e.g. Exclusive 2026/2027 Global University Scholarships"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 font-semibold"
                 />
@@ -693,6 +835,7 @@ export default function BroadcastPage() {
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
+                  onBlur={() => handleSaveDraft(true)}
                   placeholder="e.g. Confirmed: UK & Canada Scholarship Allocations 2026"
                   className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 font-semibold"
                 />
@@ -706,6 +849,7 @@ export default function BroadcastPage() {
                   rows={9}
                   value={messageBody}
                   onChange={(e) => setMessageBody(e.target.value)}
+                  onBlur={() => handleSaveDraft(true)}
                   placeholder="Type your official announcement or promotional offer here..."
                   className="w-full px-4 py-3 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 leading-relaxed font-sans"
                 />
@@ -720,22 +864,32 @@ export default function BroadcastPage() {
                     type="text"
                     value={ctaText}
                     onChange={(e) => setCtaText(e.target.value)}
+                    onBlur={() => handleSaveDraft(true)}
                     placeholder="e.g. Claim Your Scholarship Assessment"
                     className="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:border-amber-500 font-medium"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    CTA Button Target Link
-                  </label>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      CTA Button Target Link
+                    </label>
+                    <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
+                      Auto-Saves
+                    </span>
+                  </div>
                   <input
                     type="text"
                     value={ctaLink}
                     onChange={(e) => setCtaLink(e.target.value)}
-                    placeholder="http://localhost:3000/book-appointment"
-                    className="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:border-amber-500 font-mono"
+                    onBlur={() => handleSaveDraft(true)}
+                    placeholder="https://fccglobaleducation.com/book-appointment"
+                    className="w-full px-4 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm focus:outline-none focus:border-amber-500 font-mono text-slate-800"
                   />
+                  <p className="text-[11px] text-slate-600 mt-1">
+                    Enter any URL (e.g. booking page, WhatsApp, or offer page). Changes stay saved permanently.
+                  </p>
                 </div>
               </div>
 
@@ -774,20 +928,32 @@ export default function BroadcastPage() {
                   </button>
                 </div>
 
-                {/* 1-Click Mass Send */}
-                <button
-                  type="button"
-                  disabled={isSending}
-                  onClick={() => handleSendBroadcast(false)}
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/25 transition-all disabled:opacity-50 flex-shrink-0"
-                >
-                  <Send className={`w-4 h-4 ${isSending ? 'animate-bounce' : ''}`} />
-                  <span>
-                    {isSending
-                      ? 'Dispatching Campaign...'
-                      : `1-Click Send to All ${subscribers.length} Subscribers`}
-                  </span>
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    disabled={isSavingDraft}
+                    onClick={() => handleSaveDraft(false)}
+                    className="px-4 py-3 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-700 text-xs sm:text-sm font-bold flex items-center gap-2 transition shadow-sm"
+                  >
+                    <Save className="w-4 h-4 text-slate-500" />
+                    <span>{isSavingDraft ? 'Saving...' : 'Save Draft & Links'}</span>
+                  </button>
+
+                  {/* 1-Click Mass Send */}
+                  <button
+                    type="button"
+                    disabled={isSending}
+                    onClick={() => handleSendBroadcast(false)}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-extrabold text-sm shadow-lg shadow-amber-500/25 transition-all disabled:opacity-50 flex-shrink-0"
+                  >
+                    <Send className={`w-4 h-4 ${isSending ? 'animate-bounce' : ''}`} />
+                    <span>
+                      {isSending
+                        ? 'Dispatching Campaign...'
+                        : `1-Click Send to All ${subscribers.length} Subscribers`}
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>

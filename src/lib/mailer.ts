@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { db } from './db';
 import { EmailSettings } from './types';
 
-// Default FCC Global Education Branding
+// Default Fallback FCC Global Education Branding
 const BRAND = {
   companyName: 'FCC Global Education',
   tagline: 'Premier International Education & Visa Advisory',
@@ -10,12 +10,61 @@ const BRAND = {
   phone: '+44 (0) 20 7946 0912',
   email: 'admissions@fccglobaleducation.com',
   websiteUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://fccglobaleducation.com',
-  logoText: 'FCC Global Education',
 };
+
+// Dynamically fetch general settings from Database (CMS)
+export async function getBrandSettings() {
+  try {
+    const generalSettings: any = (await db.getTable('generalSettings')) || {};
+    const websiteUrl =
+      (generalSettings.websiteUrl || '').trim() ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      'https://fccglobaleducation.com';
+
+    let logoUrl = (generalSettings.logoUrl || '').trim();
+    if (logoUrl && logoUrl.startsWith('/')) {
+      // Relative URL -> convert to absolute URL so email clients like Gmail can load it
+      logoUrl = `${websiteUrl.replace(/\/$/, '')}${logoUrl}`;
+    }
+
+    const address = (generalSettings.address || '').trim() || BRAND.londonAddress;
+    const googleMapsUrl =
+      (generalSettings.googleMapsUrl || '').trim() ||
+      (generalSettings.mapsUrl || '').trim() ||
+      (address
+        ? `https://maps.google.com/?q=${encodeURIComponent(address)}`
+        : 'https://maps.google.com/?q=Berkeley+Square+House+London');
+
+    return {
+      companyName: (generalSettings.companyName || '').trim() || BRAND.companyName,
+      tagline: (generalSettings.tagline || '').trim() || BRAND.tagline,
+      address,
+      phone: (generalSettings.phone || '').trim() || BRAND.phone,
+      whatsapp: (generalSettings.whatsapp || '').trim() || BRAND.phone,
+      email: (generalSettings.email || '').trim() || BRAND.email,
+      websiteUrl,
+      logoUrl,
+      googleMapsUrl,
+    };
+  } catch {
+    return {
+      companyName: BRAND.companyName,
+      tagline: BRAND.tagline,
+      address: BRAND.londonAddress,
+      phone: BRAND.phone,
+      whatsapp: BRAND.phone,
+      email: BRAND.email,
+      websiteUrl: BRAND.websiteUrl,
+      logoUrl: '',
+      googleMapsUrl: 'https://maps.google.com/?q=Berkeley+Square+House+London',
+    };
+  }
+}
 
 async function getTransporter(overrideSettings?: Partial<EmailSettings>) {
   const currentSettings: EmailSettings = (await db.getTable('emailSettings')) || ({} as any);
   const emailSettings: EmailSettings = { ...currentSettings, ...overrideSettings };
+  const brand = await getBrandSettings();
 
   // 1. If valid SMTP configured in Admin Settings DB, use it
   if (emailSettings.smtpHost && emailSettings.smtpUser) {
@@ -30,12 +79,11 @@ async function getTransporter(overrideSettings?: Partial<EmailSettings>) {
           pass: emailSettings.smtpPass || '',
         },
         tls: {
-          // Essential for GoDaddy / cPanel shared hostings to prevent certificate rejection
           rejectUnauthorized: false,
         },
       }),
-      from: `"${emailSettings.senderName || BRAND.companyName}" <${emailSettings.senderEmail || emailSettings.smtpUser || BRAND.email}>`,
-      replyTo: emailSettings.replyToEmail || emailSettings.senderEmail || BRAND.email,
+      from: `"${emailSettings.senderName || brand.companyName}" <${emailSettings.senderEmail || emailSettings.smtpUser || brand.email}>`,
+      replyTo: emailSettings.replyToEmail || emailSettings.senderEmail || brand.email,
     };
   }
 
@@ -55,7 +103,7 @@ async function getTransporter(overrideSettings?: Partial<EmailSettings>) {
           rejectUnauthorized: false,
         },
       }),
-      from: `"${process.env.SMTP_FROM_NAME || BRAND.companyName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
+      from: `"${process.env.SMTP_FROM_NAME || brand.companyName}" <${process.env.SMTP_FROM || process.env.SMTP_USER}>`,
       replyTo: process.env.SMTP_REPLY_TO || process.env.SMTP_FROM || process.env.SMTP_USER,
     };
   }
@@ -75,8 +123,8 @@ async function getTransporter(overrideSettings?: Partial<EmailSettings>) {
 
   return {
     transporter: fallbackTransporter,
-    from: `"${BRAND.companyName}" <${BRAND.email}>`,
-    replyTo: BRAND.email,
+    from: `"${brand.companyName}" <${brand.email}>`,
+    replyTo: brand.email,
   };
 }
 
@@ -88,6 +136,8 @@ function wrapHtmlEmail({
   bodyHtml,
   ctaText,
   ctaLink,
+  ctaIcon = '📍',
+  brand,
 }: {
   previewText?: string;
   badgeText?: string;
@@ -95,58 +145,106 @@ function wrapHtmlEmail({
   bodyHtml: string;
   ctaText?: string;
   ctaLink?: string;
+  ctaIcon?: string;
+  brand?: {
+    companyName: string;
+    tagline: string;
+    address: string;
+    phone: string;
+    email: string;
+    websiteUrl: string;
+    logoUrl?: string;
+    googleMapsUrl?: string;
+  };
 }) {
+  const company = brand?.companyName || BRAND.companyName;
+  const tagline = brand?.tagline || BRAND.tagline;
+  const address = brand?.address || BRAND.londonAddress;
+  const phone = brand?.phone || BRAND.phone;
+  const email = brand?.email || BRAND.email;
+  const logo = brand?.logoUrl || '';
+
   return `
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>${headline}</title>
+  <!--[if mso]>
+  <style type="text/css">
+    body, table, td, a { font-family: Arial, Helvetica, sans-serif !important; }
+  </style>
+  <![endif]-->
   <style>
     body { margin: 0; padding: 0; background-color: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #0f172a; line-height: 1.6; }
     .wrapper { max-width: 620px; margin: 30px auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 35px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
-    .header { background: #0b1528; padding: 36px 32px 30px; text-align: center; border-bottom: 3px solid #f59e0b; }
-    .logo-badge { display: inline-block; background: #f59e0b; color: #0b1528; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-    .header h1 { margin: 0; color: #ffffff; font-size: 24px; font-weight: 800; letter-spacing: -0.5px; }
-    .header p { margin: 6px 0 0; color: #94a3b8; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+    .header { background: #0b1528; padding: 34px 32px 28px; text-align: center; border-bottom: 3px solid #f59e0b; }
+    .logo-badge { display: inline-block; background: #f59e0b; color: #0b1528; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
     .content { padding: 36px 32px; background: #ffffff; }
-    .badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; }
+    .badge { display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 14px; border: 1px solid #fde68a; }
     .headline { font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 16px; line-height: 1.3; }
-    .card-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 20px 0; }
-    .card-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #cbd5e1; font-size: 13px; }
-    .card-row:last-child { border-bottom: none; }
-    .card-label { color: #64748b; font-weight: 600; }
-    .card-value { color: #0f172a; font-weight: 700; text-align: right; }
-    .btn { display: inline-block; background: #f59e0b; color: #0b1528; font-size: 14px; font-weight: 800; text-decoration: none; padding: 14px 32px; border-radius: 10px; text-align: center; margin: 20px 0 10px; box-shadow: 0 4px 14px rgba(245,158,11,0.3); }
-    .footer { background: #f8fafc; padding: 24px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 11px; color: #64748b; }
+    .footer { background: #f8fafc; padding: 26px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #64748b; line-height: 1.6; }
     .footer a { color: #d97706; text-decoration: none; font-weight: 600; }
   </style>
 </head>
-<body>
+<body style="margin: 0; padding: 0; background-color: #f1f5f9; -webkit-font-smoothing: antialiased;">
   ${previewText ? `<div style="display:none;font-size:1px;color:#f1f5f9;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">${previewText}</div>` : ''}
-  <div class="wrapper">
-    <div class="header">
-      <span class="logo-badge">Official Advisory</span>
-      <h1>${BRAND.companyName}</h1>
-      <p>${BRAND.tagline}</p>
-    </div>
-    <div class="content">
-      ${badgeText ? `<span class="badge">${badgeText}</span>` : ''}
-      <h2 class="headline">${headline}</h2>
-      ${bodyHtml}
-      ${ctaText && ctaLink ? `
-      <div style="text-align: center;">
-        <a href="${ctaLink}" class="btn" target="_blank">${ctaText} &rarr;</a>
-      </div>` : ''}
-    </div>
-    <div class="footer">
-      <p style="margin: 0 0 8px; font-weight: 700; color: #0f172a;">${BRAND.companyName} &bull; International Advisory Directorate</p>
-      <p style="margin: 0 0 8px;">${BRAND.londonAddress}</p>
-      <p style="margin: 0 0 8px;">Direct Advisory Helpline: <a href="tel:${BRAND.phone.replace(/[^0-9+]/g, '')}">${BRAND.phone}</a> | <a href="mailto:${BRAND.email}">${BRAND.email}</a></p>
-      <p style="margin: 12px 0 0; font-size: 10px; color: #94a3b8;">&copy; 2026 ${BRAND.companyName}. All rights reserved. Confidential student correspondence under GDPR compliance.</p>
-    </div>
-  </div>
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f1f5f9; padding: 24px 12px;">
+    <tr>
+      <td align="center">
+        <div class="wrapper" style="max-width: 620px; width: 100%; margin: 0 auto; background: #ffffff; border-radius: 18px; overflow: hidden; box-shadow: 0 10px 35px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; text-align: left;">
+          
+          {/* Header with Official Logo & Brand Identity */}
+          <div class="header" style="background: #0b1528; padding: 34px 32px 28px; text-align: center; border-bottom: 3px solid #f59e0b;">
+            ${logo ? `
+              <div style="margin-bottom: 14px; text-align: center;">
+                <img src="${logo}" alt="${company}" style="max-height: 54px; max-width: 250px; height: auto; width: auto; display: inline-block; border: 0; outline: none; text-decoration: none;" />
+              </div>
+            ` : `
+              <div style="margin-bottom: 12px;">
+                <span class="logo-badge" style="display: inline-block; background: #f59e0b; color: #0b1528; font-size: 11px; font-weight: 800; padding: 4px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1.5px;">Official Advisory</span>
+              </div>
+            `}
+            <h1 style="margin: 0; color: #ffffff; font-size: 22px; font-weight: 800; letter-spacing: -0.5px;">${company}</h1>
+            <p style="margin: 6px 0 0; color: #94a3b8; font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px;">${tagline}</p>
+          </div>
+
+          {/* Content Body */}
+          <div class="content" style="padding: 36px 32px; background: #ffffff;">
+            ${badgeText ? `
+              <div style="margin-bottom: 14px;">
+                <span class="badge" style="display: inline-block; background: #fef3c7; color: #92400e; font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid #fde68a;">${badgeText}</span>
+              </div>
+            ` : ''}
+            <h2 class="headline" style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 16px; line-height: 1.3;">${headline}</h2>
+            ${bodyHtml}
+            ${ctaText && ctaLink ? `
+            {/* Redesigned Luxury High-End CTA Button (Bulletproof HTML Email Standard) */}
+            <table role="presentation" cellspacing="0" cellpadding="0" border="0" align="center" style="margin: 28px auto 14px; text-align: center;">
+              <tr>
+                <td align="center" style="border-radius: 12px; background: #0b1528; border: 1.5px solid #f59e0b; box-shadow: 0 6px 18px rgba(11,21,40,0.25);">
+                  <a href="${ctaLink}" target="_blank" style="display: inline-block; padding: 14px 32px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 800; color: #ffffff !important; text-decoration: none !important; border-radius: 12px; letter-spacing: 0.3px;">
+                    <span style="color: #f59e0b; margin-right: 8px; font-size: 16px;">${ctaIcon}</span><span style="color: #ffffff !important; text-decoration: none !important;">${ctaText}</span><span style="color: #f59e0b; margin-left: 8px; font-size: 16px;">&rarr;</span>
+                  </a>
+                </td>
+              </tr>
+            </table>` : ''}
+          </div>
+
+          {/* Dynamic Footer with CMS Address, Phone, & Email */}
+          <div class="footer" style="background: #f8fafc; padding: 26px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #64748b; line-height: 1.6;">
+            <p style="margin: 0 0 6px; font-weight: 800; color: #0f172a; font-size: 13px;">${company} &bull; International Advisory Directorate</p>
+            <p style="margin: 0 0 8px; color: #475569;">📍 ${address}</p>
+            <p style="margin: 0 0 8px;">Direct Advisory Helpline: <a href="tel:${phone.replace(/[^0-9+]/g, '')}" style="color: #d97706; text-decoration: none; font-weight: 700;">${phone}</a> | <a href="mailto:${email}" style="color: #d97706; text-decoration: none; font-weight: 700;">${email}</a></p>
+            <p style="margin: 14px 0 0; font-size: 11px; color: #94a3b8;">&copy; 2026 ${company}. All rights reserved. Confidential student correspondence under GDPR compliance.</p>
+          </div>
+
+        </div>
+      </td>
+    </tr>
+  </table>
 </body>
 </html>
 `;
@@ -176,58 +274,86 @@ export async function sendAppointmentConfirmation({
 }) {
   try {
     const { transporter, from, replyTo } = await getTransporter();
+    const brand = await getBrandSettings();
 
     const isOffice = meetingMode === 'in_person';
     const videoLink = meetingLink || 'https://meet.google.com/aur-aglb-edu';
 
     const bodyHtml = `
-      <p style="font-size: 15px; color: #334155;">Dear <strong>${fullName}</strong>,</p>
-      <p style="font-size: 14px; color: #475569;">
-        Thank you for scheduling your higher education consultation with <strong>FCC Global Education</strong>. We have confirmed your strategy appointment with our senior international admissions counselor.
+      <p style="font-size: 15px; color: #334155; margin: 0 0 12px;">Dear <strong>${fullName}</strong>,</p>
+      <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 20px;">
+        Thank you for scheduling your higher education consultation with <strong>${brand.companyName}</strong>. We have confirmed your strategy appointment with our senior international admissions counselor.
       </p>
 
-      <div class="card-box">
-        <div class="card-row">
-          <span class="card-label">Advisory Session</span>
-          <span class="card-value">${consultationType}</span>
-        </div>
-        <div class="card-row">
-          <span class="card-label">Consultation Format</span>
-          <span class="card-value" style="color: ${isOffice ? '#0284c7' : '#059669'}; font-weight: 800;">
+      {/* Rock-Solid Email-Client Proof HTML Table with clear spacing */}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin: 20px 0; overflow: hidden;">
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; width: 40%; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Advisory Session
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; width: 60%; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${consultationType}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Consultation Format
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: ${isOffice ? '#0284c7' : '#059669'}; font-weight: 800; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
             ${isOffice ? '🏢 In-Person Office Visit' : '📹 1-on-1 Online Video Call'}
-          </span>
-        </div>
-        <div class="card-row">
-          <span class="card-label">Scheduled Date</span>
-          <span class="card-value">${preferredDate}</span>
-        </div>
-        <div class="card-row">
-          <span class="card-label">Time Window</span>
-          <span class="card-value">${preferredTime} (UK / GMT)</span>
-        </div>
-        <div class="card-row">
-          <span class="card-label">Target Destination</span>
-          <span class="card-value">${targetCountry || 'Global / Multiple'}</span>
-        </div>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Scheduled Date
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${preferredDate}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Time Window
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${preferredTime} (UK / GMT)
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Target Destination
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${targetCountry || 'Global / Multiple'}
+          </td>
+        </tr>
         ${isOffice ? `
-        <div class="card-row">
-          <span class="card-label">Meeting Location</span>
-          <span class="card-value">${BRAND.londonAddress}</span>
-        </div>` : `
-        <div class="card-row">
-          <span class="card-label">Virtual Meeting Room</span>
-          <span class="card-value"><a href="${videoLink}" style="color:#d97706; font-weight:700;">Google Meet Video Room</a></span>
-        </div>`}
-      </div>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: top;">
+            Meeting Location
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; line-height: 1.5; vertical-align: top;">
+            ${brand.address}
+          </td>
+        </tr>` : `
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: middle;">
+            Virtual Meeting Room
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; text-align: right; vertical-align: middle;">
+            <a href="${videoLink}" target="_blank" style="color: #d97706 !important; font-weight: 700; text-decoration: underline !important;">Join Google Meet Room</a>
+          </td>
+        </tr>`}
+      </table>
 
-      <h4 style="font-size: 14px; color: #0f172a; margin: 18px 0 8px;">What to prepare for your session:</h4>
-      <ul style="font-size: 13px; color: #475569; padding-left: 20px; margin: 0 0 16px;">
+      <h4 style="font-size: 14px; color: #0f172a; margin: 22px 0 8px; font-weight: 700;">What to prepare for your session:</h4>
+      <ul style="font-size: 13px; color: #475569; padding-left: 20px; margin: 0 0 16px; line-height: 1.6;">
         <li>Provisional academic transcripts & grade sheets (High School / Bachelors).</li>
         <li>English proficiency score report (IELTS / TOEFL / PTE) or medium of instruction certificate.</li>
         <li>List of preferred degree programs and destination queries.</li>
       </ul>
-      <p style="font-size: 13px; color: #64748b;">
-        If you need to reschedule or have immediate questions, reply directly to this email or contact us via WhatsApp at <strong style="color: #0f172a;">${BRAND.phone}</strong>.
+      <p style="font-size: 13px; color: #64748b; margin: 0;">
+        If you need to reschedule or have immediate questions, reply directly to this email or contact us via WhatsApp at <strong style="color: #0f172a;">${brand.phone}</strong>.
       </p>
     `;
 
@@ -236,15 +362,17 @@ export async function sendAppointmentConfirmation({
       badgeText: isOffice ? 'In-Person Office Visit' : 'Video Call Confirmed',
       headline: 'Your Strategy Session is Booked',
       bodyHtml,
-      ctaText: isOffice ? 'View Office Directions' : 'Join Video Consultation Room',
-      ctaLink: isOffice ? 'https://maps.google.com/?q=Berkeley+Square+House+London' : videoLink,
+      ctaText: isOffice ? 'View Office Directions on Google Maps' : 'Join Video Consultation Room',
+      ctaLink: isOffice ? brand.googleMapsUrl : videoLink,
+      ctaIcon: isOffice ? '📍' : '🎥',
+      brand,
     });
 
     const info = await transporter.sendMail({
       from,
       replyTo,
       to: email,
-      subject: `Confirmed: Your FCC Global Education Strategy Call on ${preferredDate} at ${preferredTime}`,
+      subject: `Confirmed: Your ${brand.companyName} Strategy Call on ${preferredDate} at ${preferredTime}`,
       html,
     });
 
@@ -252,6 +380,169 @@ export async function sendAppointmentConfirmation({
     return { success: true, messageId: info.messageId };
   } catch (err: any) {
     console.warn('[Mailer Warning] Could not send appointment confirmation email:', err?.message || err);
+    return { success: false, error: err?.message };
+  }
+}
+
+// 1b. Send Appointment Rescheduled Email to Student
+export async function sendAppointmentRescheduledEmail({
+  fullName,
+  email,
+  consultationType,
+  oldDate,
+  oldTime,
+  newDate,
+  newTime,
+  targetCountry,
+  meetingLink,
+  meetingMode,
+  rescheduleReason,
+}: {
+  fullName: string;
+  email: string;
+  consultationType: string;
+  oldDate?: string;
+  oldTime?: string;
+  newDate: string;
+  newTime: string;
+  targetCountry?: string;
+  meetingLink?: string;
+  meetingMode?: 'video' | 'in_person';
+  rescheduleReason?: string;
+}) {
+  try {
+    const { transporter, from, replyTo } = await getTransporter();
+    const brand = await getBrandSettings();
+
+    const isOffice = meetingMode === 'in_person';
+    const videoLink = meetingLink || 'https://meet.google.com/aur-aglb-edu';
+
+    const bodyHtml = `
+      <p style="font-size: 15px; color: #334155; margin: 0 0 12px;">Dear <strong>${fullName}</strong>,</p>
+      <p style="font-size: 14px; color: #475569; line-height: 1.6; margin: 0 0 18px;">
+        Please note that your higher education admissions strategy consultation with <strong>${brand.companyName}</strong> has been <strong>rescheduled to a new time slot</strong>.
+      </p>
+
+      {/* Reschedule Notice Banner */}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 18px; background-color: #eff6ff; border: 1.5px solid #bfdbfe; border-radius: 12px; padding: 14px 18px;">
+        <tr>
+          <td>
+            <div style="font-size: 12px; font-weight: 800; color: #1e40af; text-transform: uppercase; letter-spacing: 0.5px;">
+              🔄 Appointment Reschedule Notice
+            </div>
+            <div style="font-size: 13px; color: #1e3a8a; margin-top: 4px; line-height: 1.5;">
+              Your consultation has been shifted to: <strong style="color: #0b1528;">${newDate} at ${newTime} (UK / GMT)</strong>.
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      {/* Rock-Solid Email Table with Clear Spacing */}
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width: 100%; border-collapse: collapse; background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin: 18px 0; overflow: hidden;">
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; width: 40%; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Advisory Session
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; width: 60%; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${consultationType}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            New Rescheduled Date
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #059669; font-weight: 800; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${newDate}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            New Time Slot
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #059669; font-weight: 800; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${newTime} (UK / GMT)
+          </td>
+        </tr>
+        ${oldDate ? `
+        <tr>
+          <td style="padding: 13px 18px; font-size: 12px; color: #94a3b8; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Previous Slot
+          </td>
+          <td style="padding: 13px 18px; font-size: 12px; color: #94a3b8; text-decoration: line-through; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${oldDate} ${oldTime ? `at ${oldTime}` : ''}
+          </td>
+        </tr>` : ''}
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Consultation Format
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: ${isOffice ? '#0284c7' : '#059669'}; font-weight: 800; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${isOffice ? '🏢 In-Person Office Visit' : '📹 1-on-1 Online Video Call'}
+          </td>
+        </tr>
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            Target Destination
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; border-bottom: 1px solid #e2e8f0; vertical-align: middle;">
+            ${targetCountry || 'Global / Multiple'}
+          </td>
+        </tr>
+        ${isOffice ? `
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: top;">
+            Meeting Location
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; line-height: 1.5; vertical-align: top;">
+            ${brand.address}
+          </td>
+        </tr>` : `
+        <tr>
+          <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: middle;">
+            Virtual Meeting Room
+          </td>
+          <td style="padding: 13px 18px; font-size: 13px; text-align: right; vertical-align: middle;">
+            <a href="${videoLink}" target="_blank" style="color: #d97706 !important; font-weight: 700; text-decoration: underline !important;">Join Google Meet Room</a>
+          </td>
+        </tr>`}
+      </table>
+
+      ${rescheduleReason ? `
+      <div style="background-color: #f8fafc; border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 18px 0; border-radius: 0 8px 8px 0;">
+        <span style="font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">Note from Counselor:</span>
+        <p style="margin: 6px 0 0; font-size: 13px; color: #334155; font-style: italic;">
+          "${rescheduleReason}"
+        </p>
+      </div>` : ''}
+
+      <p style="font-size: 13px; color: #64748b; margin: 18px 0 0; line-height: 1.6;">
+        If this updated time slot does not suit you or if you need to choose an alternative date, please reply directly to this email or contact us via WhatsApp at <strong style="color: #0f172a;">${brand.phone}</strong>.
+      </p>
+    `;
+
+    const html = wrapHtmlEmail({
+      previewText: `Rescheduled: Your consultation is now on ${newDate} at ${newTime}`,
+      badgeText: 'Slot Rescheduled',
+      headline: 'Your Consultation Has Been Rescheduled',
+      bodyHtml,
+      ctaText: isOffice ? 'View Office Directions on Google Maps' : 'Join Video Consultation Room',
+      ctaLink: isOffice ? brand.googleMapsUrl : videoLink,
+      ctaIcon: isOffice ? '📍' : '🎥',
+      brand,
+    });
+
+    const info = await transporter.sendMail({
+      from,
+      replyTo,
+      to: email,
+      subject: `Rescheduled: Your ${brand.companyName} Strategy Call is now on ${newDate} at ${newTime}`,
+      html,
+    });
+
+    console.log(`[Email Sent] Appointment reschedule notification to ${email} (MessageId: ${info.messageId})`);
+    return { success: true, messageId: info.messageId };
+  } catch (err: any) {
+    console.warn('[Mailer Warning] Could not send appointment rescheduled email:', err?.message || err);
     return { success: false, error: err?.message };
   }
 }
@@ -274,6 +565,7 @@ export async function sendLeadReplyEmail({
 }) {
   try {
     const { transporter, from, replyTo } = await getTransporter();
+    const brand = await getBrandSettings();
 
     const formattedReply = replyMessage.replace(/\n/g, '<br />');
 
@@ -294,24 +586,26 @@ export async function sendLeadReplyEmail({
 
       <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid #e2e8f0;">
         <p style="margin: 0; font-size: 13px; font-weight: 700; color: #0f172a;">${counselorName || 'Senior International Admissions Advisor'}</p>
-        <p style="margin: 2px 0 0; font-size: 12px; color: #64748b;">FCC Global Education Consultants &bull; London & Global Centers</p>
+        <p style="margin: 2px 0 0; font-size: 12px; color: #64748b;">${brand.companyName} Consultants &bull; Global Directorate</p>
       </div>
     `;
 
     const html = wrapHtmlEmail({
-      previewText: `Response to your inquiry from FCC Global Education`,
+      previewText: `Response to your inquiry from ${brand.companyName}`,
       badgeText: 'Official Response',
       headline: subject || 'Response to Your Admissions Inquiry',
       bodyHtml,
       ctaText: 'Schedule a Free 1-on-1 Consultation',
-      ctaLink: `${BRAND.websiteUrl}/book-appointment`,
+      ctaLink: `${brand.websiteUrl}/book-appointment`,
+      ctaIcon: '📅',
+      brand,
     });
 
     const info = await transporter.sendMail({
       from,
       replyTo,
       to,
-      subject: subject || `Re: Your Inquiry with FCC Global Education`,
+      subject: subject || `Re: Your Inquiry with ${brand.companyName}`,
       html,
     });
 
@@ -341,6 +635,7 @@ export async function sendBroadcastEmail({
 }) {
   try {
     const { transporter, from, replyTo } = await getTransporter();
+    const brand = await getBrandSettings();
 
     const formattedBody = messageBody.replace(/\n/g, '<br />');
 
@@ -356,17 +651,17 @@ export async function sendBroadcastEmail({
       headline: campaignTitle || subject,
       bodyHtml,
       ctaText: ctaText || 'Explore Opportunities',
-      ctaLink: ctaLink || 'http://localhost:3000',
+      ctaLink: ctaLink || brand.websiteUrl,
+      ctaIcon: '🚀',
+      brand,
     });
 
-    // Send in batches or BCC to respect privacy
     const results = {
       total: toEmails.length,
       sent: 0,
       failed: 0,
     };
 
-    // Filter valid emails
     const validEmails = toEmails.filter((e) => e && e.includes('@'));
 
     for (const recipient of validEmails) {
@@ -397,16 +692,17 @@ export async function sendBroadcastEmail({
 export async function sendNewsletterWelcomeEmail(toEmail: string) {
   try {
     const { transporter, from, replyTo } = await getTransporter();
+    const brand = await getBrandSettings();
 
     const bodyHtml = `
       <p style="font-size: 15px; color: #334155;">Hello,</p>
       <p style="font-size: 14px; color: #475569;">
-        Welcome to the <strong>FCC Global Education Intelligence Digest</strong>! You are now subscribed to receive our bi-weekly updates covering:
+        Welcome to the <strong>${brand.companyName} Intelligence Digest</strong>! You are now subscribed to receive our updates covering:
       </p>
-      <ul style="font-size: 13px; color: #475569; padding-left: 20px; margin: 0 0 16px;">
+      <ul style="font-size: 13px; color: #475569; padding-left: 20px; margin: 0 0 16px; line-height: 1.6;">
         <li>Exclusive 2026/2027 university scholarships & tuition fee waivers.</li>
         <li>UK Graduate Route, US STEM OPT, and Canadian PGWP visa policy briefings.</li>
-        <li>Deadlines for Russell Group, Ivy League, Group of Eight, and German public universities.</li>
+        <li>Deadlines for Russell Group, Ivy League, Group of Eight, and European public universities.</li>
       </ul>
       <p style="font-size: 13px; color: #64748b;">
         Whenever you are ready to evaluate your transcripts or need fast-track offer letter guidance, our senior advisors are ready to assist you.
@@ -414,19 +710,21 @@ export async function sendNewsletterWelcomeEmail(toEmail: string) {
     `;
 
     const html = wrapHtmlEmail({
-      previewText: 'Welcome to FCC Global Education Insights',
+      previewText: `Welcome to ${brand.companyName} Insights`,
       badgeText: 'Subscription Confirmed',
       headline: 'Welcome to Insider Admissions Intelligence',
       bodyHtml,
       ctaText: 'Book Free Profile Evaluation',
-      ctaLink: `${BRAND.websiteUrl}/book-appointment`,
+      ctaLink: `${brand.websiteUrl}/book-appointment`,
+      ctaIcon: '🎓',
+      brand,
     });
 
     const info = await transporter.sendMail({
       from,
       replyTo,
       to: toEmail,
-      subject: 'Welcome to FCC Global Education Insights & Scholarship Alerts',
+      subject: `Welcome to ${brand.companyName} Insights & Scholarship Alerts`,
       html,
     });
 
@@ -447,6 +745,7 @@ export async function sendTestEmail({
 }) {
   try {
     const { transporter, from, replyTo } = await getTransporter(settings);
+    const brand = await getBrandSettings();
 
     // Verify SMTP connection and credentials first
     await transporter.verify();
@@ -459,14 +758,14 @@ export async function sendTestEmail({
       <p style="font-size: 14px; color: #334155; line-height: 1.6;">
         Congratulations! Your <strong>GoDaddy / Custom Domain SMTP configuration</strong> is successfully connected and authenticated.
       </p>
-      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 20px 0;">
+      <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 18px; margin: 20px 0;">
         <div style="font-size: 13px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">Active SMTP Parameters:</div>
         <table style="width: 100%; font-size: 13px; color: #475569; border-collapse: collapse;">
-          <tr><td style="padding: 4px 0; font-weight: 600;">SMTP Host:</td><td style="color: #0f172a; font-family: monospace;">${hostName}</td></tr>
-          <tr><td style="padding: 4px 0; font-weight: 600;">SMTP Port:</td><td style="color: #0f172a; font-family: monospace;">${portNum}</td></tr>
-          <tr><td style="padding: 4px 0; font-weight: 600;">Sender From:</td><td style="color: #0f172a;">${from}</td></tr>
-          <tr><td style="padding: 4px 0; font-weight: 600;">Test Recipient:</td><td style="color: #0f172a;">${toEmail}</td></tr>
-          <tr><td style="padding: 4px 0; font-weight: 600;">Verified At:</td><td style="color: #0f172a;">${new Date().toLocaleString('en-GB')}</td></tr>
+          <tr><td style="padding: 5px 0; font-weight: 600;">SMTP Host:</td><td style="color: #0f172a; font-family: monospace;">${hostName}</td></tr>
+          <tr><td style="padding: 5px 0; font-weight: 600;">SMTP Port:</td><td style="color: #0f172a; font-family: monospace;">${portNum}</td></tr>
+          <tr><td style="padding: 5px 0; font-weight: 600;">Sender From:</td><td style="color: #0f172a;">${from}</td></tr>
+          <tr><td style="padding: 5px 0; font-weight: 600;">Test Recipient:</td><td style="color: #0f172a;">${toEmail}</td></tr>
+          <tr><td style="padding: 5px 0; font-weight: 600;">Verified At:</td><td style="color: #0f172a;">${new Date().toLocaleString('en-GB')}</td></tr>
         </table>
       </div>
       <p style="font-size: 13px; color: #64748b; line-height: 1.6;">
@@ -480,14 +779,16 @@ export async function sendTestEmail({
       headline: 'Email Server Verified & Ready! 🚀',
       bodyHtml,
       ctaText: 'Open Admin Dashboard',
-      ctaLink: `${BRAND.websiteUrl}/admin`,
+      ctaLink: `${brand.websiteUrl}/admin`,
+      ctaIcon: '⚡',
+      brand,
     });
 
     const info = await transporter.sendMail({
       from,
       replyTo,
       to: toEmail,
-      subject: `✅ FCC Global Education — GoDaddy / Custom SMTP Test Successful`,
+      subject: `✅ ${brand.companyName} — GoDaddy / Custom SMTP Test Successful`,
       html,
     });
 
@@ -505,4 +806,3 @@ export async function sendTestEmail({
     };
   }
 }
-

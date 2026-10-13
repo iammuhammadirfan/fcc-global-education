@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { db, addSubscriber } from '@/lib/db';
 import { Appointment } from '@/lib/types';
 import { saveAppointmentToMySQL } from '@/lib/mysql';
-import { sendAppointmentConfirmation } from '@/lib/mailer';
+import { sendAppointmentConfirmation, sendAppointmentRescheduledEmail } from '@/lib/mailer';
 
 // Public submission of appointment booking
 export async function POST(request: Request) {
@@ -132,7 +132,9 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
   try {
     const body = await request.json();
-    const { id, status, preferredDate, preferredTime, meetingLink, notes } = body;
+    const { id, status, meetingLink, notes } = body;
+    const preferredDate = body.preferredDate || body.date;
+    const preferredTime = body.preferredTime || body.time;
 
     if (!id) {
       return NextResponse.json({ error: 'Appointment ID is required' }, { status: 400 });
@@ -145,6 +147,10 @@ export async function PATCH(request: Request) {
       return NextResponse.json({ error: 'Appointment not found' }, { status: 404 });
     }
 
+    const originalAppt = { ...appointments[index] };
+    const oldDate = originalAppt.preferredDate || (originalAppt as any).date;
+    const oldTime = originalAppt.preferredTime || (originalAppt as any).time;
+
     if (status) appointments[index].status = status;
     if (preferredDate) appointments[index].preferredDate = preferredDate;
     if (preferredTime) appointments[index].preferredTime = preferredTime;
@@ -154,7 +160,26 @@ export async function PATCH(request: Request) {
 
     await db.updateTable('appointments', appointments);
 
-    return NextResponse.json({ success: true, appointment: appointments[index] });
+    const updatedAppt = appointments[index];
+
+    // If status is rescheduled, or if new date/time was set and reschedule email requested
+    if (status === 'rescheduled' || body.sendRescheduleEmail === true) {
+      sendAppointmentRescheduledEmail({
+        fullName: updatedAppt.fullName || (updatedAppt as any).studentName || 'Student Applicant',
+        email: updatedAppt.email,
+        consultationType: updatedAppt.consultationType || 'Advisory Consultation',
+        oldDate,
+        oldTime,
+        newDate: updatedAppt.preferredDate || (updatedAppt as any).date || preferredDate,
+        newTime: updatedAppt.preferredTime || (updatedAppt as any).time || preferredTime,
+        targetCountry: updatedAppt.targetCountry || (updatedAppt as any).country,
+        meetingLink: updatedAppt.meetingLink,
+        meetingMode: updatedAppt.meetingMode,
+        rescheduleReason: notes || body.reason || undefined,
+      }).catch((err) => console.warn('[Reschedule Email Dispatch Warning]:', err));
+    }
+
+    return NextResponse.json({ success: true, appointment: updatedAppt });
   } catch {
     return NextResponse.json({ error: 'Failed to update appointment' }, { status: 500 });
   }

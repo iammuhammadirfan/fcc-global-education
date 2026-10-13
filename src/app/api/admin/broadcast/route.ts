@@ -106,11 +106,14 @@ export async function GET(request: Request) {
       manual: subscribers.filter((s) => s.source === 'manual').length,
     };
 
+    const draft = (await db.getTable('broadcastDraft')) || null;
+
     return NextResponse.json({
       success: true,
       subscribers,
       campaigns,
       stats,
+      draft,
     });
   } catch (error: any) {
     console.error('[Admin Broadcast GET Error]:', error);
@@ -118,11 +121,30 @@ export async function GET(request: Request) {
   }
 }
 
-// POST: Add subscriber manually OR send broadcast
+// POST: Add subscriber manually, save draft, OR send broadcast
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const action = body.action || 'send_broadcast';
+
+    // Action 0: Save Campaign Composer Draft / Content
+    if (action === 'save_draft') {
+      const { subject, campaignTitle, messageBody, ctaText, ctaLink } = body;
+      const draft = {
+        subject: subject ?? '',
+        campaignTitle: campaignTitle ?? '',
+        messageBody: messageBody ?? '',
+        ctaText: ctaText ?? '',
+        ctaLink: ctaLink ?? '',
+        updatedAt: new Date().toISOString(),
+      };
+      await db.updateTable('broadcastDraft', draft);
+      return NextResponse.json({
+        success: true,
+        message: 'Broadcast draft and links saved successfully.',
+        draft,
+      });
+    }
 
     // Action 1: Add subscriber manually
     if (action === 'add_subscriber') {
@@ -151,6 +173,21 @@ export async function POST(request: Request) {
           { error: 'Email subject and message body are required.' },
           { status: 400 }
         );
+      }
+
+      // Auto-save the draft content whenever a broadcast is sent
+      try {
+        const draft = {
+          subject,
+          campaignTitle: campaignTitle || subject,
+          messageBody,
+          ctaText: ctaText || '',
+          ctaLink: ctaLink || '',
+          updatedAt: new Date().toISOString(),
+        };
+        await db.updateTable('broadcastDraft', draft);
+      } catch (e) {
+        console.warn('[Auto Save Draft Warning]:', e);
       }
 
       let recipients: string[] = [];
@@ -182,7 +219,7 @@ export async function POST(request: Request) {
         campaignTitle: campaignTitle || subject,
         messageBody,
         ctaText: ctaText || 'Explore Opportunities',
-        ctaLink: ctaLink || 'http://localhost:3000',
+        ctaLink: ctaLink || 'https://fccglobaleducation.com',
       });
 
       // Record campaign if sent to audience

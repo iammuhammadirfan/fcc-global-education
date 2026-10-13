@@ -109,17 +109,47 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
+    const idsParam = searchParams.get('ids');
 
-    if (!id) {
-      return NextResponse.json({ error: 'Record ID is required' }, { status: 400 });
+    let idsToDelete: string[] = [];
+    if (id) {
+      idsToDelete.push(id);
+    }
+    if (idsParam) {
+      idsToDelete.push(...idsParam.split(',').map((s) => s.trim()).filter(Boolean));
     }
 
+    // Also check JSON body if no query params provided
+    if (idsToDelete.length === 0) {
+      try {
+        const body = await request.json();
+        if (Array.isArray(body?.ids)) {
+          idsToDelete = body.ids;
+        } else if (body?.id) {
+          idsToDelete = [body.id];
+        }
+      } catch {
+        // request had no json body
+      }
+    }
+
+    if (idsToDelete.length === 0) {
+      return NextResponse.json({ error: 'Record ID(s) required for deletion' }, { status: 400 });
+    }
+
+    const idsSet = new Set(idsToDelete);
     let items: VisaSuccessItem[] = (await db.getTable('visaSuccess')) || [];
-    items = items.filter((it) => it.id !== id);
+    const beforeCount = items.length;
+    items = items.filter((it) => !idsSet.has(it.id));
+    const deletedCount = beforeCount - items.length;
 
     await db.updateTable('visaSuccess', items);
 
-    return NextResponse.json({ success: true, message: 'Record deleted successfully' });
+    return NextResponse.json({
+      success: true,
+      deletedCount,
+      message: `${deletedCount} records deleted successfully.`,
+    });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || 'Failed to delete record' }, { status: 500 });
   }

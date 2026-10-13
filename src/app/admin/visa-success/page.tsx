@@ -23,6 +23,12 @@ import {
   Award,
   Layers,
   ArrowRight,
+  Folder,
+  FolderUp,
+  AlertTriangle,
+  ChevronLeft,
+  ChevronRight,
+  Building,
 } from 'lucide-react';
 import { VisaSuccessItem, VisaSuccessPageSettings } from '@/lib/types';
 import ToggleSwitch from '@/components/admin/ToggleSwitch';
@@ -166,6 +172,36 @@ export default function AdminVisaSuccessPage() {
     setIsModalOpen(true);
   };
 
+  // --- BULK FOLDER UPLOAD STATE ---
+  const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
+  const [bulkCountry, setBulkCountry] = useState('United Kingdom');
+  const [bulkCountryCode, setBulkCountryCode] = useState('GB');
+  const [isCustomBulkCountry, setIsCustomBulkCountry] = useState(false);
+  const [customBulkCountryName, setCustomBulkCountryName] = useState('');
+  const [bulkApprovalDays, setBulkApprovalDays] = useState('Visa Approved');
+  const [bulkIntake, setBulkIntake] = useState('Fall 2026');
+  const [bulkFiles, setBulkFiles] = useState<File[]>([]);
+  const [bulkUploading, setBulkUploading] = useState(false);
+  const [bulkUploadProgress, setBulkUploadProgress] = useState({ current: 0, total: 0, percent: 0, statusText: '' });
+  const folderInputRef = useRef<HTMLInputElement>(null);
+  const multiFilesInputRef = useRef<HTMLInputElement>(null);
+
+  // --- GALLERY PAGINATION & SELECTION STATE ---
+  const [galleryPage, setGalleryPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
+  const [deletingBulk, setDeletingBulk] = useState(false);
+
+  const openBulkUploadModal = () => {
+    setIsBulkModalOpen(true);
+    setBulkFiles([]);
+    setIsCustomBulkCountry(false);
+    setCustomBulkCountryName('');
+    setBulkCountry('United Kingdom');
+    setBulkCountryCode('GB');
+    setBulkUploadProgress({ current: 0, total: 0, percent: 0, statusText: '' });
+  };
+
   const isOnHomepage = (item: VisaSuccessItem) => {
     return Boolean(item.showOnHomepage);
   };
@@ -175,6 +211,16 @@ export default function AdminVisaSuccessPage() {
     const newStatus = !currentStatus;
 
     if (newStatus) {
+      const hasValidName = Boolean(item.studentName?.trim() && item.studentName !== 'Visa Success Poster' && item.studentName !== 'Student Visa Success');
+      const hasValidUni = Boolean(item.university?.trim() && item.university !== 'Global University');
+
+      if (!hasValidName || !hasValidUni) {
+        alert(
+          '⚠️ Incomplete Information!\n\nHomepage slider par show karne ke liye is poster ka Student Name aur University bharna lazmi hai.\n\nMeherbani kar ke pehle is card ke "Edit" (pencil) icon par click karein aur Student Name & University save karein.'
+        );
+        return;
+      }
+
       const activeCount = items.filter((it) => Boolean(it.showOnHomepage)).length;
       if (activeCount >= 10) {
         alert('Homepage slider par maximum 10 results active ho sakte hain. Pehle kisi aur result ko remove karein.');
@@ -539,6 +585,112 @@ export default function AdminVisaSuccessPage() {
     setSettings({ ...settings, destinationFrameworks: list });
   };
 
+  // Bulk Upload Handlers
+  const handleFolderSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith('image/'));
+    if (files.length === 0) {
+      alert('Selected folder mein koi valid image (PNG, JPG, WEBP) nahi mili.');
+      return;
+    }
+    setBulkFiles(files);
+  };
+
+  const handleMultipleFilesSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []).filter((f) => f.type.startsWith('image/'));
+    if (files.length === 0) return;
+    setBulkFiles(files);
+  };
+
+  const handleBulkUploadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (bulkFiles.length === 0) {
+      alert('Meherbani kar ke pehle folder ya multiple images select karein.');
+      return;
+    }
+
+    const finalCountry = isCustomBulkCountry ? customBulkCountryName.trim() : bulkCountry;
+    if (!finalCountry) {
+      alert('Meherbani kar ke destination country select ya enter karein.');
+      return;
+    }
+
+    let code = 'GB';
+    if (finalCountry === 'United States') code = 'US';
+    else if (finalCountry === 'Canada') code = 'CA';
+    else if (finalCountry === 'Australia') code = 'AU';
+    else if (finalCountry === 'Germany') code = 'DE';
+    else if (finalCountry === 'Ireland') code = 'IE';
+    else if (finalCountry === 'New Zealand') code = 'NZ';
+    else if (finalCountry === 'Sweden') code = 'SE';
+    else if (finalCountry === 'Netherlands') code = 'NL';
+    else code = finalCountry.slice(0, 2).toUpperCase() || 'GL';
+
+    setBulkUploading(true);
+    setBulkUploadProgress({
+      current: 0,
+      total: bulkFiles.length,
+      percent: 0,
+      statusText: `Starting upload of ${bulkFiles.length} visa posters...`,
+    });
+
+    try {
+      const BATCH_SIZE = 10;
+      let totalUploaded = 0;
+
+      for (let i = 0; i < bulkFiles.length; i += BATCH_SIZE) {
+        const batch = bulkFiles.slice(i, i + BATCH_SIZE);
+        const formData = new FormData();
+        formData.append('country', finalCountry);
+        formData.append('countryCode', code);
+        formData.append('approvalDays', bulkApprovalDays);
+        formData.append('intake', bulkIntake);
+
+        batch.forEach((file) => {
+          formData.append('files', file);
+        });
+
+        const currentCount = Math.min(i + batch.length, bulkFiles.length);
+        const percent = Math.round((currentCount / bulkFiles.length) * 100);
+
+        setBulkUploadProgress({
+          current: currentCount,
+          total: bulkFiles.length,
+          percent: percent,
+          statusText: `Uploading ${currentCount} of ${bulkFiles.length} posters (${percent}%)...`,
+        });
+
+        const res = await fetch('/api/admin/visa-success/bulk', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const data = await res.json();
+        if (!data.success) {
+          throw new Error(data.error || 'Failed to upload batch');
+        }
+
+        totalUploaded += (data.count || batch.length);
+      }
+
+      setBulkUploadProgress({
+        current: bulkFiles.length,
+        total: bulkFiles.length,
+        percent: 100,
+        statusText: `All ${totalUploaded} visa posters successfully uploaded!`,
+      });
+
+      alert(`✅ Success: ${totalUploaded} Visa Posters folder se upload ho gaye hain!\n\nYe ab gallery aur /visa-success page par pagination ke sath live hain. Homepage slider ke liye aap kisi bhi poster ko "Edit" kar ke Student Name aur University add kar sakte hain.`);
+      setIsBulkModalOpen(false);
+      setBulkFiles([]);
+      fetchItems();
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message || 'Bulk upload failed. Please try again.');
+    } finally {
+      setBulkUploading(false);
+    }
+  };
+
   const countriesList = Array.from(new Set(items.map((it) => it.country).filter(Boolean)));
 
   const filtered = items.filter((it) => {
@@ -549,6 +701,78 @@ export default function AdminVisaSuccessPage() {
     const matchesCountry = selectedCountry === 'all' || it.country === selectedCountry;
     return matchesSearch && matchesCountry;
   });
+
+  const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+  const paginatedItems = filtered.slice((galleryPage - 1) * itemsPerPage, galleryPage * itemsPerPage);
+
+  // Selection helpers
+  const isItemSelected = (id: string) => selectedItemIds.includes(id);
+
+  const toggleSelectItem = (id: string) => {
+    setSelectedItemIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
+
+  const isAllPageSelected =
+    paginatedItems.length > 0 && paginatedItems.every((it) => selectedItemIds.includes(it.id));
+
+  const toggleSelectAllPage = () => {
+    if (isAllPageSelected) {
+      const pageIds = new Set(paginatedItems.map((it) => it.id));
+      setSelectedItemIds((prev) => prev.filter((id) => !pageIds.has(id)));
+    } else {
+      const pageIds = paginatedItems.map((it) => it.id);
+      setSelectedItemIds((prev) => Array.from(new Set([...prev, ...pageIds])));
+    }
+  };
+
+  const selectAllFiltered = () => {
+    setSelectedItemIds(filtered.map((it) => it.id));
+  };
+
+  const clearSelection = () => {
+    setSelectedItemIds([]);
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedItemIds.length === 0) return;
+    const count = selectedItemIds.length;
+    if (
+      !confirm(
+        `⚠️ Kya aap waqai in ${count} Visa Posters ko aik sath delete karna chahte hain?\n\nYe action permanent hai aur wapas nahi laya ja sakta.`
+      )
+    ) {
+      return;
+    }
+
+    setDeletingBulk(true);
+    try {
+      const res = await fetch('/api/admin/visa-success', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedItemIds }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setItems((prev) => prev.filter((it) => !selectedItemIds.includes(it.id)));
+        setSelectedItemIds([]);
+        alert(`✅ ${data.deletedCount || count} Visa Posters kamyabi se delete ho gaye.`);
+      } else {
+        alert(data.error || 'Failed to delete selected posters.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Delete operation failed. Please retry.');
+    } finally {
+      setDeletingBulk(false);
+    }
+  };
+
+  // Reset page when search or country changes
+  useEffect(() => {
+    setGalleryPage(1);
+  }, [search, selectedCountry]);
 
   return (
     <div className="space-y-6">
@@ -581,13 +805,25 @@ export default function AdminVisaSuccessPage() {
               <span>{savingSettings ? 'Saving Changes...' : saveSuccess ? 'Saved Live!' : 'Save Page Content'}</span>
             </button>
           ) : (
-            <button
-              onClick={openAddPosterModal}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-md shadow-amber-500/20 transition cursor-pointer"
-            >
-              <Upload className="w-4 h-4" />
-              Upload New Visa Poster
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={openBulkUploadModal}
+                className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center gap-2 shadow-md transition cursor-pointer border border-slate-700 hover:border-amber-400/50"
+              >
+                <FolderUp className="w-4 h-4 text-amber-400" />
+                <span>Bulk / Folder Upload</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={openAddPosterModal}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-xs flex items-center gap-2 shadow-md shadow-amber-500/20 transition cursor-pointer"
+              >
+                <Upload className="w-4 h-4" />
+                <span>Upload Single Poster</span>
+              </button>
+            </div>
           )}
 
           <a
@@ -1283,6 +1519,88 @@ export default function AdminVisaSuccessPage() {
             </select>
           </div>
 
+          {/* Bulk Select & Actions Bar */}
+          {filtered.length > 0 && (
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-3 sm:p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
+                {/* Select All on Page Checkbox */}
+                <label className="flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-800 select-none bg-slate-50 hover:bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 transition">
+                  <input
+                    type="checkbox"
+                    checked={isAllPageSelected}
+                    onChange={toggleSelectAllPage}
+                    className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer accent-amber-500"
+                  />
+                  <span>Select All on Page ({paginatedItems.length})</span>
+                </label>
+
+                {/* Select All in Entire Filtered List */}
+                {filtered.length > paginatedItems.length && (
+                  <button
+                    type="button"
+                    onClick={selectAllFiltered}
+                    className="text-xs font-semibold text-amber-700 hover:text-amber-800 underline cursor-pointer"
+                  >
+                    Select All {filtered.length} in Gallery
+                  </button>
+                )}
+
+                {/* Selected Count Indicator */}
+                {selectedItemIds.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-300 px-2.5 py-1 rounded-lg">
+                      ✓ {selectedItemIds.length} Selected
+                    </span>
+                    <button
+                      type="button"
+                      onClick={clearSelection}
+                      className="text-xs text-slate-500 hover:text-slate-800 underline cursor-pointer"
+                    >
+                      Clear Selection
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+                {/* Speed & Page Size Selector */}
+                <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                  <span className="font-semibold text-slate-500">Show:</span>
+                  <select
+                    value={itemsPerPage}
+                    onChange={(e) => {
+                      setItemsPerPage(Number(e.target.value));
+                      setGalleryPage(1);
+                    }}
+                    className="px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs"
+                  >
+                    <option value={8}>8 per page (Fastest)</option>
+                    <option value={12}>12 per page</option>
+                    <option value={24}>24 per page</option>
+                    <option value={48}>48 per page</option>
+                  </select>
+                </div>
+
+                {/* Bulk Delete Button */}
+                {selectedItemIds.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={handleDeleteSelected}
+                    disabled={deletingBulk}
+                    className="px-4 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-sm shadow-red-600/30 transition cursor-pointer animate-in fade-in duration-150 disabled:opacity-50"
+                  >
+                    {deletingBulk ? (
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Trash2 className="w-3.5 h-3.5" />
+                    )}
+                    <span>Delete Selected ({selectedItemIds.length})</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Grid of Visa Poster Cards */}
           {loading ? (
             <div className="p-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200">
@@ -1304,117 +1622,231 @@ export default function AdminVisaSuccessPage() {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-              {filtered.map((item) => (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group"
-                >
-                  {/* Card Poster Image */}
-                  <div
-                    className="relative aspect-[3/4] bg-slate-100 overflow-hidden cursor-pointer"
-                    onClick={() => setPreviewImage(item.visaLetterImage)}
-                  >
-                    <img
-                      src={item.visaLetterImage}
-                      alt={item.studentName || 'Visa Success Poster'}
-                      className="w-full h-full object-contain bg-white group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => {
-                        const target = e.currentTarget as HTMLImageElement;
-                        if (!target.src.includes('unsplash.com/photo-1544717305-2782549b5136')) {
-                          target.src =
-                            'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80';
-                        }
-                      }}
-                    />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                {paginatedItems.map((item) => {
+                  const isMissingInfo =
+                    !item.studentName?.trim() ||
+                    item.studentName === 'Student Visa Success' ||
+                    item.studentName === 'Visa Success Poster' ||
+                    !item.university?.trim() ||
+                    item.university === 'Global University';
+                  const isSelected = isItemSelected(item.id);
 
-                    {/* Top Badge */}
-                    <div className="absolute top-2.5 left-2.5">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow-xs">
-                        {item.approvalDays || 'Visa Approved'}
-                      </span>
-                    </div>
-
-                    {/* Hover Click to Zoom */}
-                    <div className="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <span className="px-3 py-1.5 rounded-xl bg-white text-slate-950 font-bold text-xs flex items-center gap-1 shadow-md">
-                        <Eye className="w-3.5 h-3.5 text-amber-600" /> Full Preview
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Card Info */}
-                  <div className="p-3.5 space-y-1.5">
-                    <div className="font-bold text-slate-900 text-xs truncate">
-                      {item.studentName || 'Visa Success Poster'}
-                    </div>
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
-                      <span className="flex items-center gap-1 font-semibold text-amber-700">
-                        <Globe className="w-3 h-3" /> {item.country}
-                      </span>
-                      <span>{item.approvalDays || 'Approved'}</span>
-                    </div>
-                  </div>
-
-                  {/* Homepage Slider Checkbox Option */}
-                  <div className={`px-3.5 py-2.5 border-t transition-colors flex items-center justify-between text-xs ${
-                    Boolean(item.showOnHomepage)
-                      ? 'bg-amber-50/90 border-amber-200'
-                      : 'bg-slate-50 border-slate-100'
-                  }`}>
-                    <label className="flex items-center gap-2 cursor-pointer text-slate-800 select-none w-full">
-                      <input
-                        type="checkbox"
-                        checked={Boolean(item.showOnHomepage)}
-                        onChange={() => toggleHomepageSlider(item)}
-                        className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer accent-amber-500"
-                      />
-                      <span className={Boolean(item.showOnHomepage) ? 'font-black text-amber-950 flex items-center gap-1 text-[11px]' : 'font-medium text-slate-600 hover:text-slate-900 text-[11px]'}>
-                        {Boolean(item.showOnHomepage) ? '★ On Homepage Slider (Active)' : '+ Add to Homepage Slider'}
-                      </span>
-                    </label>
-                  </div>
-
-                  {/* Card Footer Actions */}
-                  <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                    <button
-                      onClick={() => togglePublished(item)}
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition cursor-pointer ${
-                        item.published !== false
-                          ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
-                          : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                  return (
+                    <div
+                      key={item.id}
+                      className={`bg-white rounded-2xl border transition-all duration-300 flex flex-col justify-between group overflow-hidden ${
+                        isSelected
+                          ? 'border-amber-500 ring-2 ring-amber-400 shadow-md bg-amber-50/15'
+                          : 'border-slate-200 shadow-xs hover:shadow-lg'
                       }`}
                     >
-                      {item.published !== false ? (
-                        <>
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Live
-                        </>
-                      ) : (
-                        <>
-                          <XCircle className="w-3 h-3 text-slate-500" /> Hidden
-                        </>
-                      )}
-                    </button>
+                      {/* Card Poster Image with Anti-Crop Showcase */}
+                      <div
+                        className="relative aspect-[3/4] bg-slate-900/5 overflow-hidden cursor-pointer flex items-center justify-center select-none"
+                        onClick={() => setPreviewImage(item.visaLetterImage)}
+                      >
+                        {/* Ambient backdrop blur */}
+                        <img
+                          src={item.visaLetterImage}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-25 pointer-events-none"
+                        />
+                        {/* Foreground crisp image */}
+                        <img
+                          src={item.visaLetterImage}
+                          alt={item.studentName || 'Visa Success Poster'}
+                          className="relative z-10 w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300 drop-shadow-xs"
+                          onError={(e) => {
+                            const target = e.currentTarget as HTMLImageElement;
+                            if (!target.src.includes('unsplash.com/photo-1544717305-2782549b5136')) {
+                              target.src =
+                                'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80';
+                            }
+                          }}
+                        />
 
-                    <div className="flex items-center gap-1.5">
-                      <button
-                        onClick={() => openEditPosterModal(item)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-white border border-transparent hover:border-slate-200 transition cursor-pointer"
-                        title="Edit Record"
-                      >
-                        <Edit3 className="w-3.5 h-3.5" />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(item.id)}
-                        className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition"
-                        title="Delete Record"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
+                        {/* Top Left Speed Tag */}
+                        <div className="absolute top-2.5 left-2.5 z-20">
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-600 text-white shadow-xs">
+                            {item.approvalDays || 'Visa Approved'}
+                          </span>
+                        </div>
+
+                        {/* Top Right Multi-Select Checkbox */}
+                        <div
+                          className="absolute top-2.5 right-2.5 z-30"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <label className="flex items-center justify-center w-7 h-7 rounded-xl bg-white/95 backdrop-blur-md border border-slate-300 shadow-sm cursor-pointer hover:bg-white hover:scale-105 transition-all">
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => toggleSelectItem(item.id)}
+                              className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer accent-amber-500"
+                            />
+                          </label>
+                        </div>
+
+                        {/* Hover Click to Zoom */}
+                        <div className="absolute inset-0 z-20 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                          <span className="px-3 py-1.5 rounded-xl bg-white text-slate-950 font-bold text-xs flex items-center gap-1 shadow-md">
+                            <Eye className="w-3.5 h-3.5 text-amber-600" /> Full Preview
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Card Info */}
+                      <div className="p-3.5 space-y-1.5">
+                        <div className="flex items-center justify-between gap-1">
+                          <div className="font-bold text-slate-900 text-xs truncate" title={item.studentName || 'No Name Entered'}>
+                            {item.studentName?.trim() && item.studentName !== 'Student Visa Success' && item.studentName !== 'Visa Success Poster' ? (
+                              item.studentName
+                            ) : (
+                              <span className="text-amber-800 italic font-semibold">No Student Name</span>
+                            )}
+                          </div>
+                          {isMissingInfo && (
+                            <span className="text-[9px] bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded font-bold shrink-0" title="Student name and university required for homepage slider">
+                              Edit Needed
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between text-[11px] text-slate-500">
+                          <span className="flex items-center gap-1 font-semibold text-amber-700">
+                            <Globe className="w-3 h-3" /> {item.country}
+                          </span>
+                          <span>{item.approvalDays || 'Approved'}</span>
+                        </div>
+
+                        {item.university && item.university !== 'Global University' ? (
+                          <div className="text-[10px] text-slate-600 font-medium truncate flex items-center gap-1 pt-0.5">
+                            <Building className="w-3 h-3 text-amber-600 shrink-0" />
+                            <span className="truncate">{item.university}</span>
+                          </div>
+                        ) : (
+                          <div className="text-[10px] text-slate-400 italic flex items-center gap-1 pt-0.5">
+                            <Building className="w-3 h-3 text-slate-300 shrink-0" />
+                            <span>No University Set</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Homepage Slider Checkbox Option */}
+                      <div className={`px-3.5 py-2.5 border-t transition-colors flex items-center justify-between text-xs ${
+                        Boolean(item.showOnHomepage)
+                          ? 'bg-amber-50/90 border-amber-200'
+                          : 'bg-slate-50 border-slate-100'
+                      }`}>
+                        <label className="flex items-center gap-2 cursor-pointer text-slate-800 select-none w-full">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(item.showOnHomepage)}
+                            onChange={() => toggleHomepageSlider(item)}
+                            className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer accent-amber-500"
+                          />
+                          <span className={Boolean(item.showOnHomepage) ? 'font-black text-amber-950 flex items-center gap-1 text-[11px]' : 'font-medium text-slate-600 hover:text-slate-900 text-[11px]'}>
+                            {Boolean(item.showOnHomepage) ? '★ On Homepage Slider (Active)' : '+ Add to Homepage Slider'}
+                          </span>
+                        </label>
+                      </div>
+
+                      {/* Card Footer Actions */}
+                      <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                        <button
+                          onClick={() => togglePublished(item)}
+                          className={`px-2 py-0.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition cursor-pointer ${
+                            item.published !== false
+                              ? 'bg-emerald-100 text-emerald-800 hover:bg-emerald-200'
+                              : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                          }`}
+                        >
+                          {item.published !== false ? (
+                            <>
+                              <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Live
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="w-3 h-3 text-slate-500" /> Hidden
+                            </>
+                          )}
+                        </button>
+
+                        <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => openEditPosterModal(item)}
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-amber-700 hover:bg-white border border-transparent hover:border-slate-200 transition cursor-pointer"
+                            title="Edit Record (Add Name, University, etc.)"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(item.id)}
+                            className="p-1.5 rounded-lg text-slate-500 hover:text-red-600 hover:bg-red-50 border border-transparent hover:border-red-200 transition"
+                            title="Delete Record"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  );
+                })}
+              </div>
+
+              {/* Gallery Pagination Bar */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 pb-2 border-t border-slate-200">
+                <div className="text-xs text-slate-500 font-medium">
+                  Showing <span className="font-bold text-slate-900">{Math.min((galleryPage - 1) * itemsPerPage + 1, filtered.length)}</span> to{' '}
+                  <span className="font-bold text-slate-900">{Math.min(galleryPage * itemsPerPage, filtered.length)}</span> of{' '}
+                  <span className="font-bold text-slate-900">{filtered.length}</span> Total Visa Posters (Page {galleryPage} of {totalPages})
                 </div>
-              ))}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => setGalleryPage((p) => Math.max(1, p - 1))}
+                    disabled={galleryPage === 1}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" /> Previous
+                  </button>
+
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: totalPages }, (_, idx) => idx + 1)
+                      .filter((p) => p === 1 || p === totalPages || Math.abs(p - galleryPage) <= 2)
+                      .map((p, idx, arr) => (
+                        <React.Fragment key={p}>
+                          {idx > 0 && arr[idx - 1] !== p - 1 && (
+                            <span className="text-xs text-slate-400 px-1">...</span>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => setGalleryPage(p)}
+                            className={`w-8 h-8 rounded-xl text-xs font-bold transition cursor-pointer ${
+                              galleryPage === p
+                                ? 'bg-amber-500 text-slate-950 shadow-xs'
+                                : 'border border-slate-200 text-slate-700 hover:bg-slate-50'
+                            }`}
+                          >
+                            {p}
+                          </button>
+                        </React.Fragment>
+                      ))}
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setGalleryPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={galleryPage === totalPages}
+                    className="px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1 cursor-pointer"
+                  >
+                    Next <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
             </div>
           )}
         </div>
@@ -1812,6 +2244,329 @@ export default function AdminVisaSuccessPage() {
                   className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold cursor-pointer shadow-xs"
                 >
                   {editingFrameworkIndex !== null ? 'Update Card' : 'Add Card'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* MODAL: BULK / FOLDER VISA UPLOAD */}
+      {/* ========================================================================= */}
+      {isBulkModalOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150"
+          onClick={() => {
+            if (!bulkUploading) setIsBulkModalOpen(false);
+          }}
+        >
+          <div
+            className="bg-white border border-slate-200 rounded-3xl w-full max-w-xl shadow-2xl flex flex-col max-h-[92vh] overflow-hidden"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="sticky top-0 z-20 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center font-bold">
+                  <FolderUp className="w-5 h-5 text-amber-700" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 leading-tight">
+                    Bulk Folder & Multiple Visas Upload
+                  </h3>
+                  <p className="text-[11px] text-slate-500">
+                    Ek sath poora folder ya multiple visa letters upload karein
+                  </p>
+                </div>
+              </div>
+              {!bulkUploading && (
+                <button
+                  type="button"
+                  onClick={() => setIsBulkModalOpen(false)}
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 border border-slate-200 font-bold text-xs flex items-center gap-1.5 transition cursor-pointer"
+                  title="Close"
+                >
+                  <X className="w-4 h-4" />
+                  <span>Close</span>
+                </button>
+              )}
+            </div>
+
+            {/* Hidden Input Elements */}
+            <input
+              type="file"
+              ref={folderInputRef}
+              {...({ webkitdirectory: '', directory: '', multiple: true } as any)}
+              onChange={handleFolderSelect}
+              className="hidden"
+            />
+            <input
+              type="file"
+              ref={multiFilesInputRef}
+              multiple
+              accept="image/*"
+              onChange={handleMultipleFilesSelect}
+              className="hidden"
+            />
+
+            {/* Form Body */}
+            <form onSubmit={handleBulkUploadSubmit} className="flex-1 overflow-y-auto p-6 space-y-5 text-xs">
+              {/* Step 1: Destination Country (Required) */}
+              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200/90 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="block text-slate-900 font-bold text-xs flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-amber-600" />
+                    <span>1. Destination Country Select Karein (Required) *</span>
+                  </label>
+                  <span className="text-[10px] font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+                    Required
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500">
+                  Folder ke saray uploaded visas is country ke sath register honge.
+                </p>
+
+                <select
+                  value={isCustomBulkCountry ? 'Other' : bulkCountry}
+                  onChange={(e) => {
+                    const c = e.target.value;
+                    if (c === 'Other') {
+                      setIsCustomBulkCountry(true);
+                      setCustomBulkCountryName('');
+                      setBulkCountry('');
+                      setBulkCountryCode('GL');
+                    } else {
+                      setIsCustomBulkCountry(false);
+                      setCustomBulkCountryName('');
+                      setBulkCountry(c);
+                      let code = 'GB';
+                      if (c === 'United States') code = 'US';
+                      else if (c === 'Canada') code = 'CA';
+                      else if (c === 'Australia') code = 'AU';
+                      else if (c === 'Germany') code = 'DE';
+                      else if (c === 'Ireland') code = 'IE';
+                      else if (c === 'New Zealand') code = 'NZ';
+                      else if (c === 'Sweden') code = 'SE';
+                      else if (c === 'Netherlands') code = 'NL';
+                      setBulkCountryCode(code);
+                    }
+                  }}
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 font-semibold text-xs focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs"
+                >
+                  <option value="United Kingdom">United Kingdom (UK)</option>
+                  <option value="United States">United States (USA)</option>
+                  <option value="Canada">Canada</option>
+                  <option value="Australia">Australia</option>
+                  <option value="Germany">Germany</option>
+                  <option value="Ireland">Ireland</option>
+                  <option value="New Zealand">New Zealand</option>
+                  <option value="Sweden">Sweden</option>
+                  <option value="Netherlands">Netherlands</option>
+                  {countriesList
+                    .filter((c) => !STANDARD_COUNTRIES.includes(c))
+                    .map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  <option value="Other" className="font-bold text-amber-700">
+                    ★ Other (Enter Custom Country...)
+                  </option>
+                </select>
+
+                {isCustomBulkCountry && (
+                  <div className="pt-2 animate-in fade-in duration-150">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Enter custom country name..."
+                      value={customBulkCountryName}
+                      onChange={(e) => setCustomBulkCountryName(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-amber-300 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-semibold"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Step 2: Choose Folder or Multiple Images */}
+              <div className="space-y-3">
+                <label className="block text-slate-900 font-bold text-xs flex items-center gap-1.5">
+                  <Folder className="w-4 h-4 text-amber-600" />
+                  <span>2. Folder ya Multiple Files Select Karein *</span>
+                </label>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Select Entire Folder Button */}
+                  <div
+                    onClick={() => {
+                      if (!bulkUploading) folderInputRef.current?.click();
+                    }}
+                    className="p-4 rounded-2xl border-2 border-dashed border-amber-400 bg-amber-50/40 hover:bg-amber-50 hover:border-amber-500 transition-all flex flex-col items-center justify-center text-center cursor-pointer group space-y-2 select-none"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Folder className="w-5 h-5 text-amber-700" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900 text-xs">
+                        Select Entire Folder
+                      </div>
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        Computer se poora folder select karein
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Select Multiple Images Button */}
+                  <div
+                    onClick={() => {
+                      if (!bulkUploading) multiFilesInputRef.current?.click();
+                    }}
+                    className="p-4 rounded-2xl border-2 border-dashed border-cyan-400 bg-cyan-50/40 hover:bg-cyan-50 hover:border-cyan-500 transition-all flex flex-col items-center justify-center text-center cursor-pointer group space-y-2 select-none"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-cyan-100 border border-cyan-300 text-cyan-800 flex items-center justify-center group-hover:scale-105 transition-transform">
+                      <Upload className="w-5 h-5 text-cyan-700" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-slate-900 text-xs">
+                        Select Multiple Images
+                      </div>
+                      <p className="text-[10px] text-slate-500 mt-0.5">
+                        Multiple files (10, 20, 50+) pick karein
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Selected Files Preview List */}
+                {bulkFiles.length > 0 ? (
+                  <div className="p-3.5 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-2 animate-in fade-in duration-150">
+                    <div className="flex items-center justify-between">
+                      <div className="font-bold text-emerald-950 text-xs flex items-center gap-1.5">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                        <span>{bulkFiles.length} Visa Posters Selected Ready to Upload</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setBulkFiles([])}
+                        className="text-[10px] font-bold text-red-600 hover:text-red-800 cursor-pointer"
+                      >
+                        Clear List
+                      </button>
+                    </div>
+
+                    <div className="max-h-28 overflow-y-auto pr-1 space-y-1">
+                      {bulkFiles.slice(0, 15).map((f, i) => (
+                        <div
+                          key={i}
+                          className="text-[10px] text-emerald-800 bg-white/80 px-2 py-0.5 rounded border border-emerald-100 flex items-center justify-between"
+                        >
+                          <span className="truncate max-w-[320px]">{f.name}</span>
+                          <span className="text-slate-400 font-mono">
+                            {(f.size / (1024 * 1024)).toFixed(2)} MB
+                          </span>
+                        </div>
+                      ))}
+                      {bulkFiles.length > 15 && (
+                        <div className="text-[10px] text-emerald-700 font-semibold italic text-center">
+                          + {bulkFiles.length - 15} more files selected
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center text-[11px] text-slate-400 py-1">
+                    Abhi koi files select nahi ki gayin. Upar kisi bhi option par click karein.
+                  </div>
+                )}
+              </div>
+
+              {/* Step 3: Default Optional Settings */}
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block text-slate-700 mb-1 font-semibold text-[11px]">
+                    Default Approval Tag
+                  </label>
+                  <input
+                    type="text"
+                    value={bulkApprovalDays}
+                    onChange={(e) => setBulkApprovalDays(e.target.value)}
+                    placeholder="e.g. Visa Approved"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 mb-1 font-semibold text-[11px]">
+                    Default Intake
+                  </label>
+                  <input
+                    type="text"
+                    value={bulkIntake}
+                    onChange={(e) => setBulkIntake(e.target.value)}
+                    placeholder="e.g. Fall 2026"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium"
+                  />
+                </div>
+              </div>
+
+              {/* Informational Guidance Alert */}
+              <div className="p-3 bg-amber-50/80 rounded-2xl border border-amber-200 text-[11px] text-amber-950 space-y-1">
+                <div className="font-bold flex items-center gap-1.5 text-amber-900">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Important Note:</span>
+                </div>
+                <p className="leading-relaxed">
+                  Bulk upload hone ke baad saray posters <strong>Admin Gallery</strong> aur <strong>Public /visa-success</strong> page par pagination ke sath live ho jayenge.
+                  <br />
+                  <strong>Homepage Slider</strong> par show karne ke liye unka <strong>Student Name</strong> aur <strong>University</strong> lazmi hai, jo aap baad mein kisi bhi waqt card ke &ldquo;Edit&rdquo; icon par click kar ke add kar sakte hain.
+                </p>
+              </div>
+
+              {/* Live Upload Progress */}
+              {bulkUploading && (
+                <div className="p-4 bg-slate-900 text-white rounded-2xl space-y-2.5 animate-in fade-in duration-150">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold text-amber-400 flex items-center gap-1.5">
+                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                      <span>{bulkUploadProgress.statusText}</span>
+                    </span>
+                    <span className="font-mono font-bold">{bulkUploadProgress.percent}%</span>
+                  </div>
+                  <div className="w-full h-2 rounded-full bg-slate-800 overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-amber-400 to-amber-500 transition-all duration-300 rounded-full"
+                      style={{ width: `${bulkUploadProgress.percent}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Sticky Footer Submit Bar */}
+              <div className="sticky bottom-0 -mx-6 -mb-6 px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3 rounded-b-3xl mt-4">
+                <button
+                  type="button"
+                  disabled={bulkUploading}
+                  onClick={() => setIsBulkModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs cursor-pointer shadow-xs disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="submit"
+                  disabled={bulkUploading || bulkFiles.length === 0}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-xs shadow-md shadow-amber-500/25 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer flex items-center gap-2"
+                >
+                  {bulkUploading ? (
+                    <RefreshCw className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <FolderUp className="w-4 h-4" />
+                  )}
+                  <span>
+                    {bulkUploading
+                      ? 'Uploading Posters...'
+                      : `Start Bulk Upload (${bulkFiles.length} Posters)`}
+                  </span>
                 </button>
               </div>
             </form>
