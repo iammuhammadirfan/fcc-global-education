@@ -719,8 +719,8 @@ class DatabaseManager {
       const raw = fs.readFileSync(DB_FILE, 'utf-8');
       const parsed = JSON.parse(raw);
       let needsSave = false;
-      if (!parsed.visaSuccess || !Array.isArray(parsed.visaSuccess) || parsed.visaSuccess.length === 0) {
-        parsed.visaSuccess = initialVisaSuccessItems;
+      if (!parsed.visaSuccess || !Array.isArray(parsed.visaSuccess)) {
+        parsed.visaSuccess = [];
         needsSave = true;
       }
       if (!parsed.servicesPageSettings || typeof parsed.servicesPageSettings !== 'object') {
@@ -812,12 +812,8 @@ class DatabaseManager {
           ...current,
           ...mysqlData,
         };
-        if (!merged.visaSuccess || !Array.isArray(merged.visaSuccess) || merged.visaSuccess.length === 0) {
-          if (current.visaSuccess && current.visaSuccess.length > 0) {
-            merged.visaSuccess = current.visaSuccess;
-          } else {
-            merged.visaSuccess = initialVisaSuccessItems;
-          }
+        if (!merged.visaSuccess || !Array.isArray(merged.visaSuccess)) {
+          merged.visaSuccess = current.visaSuccess || [];
         }
         if (!merged.aboutPageSettings || typeof merged.aboutPageSettings !== 'object') {
           merged.aboutPageSettings = current.aboutPageSettings || createInitialDatabase().aboutPageSettings;

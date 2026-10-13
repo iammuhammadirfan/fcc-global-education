@@ -144,6 +144,7 @@ export async function DELETE(request: Request) {
     const deletedCount = beforeCount - items.length;
 
     await db.updateTable('visaSuccess', items);
+    db.clearCache();
 
     return NextResponse.json({
       success: true,

@@ -13,6 +13,8 @@ import {
   CheckCircle2,
   Globe2,
   Send,
+  Compass,
+  ExternalLink,
 } from 'lucide-react';
 import { countries as fallbackCountries } from '@/data/countries';
 import { services as fallbackServices } from '@/data/services';
@@ -233,6 +235,11 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
                   Contact Counselor
                 </Link>
               </li>
+              <li>
+                <Link href="/sitemap" className="text-amber-700 hover:text-amber-800 font-bold transition-colors flex items-center gap-1">
+                  <span>HTML Sitemap & Directory</span>
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -258,10 +265,153 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
           </div>
         </div>
 
+        {/* Website Crawler Directory & HTML Sitemap Section */}
+        <div className="py-8 border-b border-slate-200">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+            <div className="flex items-center gap-2">
+              <span className="w-6 h-6 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <Compass className="w-3.5 h-3.5" />
+              </span>
+              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                Website Directory & Search Engine Index
+              </h4>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] font-semibold">
+              <Link href="/sitemap" className="text-amber-700 hover:underline flex items-center gap-1">
+                <span>View Full HTML Sitemap</span>
+                <ArrowRight className="w-3 h-3" />
+              </Link>
+              <span className="text-slate-300">•</span>
+              <Link href="/sitemap.xml" target="_blank" className="text-slate-500 hover:text-slate-800 flex items-center gap-1 font-mono">
+                <span>XML Sitemap (Googlebot)</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 text-[11px]">
+            {/* Group 1: Destinations */}
+            <div>
+              <span className="font-bold text-slate-800 block mb-2 text-xs">Destinations</span>
+              <ul className="space-y-1.5 text-slate-500">
+                {(countries && countries.length > 0 ? countries : fallbackCountries).slice(0, 6).map((c: any) => (
+                  <li key={c.slug || c.id}>
+                    <Link href={`/destinations/${c.slug}`} className="hover:text-amber-700 transition-colors">
+                      Study in {c.name}
+                    </Link>
+                  </li>
+                ))}
+                <li>
+                  <Link href="/destinations" className="text-amber-700 font-semibold hover:underline">
+                    All Destinations →
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Group 2: More Destinations */}
+            <div>
+              <span className="font-bold text-slate-800 block mb-2 text-xs">Global Routes</span>
+              <ul className="space-y-1.5 text-slate-500">
+                {(countries && countries.length > 0 ? countries : fallbackCountries).slice(6, 12).map((c: any) => (
+                  <li key={c.slug || c.id}>
+                    <Link href={`/destinations/${c.slug}`} className="hover:text-amber-700 transition-colors">
+                      Study in {c.name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Group 3: Core Services */}
+            <div>
+              <span className="font-bold text-slate-800 block mb-2 text-xs">Admissions & Visa</span>
+              <ul className="space-y-1.5 text-slate-500">
+                <li><Link href="/services" className="hover:text-amber-700 transition-colors">Admissions Consulting</Link></li>
+                <li><Link href="/services" className="hover:text-amber-700 transition-colors">Student Visa Guidance</Link></li>
+                <li><Link href="/services" className="hover:text-amber-700 transition-colors">CAS & I-20 Compliance</Link></li>
+                <li><Link href="/services" className="hover:text-amber-700 transition-colors">Scholarship Advisory</Link></li>
+                <li><Link href="/services" className="hover:text-amber-700 transition-colors">Mock Consular Interviews</Link></li>
+                <li><Link href="/services" className="hover:text-amber-700 transition-colors">SOP & Resume Audit</Link></li>
+              </ul>
+            </div>
+
+            {/* Group 4: Student Portals */}
+            <div>
+              <span className="font-bold text-slate-800 block mb-2 text-xs">Student Success</span>
+              <ul className="space-y-1.5 text-slate-500">
+                <li><Link href="/visa-success" className="hover:text-amber-700 transition-colors">Visa Success Gallery</Link></li>
+                <li><Link href="/success-stories" className="hover:text-amber-700 transition-colors">Student Reviews & Videos</Link></li>
+                <li><Link href="/universities" className="hover:text-amber-700 transition-colors">Universities Directory</Link></li>
+                <li><Link href="/book-appointment" className="hover:text-amber-700 transition-colors">Book Advisory Session</Link></li>
+                <li><Link href="/faq" className="hover:text-amber-700 transition-colors">Admissions FAQs</Link></li>
+                <li><Link href="/blog" className="hover:text-amber-700 transition-colors">Knowledge Base & Guides</Link></li>
+              </ul>
+            </div>
+
+            {/* Group 5: Institutional */}
+            <div>
+              <span className="font-bold text-slate-800 block mb-2 text-xs">Company & About</span>
+              <ul className="space-y-1.5 text-slate-500">
+                <li><Link href="/about" className="hover:text-amber-700 transition-colors">About Leadership</Link></li>
+                <li><Link href="/contact" className="hover:text-amber-700 transition-colors">Contact Counselors</Link></li>
+                <li><Link href="/about" className="hover:text-amber-700 transition-colors">British Council Status</Link></li>
+                <li><Link href="/about" className="hover:text-amber-700 transition-colors">Accreditations</Link></li>
+                <li><Link href="/admin" className="hover:text-amber-700 transition-colors">Staff CRM Portal</Link></li>
+              </ul>
+            </div>
+
+            {/* Group 6: Crawler Feeds & Legal */}
+            <div>
+              <span className="font-bold text-slate-800 block mb-2 text-xs">Sitemaps & Crawlers</span>
+              <ul className="space-y-1.5 text-slate-500">
+                <li>
+                  <Link href="/sitemap" className="text-amber-700 font-semibold hover:underline flex items-center gap-1">
+                    <span>HTML Sitemap</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/sitemap.xml" target="_blank" className="hover:text-amber-700 transition-colors font-mono">
+                    sitemap.xml
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/robots.txt" target="_blank" className="hover:text-slate-800 transition-colors font-mono">
+                    robots.txt
+                  </Link>
+                </li>
+                <li><Link href="/privacy" className="hover:text-amber-700 transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/terms" className="hover:text-amber-700 transition-colors">Terms of Service</Link></li>
+                <li><Link href="/cookies" className="hover:text-amber-700 transition-colors">Cookie Notice</Link></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
         {/* Bottom Copyright Bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 text-center sm:text-left">
-          <div>{copyright}</div>
-          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-5 gap-y-2">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-500 text-center md:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+            <span>{copyright}</span>
+            <span className="hidden sm:inline text-slate-300">|</span>
+            <a
+              href="https://wa.me/923235502570?text=Hello%20MJDeveloper%2C%20I%20am%20contacting%20you%20regarding%20web%20development."
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Chat with MJDeveloper on WhatsApp (+92 323 5502570)"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 hover:bg-emerald-100 text-emerald-800 hover:text-emerald-900 border border-emerald-200/90 transition-all font-semibold shadow-2xs group"
+            >
+              <WhatsAppIcon className="w-3.5 h-3.5 text-emerald-600 group-hover:scale-110 transition-transform" />
+              <span>Developed by <strong className="font-bold text-emerald-700 underline decoration-emerald-400">MJDeveloper</strong></span>
+            </a>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-5 gap-y-2">
+            <Link href="/sitemap" className="hover:text-amber-700 font-semibold transition-colors">
+              Site Map
+            </Link>
+            <Link href="/sitemap.xml" target="_blank" className="hover:text-amber-700 transition-colors font-mono">
+              sitemap.xml
+            </Link>
             <Link href="/privacy" className="hover:text-slate-900 transition-colors">
               Privacy Policy
             </Link>
@@ -278,5 +428,13 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
         </div>
       </div>
     </footer>
+  );
+}
+
+function WhatsAppIcon({ className = 'w-4 h-4' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.311.045-.698.077-1.116-.062-.647-.216-1.571-.782-2.531-1.742-.96-.96-1.526-1.884-1.742-2.531-.139-.418-.107-.805-.062-1.116.05-.333.419-1.026.824-1.17.144-.051.299-.077.447-.077.108 0 .216.005.313.016.143.016.273.088.358.204.248.337.595 1.109.65 1.229.055.12.062.249-.009.38-.071.131-.144.204-.263.337l-.234.256c-.083.088-.172.18-.088.324.288.495.845 1.258 1.492 1.776.541.433.993.593 1.206.689.144.065.235.055.323-.044l.322-.387c.108-.13.242-.162.368-.113.126.049.914.431 1.072.509.158.078.263.118.301.183.038.065.038.375-.106.78z" />
+    </svg>
   );
 }
