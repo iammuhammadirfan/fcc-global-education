@@ -40,13 +40,20 @@ export default async function HomePage() {
   const allVideos = (await db.getTable('videos')) || [];
   const allVisaSuccess = (await db.getTable('visaSuccess')) || [];
   const allReviews = ((await db.getTable('reviews' as any)) as any) || [];
-  // 10 items for homepage slider (items with showOnHomepage === true, or fallback to first 10 published)
-  const selectedHomeItems = allVisaSuccess
-    .filter((it: any) => it.published !== false && it.showOnHomepage === true)
+  // Candidates eligible for Homepage Slider MUST have valid Student Name AND University filled in
+  const eligibleHomeCandidates = allVisaSuccess.filter((it: any) => {
+    const hasName = Boolean(it.studentName && it.studentName.trim() && it.studentName !== 'Visa Success Poster' && it.studentName !== 'Student Visa Success');
+    const hasUni = Boolean(it.university && it.university.trim() && it.university !== 'Global University');
+    return it.published !== false && hasName && hasUni;
+  });
+
+  const selectedHomeItems = eligibleHomeCandidates
+    .filter((it: any) => it.showOnHomepage === true)
     .slice(0, 10);
+
   const activeVisaSlider = selectedHomeItems.length > 0
     ? selectedHomeItems
-    : allVisaSuccess.filter((it: any) => it.published !== false).slice(0, 10);
+    : eligibleHomeCandidates.slice(0, 10);
   const homepageSettings = (await db.getTable('homepageSettings')) || {};
 
   // Dynamic statistics directly from database

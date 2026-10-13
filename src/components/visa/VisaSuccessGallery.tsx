@@ -119,14 +119,24 @@ function GalleryCard({
             </div>
           </div>
         ) : (
-          <img
-            ref={imgRef}
-            src={item.visaLetterImage}
-            alt={`${item.studentName} Visa Proof`}
-            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300 bg-white"
-            onLoad={() => setIsLoaded(true)}
-            onError={() => setImageError(true)}
-          />
+          <div className="relative w-full h-full flex items-center justify-center overflow-hidden bg-slate-900/5">
+            {/* Ambient matching backdrop blur so any aspect ratio looks seamless */}
+            <img
+              src={item.visaLetterImage}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover blur-lg scale-115 opacity-25 select-none pointer-events-none"
+            />
+            {/* Foreground crisp image without cropping or distorting */}
+            <img
+              ref={imgRef}
+              src={item.visaLetterImage}
+              alt={`${item.studentName || 'Student'} Visa Proof`}
+              className="relative z-10 w-full h-full object-contain p-1.5 group-hover:scale-105 transition-all duration-300 drop-shadow-xs select-none"
+              onLoad={() => setIsLoaded(true)}
+              onError={() => setImageError(true)}
+            />
+          </div>
         )}
 
         {/* Speed / Approval Tag */}
