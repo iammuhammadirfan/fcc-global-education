@@ -45,15 +45,17 @@ export async function POST(request: Request) {
     allReviews.unshift(newReview);
     await db.updateTable('reviews' as any, allReviews);
 
-    const actor = getClientActor(request);
+    const actor = await getClientActor(request);
     await logActivity({
-      action: 'create',
+      action: 'CREATE',
       entity: 'Review',
       entityId: newReview.id,
-      entityTitle: `${newReview.name} (${newReview.university}, ${newReview.country})`,
-      details: `New student review created with rating ${newReview.rating}/5`,
+      details: `New student review created by ${newReview.name} (${newReview.university}, ${newReview.country}) with rating ${newReview.rating}/5`,
+      userId: actor.userId,
+      userName: actor.userName,
       userEmail: actor.userEmail,
-      ipAddress: actor.ipAddress,
+      userRole: actor.userRole,
+      ip: actor.ip,
       userAgent: actor.userAgent,
     });
 
@@ -89,15 +91,17 @@ export async function PUT(request: Request) {
     allReviews[index] = updated;
     await db.updateTable('reviews' as any, allReviews);
 
-    const actor = getClientActor(request);
+    const actor = await getClientActor(request);
     await logActivity({
-      action: 'update',
+      action: 'UPDATE',
       entity: 'Review',
       entityId: updated.id,
-      entityTitle: `${updated.name} (${updated.university})`,
-      details: `Updated review status: ${updated.status}, homepage: ${updated.showOnHome}`,
+      details: `Updated review for ${updated.name} (${updated.university}). Status: ${updated.status}, homepage: ${updated.showOnHome}`,
+      userId: actor.userId,
+      userName: actor.userName,
       userEmail: actor.userEmail,
-      ipAddress: actor.ipAddress,
+      userRole: actor.userRole,
+      ip: actor.ip,
       userAgent: actor.userAgent,
     });
 
@@ -121,15 +125,17 @@ export async function DELETE(request: Request) {
     allReviews = allReviews.filter((r) => r.id !== id);
     await db.updateTable('reviews' as any, allReviews);
 
-    const actor = getClientActor(request);
+    const actor = await getClientActor(request);
     await logActivity({
-      action: 'delete',
+      action: 'DELETE',
       entity: 'Review',
       entityId: id,
-      entityTitle: target ? `${target.name} (${target.university})` : id,
-      details: `Deleted student review`,
+      details: `Deleted student review by ${target ? target.name : id}`,
+      userId: actor.userId,
+      userName: actor.userName,
       userEmail: actor.userEmail,
-      ipAddress: actor.ipAddress,
+      userRole: actor.userRole,
+      ip: actor.ip,
       userAgent: actor.userAgent,
     });
 

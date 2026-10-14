@@ -120,6 +120,7 @@ export interface Lead {
   phone: string;
   currentCountry?: string;
   targetCountry: string;
+  targetUniversity?: string;
   studyLevel: string;
   program?: string;
   academicScore?: string;
@@ -139,6 +140,7 @@ export interface Appointment {
   email: string;
   phone: string;
   targetCountry: string;
+  targetUniversity?: string;
   studyLevel: string;
   consultationType: string;
   preferredDate: string;
@@ -154,6 +156,7 @@ export interface Appointment {
   // Aliases for Admin Panel UI
   studentName?: string;
   country?: string;
+  university?: string;
   date?: string;
   time?: string;
   whatsapp?: string;

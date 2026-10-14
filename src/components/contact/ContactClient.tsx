@@ -258,6 +258,7 @@ export default function ContactClient({
                   </div>
                 </div>
 
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Study Level */}
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1.5">
@@ -274,20 +275,20 @@ export default function ContactClient({
                       <option value="PhD">Doctoral / PhD Fellowship</option>
                     </select>
                   </div>
-                </div>
 
-                {/* Interested Program */}
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Target Course or Specialization
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. MSc Data Science, Mechanical Engineering, LLM"
-                    value={formData.program}
-                    onChange={(e) => setFormData({ ...formData, program: e.target.value })}
-                    className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                  />
+                  {/* Interested Program */}
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                      Target Course or Specialization
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. MSc Data Science, Mechanical Engineering, LLM"
+                      value={formData.program}
+                      onChange={(e) => setFormData({ ...formData, program: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 transition-colors"
+                    />
+                  </div>
                 </div>
 
                 {/* Message */}
