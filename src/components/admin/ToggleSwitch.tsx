@@ -6,7 +6,7 @@ import { Check, X } from 'lucide-react';
 interface ToggleSwitchProps {
   checked: boolean;
   onChange: (checked: boolean) => void;
-  label: string;
+  label?: string;
   description?: string;
   activeColor?: 'emerald' | 'amber' | 'blue';
   disabled?: boolean;
@@ -15,7 +15,7 @@ interface ToggleSwitchProps {
 export default function ToggleSwitch({
   checked,
   onChange,
-  label,
+  label = '',
   description,
   activeColor = 'emerald',
   disabled = false,

@@ -1624,8 +1624,9 @@ export default function AdminVisaSuccessPage() {
                       <div className="flex items-center gap-1.5 ml-2">
                         <span className="text-xs font-semibold text-slate-600">Active</span>
                         <ToggleSwitch
-                          enabled={row.enabled !== false}
+                          checked={row.enabled !== false}
                           onChange={(val) => updateHomepageRow(idx, { enabled: val })}
+                          label="Active"
                         />
                       </div>
 

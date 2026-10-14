@@ -76,15 +76,17 @@ export async function POST(request: Request) {
     universities.unshift(newUniversity);
     await db.updateTable('universities', universities);
 
-    const actor = getClientActor(request);
+    const actor = await getClientActor(request);
     await logActivity({
-      action: 'create',
+      action: 'CREATE',
       entity: 'University',
       entityId: newUniversity.slug,
-      entityTitle: `${newUniversity.name} (${newUniversity.country})`,
-      details: `Added new university in ${newUniversity.country}`,
+      details: `Added new university ${newUniversity.name} in ${newUniversity.country}`,
+      userId: actor.userId,
+      userName: actor.userName,
       userEmail: actor.userEmail,
-      ipAddress: actor.ipAddress,
+      userRole: actor.userRole,
+      ip: actor.ip,
       userAgent: actor.userAgent,
     });
 
@@ -130,15 +132,17 @@ export async function PUT(request: Request) {
     universities[index] = updatedUni;
     await db.updateTable('universities', universities);
 
-    const actor = getClientActor(request);
+    const actor = await getClientActor(request);
     await logActivity({
-      action: 'update',
+      action: 'UPDATE',
       entity: 'University',
       entityId: updatedUni.slug,
-      entityTitle: `${updatedUni.name} (${updatedUni.country})`,
-      details: `Updated university details and curriculum/fees`,
+      details: `Updated university details and curriculum/fees for ${updatedUni.name} (${updatedUni.country})`,
+      userId: actor.userId,
+      userName: actor.userName,
       userEmail: actor.userEmail,
-      ipAddress: actor.ipAddress,
+      userRole: actor.userRole,
+      ip: actor.ip,
       userAgent: actor.userAgent,
     });
 
@@ -166,15 +170,17 @@ export async function DELETE(request: Request) {
     );
     await db.updateTable('universities', universities);
 
-    const actor = getClientActor(request);
+    const actor = await getClientActor(request);
     await logActivity({
-      action: 'delete',
+      action: 'DELETE',
       entity: 'University',
       entityId: target,
-      entityTitle: targetUni ? `${targetUni.name} (${targetUni.country})` : target,
-      details: `Deleted university from database`,
+      details: `Deleted university ${targetUni ? targetUni.name : target} from database`,
+      userId: actor.userId,
+      userName: actor.userName,
       userEmail: actor.userEmail,
-      ipAddress: actor.ipAddress,
+      userRole: actor.userRole,
+      ip: actor.ip,
       userAgent: actor.userAgent,
     });
 
