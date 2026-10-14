@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -9,14 +9,17 @@ import {
   Calculator,
   ShieldCheck,
   Send,
+  Building2,
 } from 'lucide-react';
 import { countries as fallbackCountries } from '@/data/countries';
 
 export default function InteractiveEligibilityForm({ countries = fallbackCountries }: { countries?: any[] }) {
   const countryList = countries && countries.length > 0 ? countries : fallbackCountries;
   const [step, setStep] = useState(1);
+  const [universitiesList, setUniversitiesList] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     targetCountry: countryList[0]?.slug || 'uk',
+    targetUniversity: '',
     degreeLevel: 'Masters',
     academicScore: '75%+ or 3.2+ GPA',
     englishTest: 'IELTS 6.5+',
@@ -26,6 +29,26 @@ export default function InteractiveEligibilityForm({ countries = fallbackCountri
   });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/universities')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.universities) setUniversitiesList(d.universities);
+      })
+      .catch(() => null);
+  }, []);
+
+  const selectedCountryObj = countryList.find(
+    (c: any) => c.slug === formData.targetCountry || c.name?.toLowerCase() === formData.targetCountry?.toLowerCase()
+  );
+  const countryDisplayName = selectedCountryObj?.name || formData.targetCountry;
+
+  const availableUniversities = universitiesList.filter(
+    (u) =>
+      u.country?.toLowerCase() === (countryDisplayName || '').toLowerCase() ||
+      u.country?.toLowerCase() === (formData.targetCountry || '').toLowerCase()
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,9 +61,10 @@ export default function InteractiveEligibilityForm({ countries = fallbackCountri
           fullName: formData.name,
           email: formData.email,
           phone: formData.phone,
-          targetCountry: formData.targetCountry,
+          targetCountry: countryDisplayName,
+          targetUniversity: formData.targetUniversity,
           studyLevel: formData.degreeLevel,
-          message: `Eligibility Assessment: Academic Score: ${formData.academicScore}, English Test: ${formData.englishTest}`,
+          message: `Eligibility Assessment: Academic Score: ${formData.academicScore}, English Test: ${formData.englishTest}${formData.targetUniversity ? `, Preferred University: ${formData.targetUniversity}` : ''}`,
           sourcePage: 'Homepage Eligibility Calculator'
         })
       });
@@ -131,7 +155,13 @@ export default function InteractiveEligibilityForm({ countries = fallbackCountri
                 </label>
                 <select
                   value={formData.targetCountry}
-                  onChange={(e) => setFormData({ ...formData, targetCountry: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      targetCountry: e.target.value,
+                      targetUniversity: '',
+                    })
+                  }
                   className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
                 >
                   {countryList.map((c: any) => (
@@ -139,6 +169,35 @@ export default function InteractiveEligibilityForm({ countries = fallbackCountri
                       {c.flag || '🌍'} {c.name}
                     </option>
                   ))}
+                </select>
+              </div>
+
+              {/* Preferred University (Filtered by Country) */}
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-xs font-semibold text-slate-300">
+                    2. Target University ({countryDisplayName})
+                  </label>
+                  <span className="text-[11px] text-amber-400 font-medium">
+                    {availableUniversities.length} Available
+                  </span>
+                </div>
+                <select
+                  value={formData.targetUniversity}
+                  onChange={(e) => setFormData({ ...formData, targetUniversity: e.target.value })}
+                  className="w-full px-4 py-3 rounded-xl bg-slate-950/80 border border-slate-700 text-white text-sm focus:outline-none focus:border-amber-400 transition-colors"
+                >
+                  <option value="" className="bg-slate-900 text-slate-400">
+                    -- Any / Open to suggestions in {countryDisplayName} --
+                  </option>
+                  {availableUniversities.map((uni) => (
+                    <option key={uni.id || uni.name} value={uni.name} className="bg-slate-900 text-white">
+                      {uni.name} {uni.city ? `(${uni.city})` : ''}
+                    </option>
+                  ))}
+                  <option value="Other" className="bg-slate-900 text-white">
+                    Other {countryDisplayName} University
+                  </option>
                 </select>
               </div>
 

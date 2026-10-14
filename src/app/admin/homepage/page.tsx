@@ -846,6 +846,47 @@ export default function AdminHomepageCMS() {
         </div>
       </div>
 
+      {/* SECTION: HOMEPAGE VISA SUCCESS SHOWCASE */}
+      <div className="bg-white border-2 border-amber-300/80 rounded-2xl p-6 shadow-sm space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center font-bold text-xs">
+              <ShieldCheck className="w-4 h-4 text-amber-700" />
+            </div>
+            <div>
+              <h2 className="text-sm font-bold text-slate-900">
+                Recent Student Visa Success Showcase (2 Rows Slider)
+              </h2>
+              <p className="text-xs text-slate-500">
+                Row 1: Australia (10 posters) • Row 2: United Kingdom &amp; Global (10 posters)
+              </p>
+            </div>
+          </div>
+
+          <Link
+            href="/admin/visa-success"
+            className="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs inline-flex items-center gap-1.5 shadow-sm transition"
+          >
+            <span>Manage 2 Rows &amp; Posters in Visa CMS</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-1">
+            <div className="font-bold text-slate-900">2 Rows Configured For Homepage:</div>
+            <div>• <span className="font-semibold text-slate-800">Row 1:</span> Australia Student Visa Success Proofs (Top Row)</div>
+            <div>• <span className="font-semibold text-slate-800">Row 2:</span> United Kingdom Student Visa Success Proofs (Second Row)</div>
+          </div>
+          <Link
+            href="/admin/visa-success"
+            className="text-xs font-bold text-amber-800 hover:text-amber-900 underline shrink-0"
+          >
+            Edit Headings, Countries &amp; Posters &rarr;
+          </Link>
+        </div>
+      </div>
+
       {/* SECTION 3: HERO BANNER SETTINGS */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-sm space-y-4">
         <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2 border-b border-slate-100 pb-3">

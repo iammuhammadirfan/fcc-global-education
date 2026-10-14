@@ -33,24 +33,17 @@ export default function AddReviewModal({
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  // Fetch published countries and universities for dropdowns
+  // Fetch published countries and universities from public API
   useEffect(() => {
     if (!isOpen) return;
 
     const fetchOptions = async () => {
       try {
-        const [cRes, uRes] = await Promise.all([
-          fetch('/api/admin/countries').catch(() => null),
-          fetch('/api/admin/universities').catch(() => null),
-        ]);
-
-        if (cRes && cRes.ok) {
-          const cData = await cRes.json();
-          if (cData.countries) setCountriesList(cData.countries);
-        }
-        if (uRes && uRes.ok) {
-          const uData = await uRes.json();
-          if (uData.universities) setUniversitiesList(uData.universities);
+        const res = await fetch('/api/universities').catch(() => null);
+        if (res && res.ok) {
+          const data = await res.json();
+          if (data.countries) setCountriesList(data.countries);
+          if (data.universities) setUniversitiesList(data.universities);
         }
       } catch (e) {
         console.error(e);
@@ -249,7 +242,11 @@ export default function AddReviewModal({
                 </label>
                 <select
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
+                  onChange={(e) => {
+                    const nextCountry = e.target.value;
+                    setCountry(nextCountry);
+                    setUniversity('');
+                  }}
                   className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition"
                 >
                   {countriesList.length > 0 ? (
@@ -279,30 +276,22 @@ export default function AddReviewModal({
                 <select
                   value={university}
                   onChange={(e) => setUniversity(e.target.value)}
-                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                  required
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition font-medium"
                 >
-                  <option value="">Select University...</option>
-                  {availableUniversities.length > 0 ? (
-                    availableUniversities.map((u: any) => (
-                      <option key={u.id} value={u.name}>
-                        {u.name}
-                      </option>
-                    ))
-                  ) : universitiesList.length > 0 ? (
-                    universitiesList.map((u: any) => (
-                      <option key={u.id} value={u.name}>
-                        {u.name}
-                      </option>
-                    ))
-                  ) : (
-                    <>
-                      <option value="University of Oxford">University of Oxford</option>
-                      <option value="University of Cambridge">University of Cambridge</option>
-                      <option value="Imperial College London">Imperial College London</option>
-                      <option value="Harvard University">Harvard University</option>
-                      <option value="University of Toronto">University of Toronto</option>
-                    </>
-                  )}
+                  <option value="">
+                    {availableUniversities.length > 0
+                      ? `Select ${country} University (${availableUniversities.length} Available)...`
+                      : `Select ${country} University...`}
+                  </option>
+                  {availableUniversities.map((u: any) => (
+                    <option key={u.id} value={u.name}>
+                      {u.name}
+                    </option>
+                  ))}
+                  <option value={`Other Accredited University in ${country}`}>
+                    ★ Other Accredited University in {country}
+                  </option>
                 </select>
               </div>
             </div>

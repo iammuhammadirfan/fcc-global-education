@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -26,13 +26,28 @@ export default function ContactClient({
     phone: '',
     currentCountry: '',
     targetCountry: countries[0]?.name || 'United Kingdom',
+    targetUniversity: '',
     studyLevel: 'Masters',
     program: '',
     message: '',
   });
 
+  const [universitiesList, setUniversitiesList] = useState<any[]>([]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/universities')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.universities) setUniversitiesList(d.universities);
+      })
+      .catch(() => null);
+  }, []);
+
+  const availableUniversities = universitiesList.filter(
+    (u) => u.country?.toLowerCase() === (formData.targetCountry || '').toLowerCase()
+  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,9 +62,12 @@ export default function ContactClient({
           phone: formData.phone,
           currentCountry: formData.currentCountry,
           targetCountry: formData.targetCountry,
+          targetUniversity: formData.targetUniversity,
           studyLevel: formData.studyLevel,
           program: formData.program,
-          message: formData.message,
+          message: formData.targetUniversity
+            ? `Preferred University: ${formData.targetUniversity}. ${formData.message || ''}`.trim()
+            : formData.message,
           sourcePage: '/contact',
         }),
       });
@@ -197,7 +215,13 @@ export default function ContactClient({
                     </label>
                     <select
                       value={formData.targetCountry}
-                      onChange={(e) => setFormData({ ...formData, targetCountry: e.target.value })}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          targetCountry: e.target.value,
+                          targetUniversity: '',
+                        })
+                      }
                       className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 transition-colors"
                     >
                       {countries.map((c) => (
@@ -207,6 +231,32 @@ export default function ContactClient({
                       ))}
                     </select>
                   </div>
+
+                  {/* Preferred University (Filtered by Target Destination) */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-bold text-slate-700">
+                        Target University
+                      </label>
+                      <span className="text-[11px] text-amber-700 font-medium">
+                        {formData.targetCountry} ({availableUniversities.length})
+                      </span>
+                    </div>
+                    <select
+                      value={formData.targetUniversity}
+                      onChange={(e) => setFormData({ ...formData, targetUniversity: e.target.value })}
+                      className="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:outline-none focus:border-amber-500 transition-colors bg-white"
+                    >
+                      <option value="">-- Choose or keep undecided in {formData.targetCountry} --</option>
+                      {availableUniversities.map((uni) => (
+                        <option key={uni.id || uni.name} value={uni.name}>
+                          {uni.name} {uni.city ? `(${uni.city})` : ''}
+                        </option>
+                      ))}
+                      <option value="Other">Other University</option>
+                    </select>
+                  </div>
+                </div>
 
                   {/* Study Level */}
                   <div>

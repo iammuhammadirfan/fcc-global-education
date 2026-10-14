@@ -109,6 +109,7 @@ export interface HomepageSettings {
   partnerUniversitiesLabel?: string;
   scholarshipsSecured?: string;
   scholarshipsSecuredLabel?: string;
+  visaSuccessRows?: HomepageVisaRow[];
   [key: string]: any;
 }
 
@@ -282,11 +283,23 @@ export interface VisaSuccessItem {
   createdAt?: string;
 }
 
+export interface HomepageVisaRow {
+  id: string;
+  title: string;
+  highlightText?: string;
+  badge?: string;
+  subtitle?: string;
+  country: string;
+  limit?: number;
+  enabled?: boolean;
+}
+
 export interface VisaSuccessPageSettings {
   heroBadge?: string;
   heroTitle?: string;
   heroTitleHighlight?: string;
   heroDescription?: string;
+  homepageRows?: HomepageVisaRow[];
   stats?: {
     stat1Value?: string;
     stat1Label?: string;
@@ -482,6 +495,22 @@ export interface BroadcastCampaign {
   ctaLink?: string;
   recipientCount: number;
   sentAt: string;
+}
+
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  userId?: string;
+  userName?: string;
+  userEmail?: string;
+  userRole?: string;
+  action: 'LOGIN' | 'UPLOAD' | 'CREATE' | 'UPDATE' | 'DELETE' | 'STATUS_CHANGE' | 'SETTINGS_CHANGE';
+  entity: string;
+  entityId?: string;
+  details: string;
+  ip?: string;
+  userAgent?: string;
+  metadata?: any;
 }
 
 
