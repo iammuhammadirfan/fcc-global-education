@@ -86,6 +86,7 @@ const navSections = [
       { label: 'SEO Management', href: '/admin/seo', icon: Search },
       { label: 'Global Settings', href: '/admin/settings', icon: Sliders },
       { label: 'Admin Users & Roles', href: '/admin/users', icon: Shield },
+      { label: 'Activity & Audit Logs', href: '/admin/logs', icon: ShieldCheck, badge: 'Audit' },
     ],
   },
 ];

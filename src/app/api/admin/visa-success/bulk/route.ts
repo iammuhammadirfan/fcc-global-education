@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { VisaSuccessItem } from '@/lib/types';
 import { saveMediaFile } from '@/lib/mysql';
+import { getClientActor, logActivity } from '@/lib/auditLogger';
 import path from 'path';
 
 const ALLOWED_EXTENSIONS = ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg'];
@@ -90,6 +91,19 @@ export async function POST(request: Request) {
 
       const merged = [...newItems, ...existingItems];
       await db.updateTable('visaSuccess', merged);
+
+      const actor = await getClientActor(request);
+      await logActivity({
+        action: 'UPLOAD',
+        entity: 'VisaSuccess',
+        userId: actor.userId,
+        userName: actor.userName,
+        userEmail: actor.userEmail,
+        userRole: actor.userRole,
+        ip: actor.ip,
+        userAgent: actor.userAgent,
+        details: `${actor.userName} bulk uploaded ${newItems.length} visa success posters for ${country}`,
+      }).catch(() => null);
 
       return NextResponse.json({
         success: true,

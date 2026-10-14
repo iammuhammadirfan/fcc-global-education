@@ -387,6 +387,14 @@ export default function LeadsCRMPage() {
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Target Country</span>
                 <span className="text-amber-400 font-bold mt-0.5 block">{activeLead.targetCountry}</span>
               </div>
+              {(activeLead.targetUniversity || (activeLead as any).university) && (
+                <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
+                  <span className="text-slate-400 block text-[10px] uppercase font-bold">Preferred University</span>
+                  <span className="text-amber-300 font-bold mt-0.5 block">
+                    {activeLead.targetUniversity || (activeLead as any).university}
+                  </span>
+                </div>
+              )}
               <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
                 <span className="text-slate-400 block text-[10px] uppercase font-bold">Study Level</span>
                 <span className="text-white font-medium mt-0.5 block">{activeLead.studyLevel}</span>

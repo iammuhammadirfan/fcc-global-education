@@ -40,21 +40,91 @@ export default async function HomePage() {
   const allVideos = (await db.getTable('videos')) || [];
   const allVisaSuccess = (await db.getTable('visaSuccess')) || [];
   const allReviews = ((await db.getTable('reviews' as any)) as any) || [];
-  // Candidates eligible for Homepage Slider MUST have valid Student Name AND University filled in
-  const eligibleHomeCandidates = allVisaSuccess.filter((it: any) => {
-    const hasName = Boolean(it.studentName && it.studentName.trim() && it.studentName !== 'Visa Success Poster' && it.studentName !== 'Student Visa Success');
-    const hasUni = Boolean(it.university && it.university.trim() && it.university !== 'Global University');
-    return it.published !== false && hasName && hasUni;
-  });
-
-  const selectedHomeItems = eligibleHomeCandidates
-    .filter((it: any) => it.showOnHomepage === true)
-    .slice(0, 10);
-
-  const activeVisaSlider = selectedHomeItems.length > 0
-    ? selectedHomeItems
-    : eligibleHomeCandidates.slice(0, 10);
   const homepageSettings = (await db.getTable('homepageSettings')) || {};
+  const visaSuccessPageSettings = (await db.getTable('visaSuccessPageSettings')) || {};
+
+  // Configured rows from CMS or default: Row 1 Australia (top), Row 2 United Kingdom / Other
+  const configuredVisaRows = (
+    homepageSettings?.visaSuccessRows ||
+    visaSuccessPageSettings?.homepageRows ||
+    [
+      {
+        id: 'row-australia',
+        title: 'Australia Student Visa Success Proofs',
+        highlightText: 'Visa Success Proofs',
+        badge: 'Australia Approvals',
+        subtitle: 'Official Australian Department of Home Affairs (Subclass 500) student visa grant letters and approvals.',
+        country: 'Australia',
+        limit: 10,
+        enabled: true,
+      },
+      {
+        id: 'row-uk',
+        title: 'United Kingdom Student Visa Success Proofs',
+        highlightText: 'Visa Success Proofs',
+        badge: 'UK & Global Approvals',
+        subtitle: 'Official UKVI student visa grants, CAS confirmations, and verified consulate approval decisions.',
+        country: 'United Kingdom',
+        limit: 10,
+        enabled: true,
+      },
+    ]
+  ).filter((r: any) => r.enabled !== false);
+
+  // STRICT: Only items explicitly clicked/pinned by admin (showOnHomepage === true) appear on the homepage.
+  // No unclicked items are ever auto-filled or shown.
+  const activeVisaRows = configuredVisaRows.map((row: any) => {
+    const rowCountryLower = (row.country || '').trim().toLowerCase();
+    
+    // Items matching this row's country that have been EXPLICITLY clicked by admin
+    const matchingItems = allVisaSuccess.filter((it: any) => {
+      if (it.published === false) return false;
+      if (!it.visaLetterImage) return false;
+      if (!it.showOnHomepage) return false; // ONLY ADMIN ALLOWED / PINNED ITEMS!
+
+      if (!rowCountryLower || rowCountryLower === 'all' || rowCountryLower === 'global') return true;
+      if (rowCountryLower === 'other' || rowCountryLower === 'others') {
+        return it.country?.toLowerCase() !== 'australia';
+      }
+      return it.country?.toLowerCase() === rowCountryLower;
+    });
+
+    const limit = row.limit || 10;
+    const selected = matchingItems.slice(0, limit);
+
+    return {
+      ...row,
+      items: selected,
+    };
+  }).filter((r: any) => r.items && r.items.length > 0);
+
+  // If admin has pinned items for other countries not covered in configured rows, add dynamic rows for them
+  const matchedItemIds = new Set(activeVisaRows.flatMap((r: any) => r.items.map((it: any) => it.id)));
+  const unassignedPinned = allVisaSuccess.filter(
+    (it: any) => it.published !== false && it.visaLetterImage && Boolean(it.showOnHomepage) && !matchedItemIds.has(it.id)
+  );
+
+  if (unassignedPinned.length > 0) {
+    const byCountry: Record<string, any[]> = {};
+    for (const it of unassignedPinned) {
+      const c = it.country || 'Global';
+      if (!byCountry[c]) byCountry[c] = [];
+      byCountry[c].push(it);
+    }
+    for (const [countryName, items] of Object.entries(byCountry)) {
+      activeVisaRows.push({
+        id: `row-dynamic-${countryName.toLowerCase().replace(/\s+/g, '-')}`,
+        title: `${countryName} Student Visa Success Proofs`,
+        highlightText: 'Visa Success Proofs',
+        badge: `${countryName} Approvals`,
+        subtitle: `Verified student visa grants and official consulate approvals for ${countryName}.`,
+        country: countryName,
+        limit: 10,
+        enabled: true,
+        items: items.slice(0, 10),
+      });
+    }
+  }
 
   // Dynamic statistics directly from database
   const statPlaced = homepageSettings?.studentsPlaced || (Array.isArray(homepageSettings?.stats) ? homepageSettings.stats[0]?.number : homepageSettings?.stats?.studentsPlaced) || '5,000+';
@@ -88,9 +158,9 @@ export default async function HomePage() {
         <CEOIntroSection ceoData={homepageSettings?.ceoSection} />
       </section>
 
-      {/* 3. Visa Success Proofs Showcase (Top 10 Real Approval Letters Slider) */}
+      {/* 3. Visa Success Proofs Showcase (2 Rows: Australia Top, UK/Other Second) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <VisaSuccessSlider items={activeVisaSlider} />
+        <VisaSuccessSlider rows={activeVisaRows} />
       </section>
 
       {/* 4. The 4-Step Global Admission Journey */}

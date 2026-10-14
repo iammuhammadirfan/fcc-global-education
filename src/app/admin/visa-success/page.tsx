@@ -29,9 +29,36 @@ import {
   ChevronLeft,
   ChevronRight,
   Building,
+  MoveUp,
+  MoveDown,
+  LayoutGrid,
+  PlusCircle,
 } from 'lucide-react';
-import { VisaSuccessItem, VisaSuccessPageSettings } from '@/lib/types';
+import { VisaSuccessItem, VisaSuccessPageSettings, HomepageVisaRow } from '@/lib/types';
 import ToggleSwitch from '@/components/admin/ToggleSwitch';
+
+const defaultHomepageRows: HomepageVisaRow[] = [
+  {
+    id: 'row-australia',
+    title: 'Australia Student Visa Success Proofs',
+    highlightText: 'Visa Success Proofs',
+    badge: 'Australia Approvals',
+    subtitle: 'Official Australian Department of Home Affairs (Subclass 500) student visa grant letters and approvals.',
+    country: 'Australia',
+    limit: 10,
+    enabled: true,
+  },
+  {
+    id: 'row-uk',
+    title: 'United Kingdom Student Visa Success Proofs',
+    highlightText: 'Visa Success Proofs',
+    badge: 'UK & Global Approvals',
+    subtitle: 'Official UKVI student visa grants, CAS confirmations, and verified consulate approval decisions.',
+    country: 'United Kingdom',
+    limit: 10,
+    enabled: true,
+  },
+];
 
 const defaultFrameworks = [
   {
@@ -127,7 +154,7 @@ const STANDARD_COUNTRIES = [
 ];
 
 export default function AdminVisaSuccessPage() {
-  const [activeTab, setActiveTab] = useState<'content' | 'posters'>('content');
+  const [activeTab, setActiveTab] = useState<'content' | 'homepage-rows' | 'posters'>('content');
 
   // --- 1. POSTERS STATE ---
   const [items, setItems] = useState<VisaSuccessItem[]>([]);
@@ -141,7 +168,17 @@ export default function AdminVisaSuccessPage() {
   const [editingItem, setEditingItem] = useState<VisaSuccessItem | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
+  const [universities, setUniversities] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fetch('/api/universities')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.universities) setUniversities(d.universities);
+      })
+      .catch(() => null);
+  }, []);
 
   const initialForm: Partial<VisaSuccessItem> = {
     studentName: 'Student Visa Success',
@@ -188,7 +225,7 @@ export default function AdminVisaSuccessPage() {
 
   // --- GALLERY PAGINATION & SELECTION STATE ---
   const [galleryPage, setGalleryPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(8);
+  const [itemsPerPage, setItemsPerPage] = useState(50);
   const [selectedItemIds, setSelectedItemIds] = useState<string[]>([]);
   const [deletingBulk, setDeletingBulk] = useState(false);
 
@@ -211,19 +248,15 @@ export default function AdminVisaSuccessPage() {
     const newStatus = !currentStatus;
 
     if (newStatus) {
-      const hasValidName = Boolean(item.studentName?.trim() && item.studentName !== 'Visa Success Poster' && item.studentName !== 'Student Visa Success');
-      const hasValidUni = Boolean(item.university?.trim() && item.university !== 'Global University');
+      const countryName = item.country || 'this country';
+      const countryActiveCount = items.filter(
+        (it) => Boolean(it.showOnHomepage) && it.country?.toLowerCase() === item.country?.toLowerCase()
+      ).length;
 
-      if (!hasValidName || !hasValidUni) {
+      if (countryActiveCount >= 10) {
         alert(
-          '⚠️ Incomplete Information!\n\nHomepage slider par show karne ke liye is poster ka Student Name aur University bharna lazmi hai.\n\nMeherbani kar ke pehle is card ke "Edit" (pencil) icon par click karein aur Student Name & University save karein.'
+          `Homepage slider par ${countryName} ke liye maximum 10 results active ho sakte hain. Pehle kisi aur result ko untick karein.`
         );
-        return;
-      }
-
-      const activeCount = items.filter((it) => Boolean(it.showOnHomepage)).length;
-      if (activeCount >= 10) {
-        alert('Homepage slider par maximum 10 results active ho sakte hain. Pehle kisi aur result ko remove karein.');
         return;
       }
     }
@@ -265,6 +298,7 @@ export default function AdminVisaSuccessPage() {
     heroTitleHighlight: 'Visa Success',
     heroDescription:
       'Our certified immigration solicitors and visa compliance officers audit every bank statement, tax filing, and sponsor affidavit before submission, ensuring near-perfect approval outcomes.',
+    homepageRows: defaultHomepageRows,
     stats: {
       stat1Value: '98.6%',
       stat1Label: 'Audited Visa Approval Rate',
@@ -300,6 +334,58 @@ export default function AdminVisaSuccessPage() {
   const [loadingSettings, setLoadingSettings] = useState(false);
   const [savingSettings, setSavingSettings] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // Helper functions for Homepage Rows Management
+  const addHomepageRow = () => {
+    const newRowId = `row_${Date.now()}`;
+    const newRow: HomepageVisaRow = {
+      id: newRowId,
+      title: 'Global Student Visa Success Proofs',
+      highlightText: 'Visa Success Proofs',
+      badge: 'Verified Approvals',
+      subtitle: 'Official embassy student visa grants, CAS and I-20 approvals.',
+      country: 'United States',
+      limit: 10,
+      enabled: true,
+    };
+    setSettings((prev) => ({
+      ...prev,
+      homepageRows: [...(prev.homepageRows || []), newRow],
+    }));
+  };
+
+  const updateHomepageRow = (index: number, updates: Partial<HomepageVisaRow>) => {
+    setSettings((prev) => {
+      const rows = [...(prev.homepageRows || [])];
+      rows[index] = { ...rows[index], ...updates };
+      return { ...prev, homepageRows: rows };
+    });
+  };
+
+  const removeHomepageRow = (index: number) => {
+    if ((settings.homepageRows || []).length <= 1) {
+      alert('Kam az kam 1 row Homepage par lazmi honi chahiye.');
+      return;
+    }
+    if (!confirm('Kya aap waqai is row ko delete karna chahte hain?')) return;
+    setSettings((prev) => {
+      const rows = [...(prev.homepageRows || [])];
+      rows.splice(index, 1);
+      return { ...prev, homepageRows: rows };
+    });
+  };
+
+  const moveHomepageRow = (index: number, direction: 'up' | 'down') => {
+    setSettings((prev) => {
+      const rows = [...(prev.homepageRows || [])];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      if (targetIndex < 0 || targetIndex >= rows.length) return prev;
+      const temp = rows[index];
+      rows[index] = rows[targetIndex];
+      rows[targetIndex] = temp;
+      return { ...prev, homepageRows: rows };
+    });
+  };
 
   // Editing framework card inside modal
   const [frameworkModalOpen, setFrameworkModalOpen] = useState(false);
@@ -341,6 +427,10 @@ export default function AdminVisaSuccessPage() {
         setSettings((prev) => ({
           ...prev,
           ...data.settings,
+          homepageRows:
+            Array.isArray(data.settings.homepageRows) && data.settings.homepageRows.length > 0
+              ? data.settings.homepageRows
+              : prev.homepageRows || defaultHomepageRows,
           stats: { ...prev.stats, ...(data.settings.stats || {}) },
           destinationFrameworks:
             data.settings.destinationFrameworks && data.settings.destinationFrameworks.length > 0
@@ -789,7 +879,7 @@ export default function AdminVisaSuccessPage() {
         </div>
 
         <div className="flex items-center gap-2">
-          {activeTab === 'content' ? (
+          {activeTab === 'content' || activeTab === 'homepage-rows' ? (
             <button
               onClick={handleSaveSettings}
               disabled={savingSettings}
@@ -802,7 +892,7 @@ export default function AdminVisaSuccessPage() {
               ) : (
                 <Save className="w-4 h-4" />
               )}
-              <span>{savingSettings ? 'Saving Changes...' : saveSuccess ? 'Saved Live!' : 'Save Page Content'}</span>
+              <span>{savingSettings ? 'Saving Changes...' : saveSuccess ? 'Saved Live!' : activeTab === 'homepage-rows' ? 'Save Homepage Rows' : 'Save Page Content'}</span>
             </button>
           ) : (
             <div className="flex items-center gap-2">
@@ -839,7 +929,7 @@ export default function AdminVisaSuccessPage() {
       </div>
 
       {/* Main Tab Navigation */}
-      <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+      <div className="flex items-center gap-2 border-b border-slate-200 pb-2 flex-wrap">
         <button
           type="button"
           onClick={() => setActiveTab('content')}
@@ -851,6 +941,19 @@ export default function AdminVisaSuccessPage() {
         >
           <FileText className="w-4 h-4 text-amber-400" />
           <span>Page Content & Headings CMS</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('homepage-rows')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 transition cursor-pointer ${
+            activeTab === 'homepage-rows'
+              ? 'bg-slate-900 text-white shadow-sm'
+              : 'bg-white text-slate-600 hover:bg-slate-100 hover:text-slate-900 border border-slate-200'
+          }`}
+        >
+          <Sliders className="w-4 h-4 text-amber-400" />
+          <span>★ Homepage Sliders (2 Rows Manager)</span>
         </button>
 
         <button
@@ -1416,7 +1519,250 @@ export default function AdminVisaSuccessPage() {
       )}
 
       {/* ========================================================================= */}
-      {/* TAB 2: VISA APPROVAL POSTERS GALLERY */}
+      {/* TAB 2: HOMEPAGE SLIDERS (2 ROWS MANAGER) */}
+      {/* ========================================================================= */}
+      {activeTab === 'homepage-rows' && (
+        <div className="space-y-6">
+          {/* Header Card */}
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 border border-amber-300 text-amber-800 flex items-center justify-center shrink-0">
+                <Sliders className="w-6 h-6 text-amber-700" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="font-extrabold text-slate-900 text-lg tracking-tight">
+                    Homepage Visa Proofs Sliders (Rows Manager)
+                  </h3>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    Live On Homepage
+                  </span>
+                </div>
+                <p className="text-xs text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                  Configure the 2 rows displayed on the Homepage. Row 1 shows Australia visa grants and Row 2 shows United Kingdom &amp; other destinations (10 posters each). You can customize headings, target countries, badges, limits, or add new rows.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={addHomepageRow}
+                className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold text-xs flex items-center gap-1.5 shadow-sm transition cursor-pointer"
+              >
+                <PlusCircle className="w-4 h-4" />
+                <span>+ Add New Row</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleSaveSettings}
+                disabled={savingSettings}
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-md shadow-emerald-600/20 transition cursor-pointer disabled:opacity-50"
+              >
+                {savingSettings ? (
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                ) : saveSuccess ? (
+                  <Check className="w-4 h-4" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                <span>{savingSettings ? 'Saving...' : saveSuccess ? 'Saved Live!' : 'Save Homepage Rows'}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Rows List */}
+          <div className="space-y-4">
+            {(settings.homepageRows || defaultHomepageRows).map((row, idx) => {
+              const matchingPosters = items.filter(
+                (it) => it.country?.toLowerCase() === (row.country || '').toLowerCase()
+              );
+              const activeCount = matchingPosters.filter((it) => Boolean(it.showOnHomepage)).length;
+
+              return (
+                <div
+                  key={row.id || idx}
+                  className={`bg-white rounded-2xl border-2 transition-all p-5 shadow-xs space-y-4 ${
+                    row.enabled !== false ? 'border-amber-300/80' : 'border-slate-200 opacity-70'
+                  }`}
+                >
+                  {/* Row Top Status & Reordering */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                    <div className="flex items-center gap-2.5 flex-wrap">
+                      <span className="px-3 py-1 rounded-xl font-black text-xs bg-slate-900 text-amber-400 shadow-2xs">
+                        Row #{idx + 1} {idx === 0 ? '(Top Row - Australia)' : idx === 1 ? '(Second Row - UK)' : ''}
+                      </span>
+                      <span className="text-sm font-extrabold text-slate-800">
+                        Target Country: <span className="text-amber-700">{row.country || 'Global'}</span>
+                      </span>
+                      <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2.5 py-0.5 rounded-full border border-slate-200">
+                        {matchingPosters.length} posters in database • {activeCount} pinned for slider
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => moveHomepageRow(idx, 'up')}
+                        disabled={idx === 0}
+                        className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+                        title="Move Up"
+                      >
+                        <MoveUp className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveHomepageRow(idx, 'down')}
+                        disabled={idx === (settings.homepageRows || []).length - 1}
+                        className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100 disabled:opacity-30 cursor-pointer"
+                        title="Move Down"
+                      >
+                        <MoveDown className="w-4 h-4" />
+                      </button>
+
+                      <div className="flex items-center gap-1.5 ml-2">
+                        <span className="text-xs font-semibold text-slate-600">Active</span>
+                        <ToggleSwitch
+                          enabled={row.enabled !== false}
+                          onChange={(val) => updateHomepageRow(idx, { enabled: val })}
+                        />
+                      </div>
+
+                      {(settings.homepageRows || []).length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeHomepageRow(idx)}
+                          className="p-1.5 ml-2 rounded-lg text-red-500 hover:bg-red-50 hover:text-red-700 transition cursor-pointer"
+                          title="Delete Row"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Row Form Fields */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="lg:col-span-2">
+                      <label className="block text-slate-700 text-xs font-bold mb-1">
+                        Row Heading Title
+                      </label>
+                      <input
+                        type="text"
+                        value={row.title || ''}
+                        onChange={(e) => updateHomepageRow(idx, { title: e.target.value })}
+                        placeholder="e.g. Australia Student Visa Success Proofs"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold focus:outline-none focus:border-amber-500 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 text-xs font-bold mb-1">
+                        Target Country
+                      </label>
+                      <select
+                        value={row.country || 'Australia'}
+                        onChange={(e) => updateHomepageRow(idx, { country: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold focus:outline-none focus:border-amber-500 focus:bg-white cursor-pointer"
+                      >
+                        <option value="Australia">Australia</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="United States">United States</option>
+                        <option value="Canada">Canada</option>
+                        <option value="Germany">Germany</option>
+                        <option value="Ireland">Ireland</option>
+                        <option value="New Zealand">New Zealand</option>
+                        <option value="All">All Countries</option>
+                        <option value="Other">Other Countries</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 text-xs font-bold mb-1">
+                        Pill Badge Label
+                      </label>
+                      <input
+                        type="text"
+                        value={row.badge || ''}
+                        onChange={(e) => updateHomepageRow(idx, { badge: e.target.value })}
+                        placeholder="e.g. Australia Approvals"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 text-xs font-bold mb-1">
+                        Highlighted Text in Heading
+                      </label>
+                      <input
+                        type="text"
+                        value={row.highlightText || ''}
+                        onChange={(e) => updateHomepageRow(idx, { highlightText: e.target.value })}
+                        placeholder="e.g. Visa Success Proofs"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 text-xs font-bold mb-1">
+                        Slider Posters Limit
+                      </label>
+                      <input
+                        type="number"
+                        min={4}
+                        max={20}
+                        value={row.limit || 10}
+                        onChange={(e) => updateHomepageRow(idx, { limit: parseInt(e.target.value) || 10 })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
+                      />
+                    </div>
+
+                    <div className="lg:col-span-3">
+                      <label className="block text-slate-700 text-xs font-bold mb-1">
+                        Row Subtitle / Short Description
+                      </label>
+                      <input
+                        type="text"
+                        value={row.subtitle || ''}
+                        onChange={(e) => updateHomepageRow(idx, { subtitle: e.target.value })}
+                        placeholder="e.g. Official Australian Department of Home Affairs (Subclass 500) student visa grant letters and approvals."
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Sticky Bottom Save Bar for Homepage Rows */}
+          <div className="sticky bottom-4 z-20 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-300 p-4 shadow-xl flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs text-slate-600">
+              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+              <span>Rows configuration saves directly to database and updates Homepage immediately.</span>
+            </div>
+            <button
+              type="button"
+              onClick={handleSaveSettings}
+              disabled={savingSettings}
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-600/25 transition cursor-pointer disabled:opacity-50"
+            >
+              {savingSettings ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : saveSuccess ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+              <span>{savingSettings ? 'Saving Rows...' : saveSuccess ? 'Saved Live!' : 'Save Homepage Rows'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* TAB 3: VISA APPROVAL POSTERS GALLERY */}
       {/* ========================================================================= */}
       {activeTab === 'posters' && (
         <div className="space-y-6">
@@ -1428,16 +1774,28 @@ export default function AdminVisaSuccessPage() {
                   ★
                 </div>
                 <div>
-                  <div className="flex items-center gap-2.5 flex-wrap">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight">
-                      Homepage Slider Active Results
+                      Homepage Sliders Active Pinned Results
                     </h3>
                     <span className="text-xs bg-amber-100 text-amber-900 border border-amber-300 px-3 py-0.5 rounded-full font-black">
-                      {homepageSliderItems.length} / 10 Active
+                      {homepageSliderItems.length} Total Pinned
                     </span>
+                    {Object.entries(
+                      homepageSliderItems.reduce((acc: Record<string, number>, it) => {
+                        const c = it.country || 'Global';
+                        acc[c] = (acc[c] || 0) + 1;
+                        return acc;
+                      }, {})
+                    ).map(([country, count]) => (
+                      <span key={country} className="text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 px-2.5 py-0.5 rounded-full font-bold flex items-center gap-1 shadow-2xs">
+                        <span>✓ {country}:</span>
+                        <span className="font-black">{count}/10 Live</span>
+                      </span>
+                    ))}
                   </div>
-                  <p className="text-xs text-slate-600 mt-0.5 font-medium leading-relaxed">
-                    Ye results Homepage slider par live show ho rahe hain. Kisi bhi result ko &ldquo;Remove&rdquo; karein, ya neechay gallery se naye results check kar ke add karein (Max 10).
+                  <p className="text-xs text-slate-600 mt-1 font-medium leading-relaxed">
+                    <strong>Strict Admin Control:</strong> Homepage par sirf wahi posters show honge jo aap neechay gallery me tick karenge (&ldquo;+ Allow / Add to Homepage Slider&rdquo;). Agar kisi country ke posters tick nahi honge, to wo Homepage par bilkul show nahi honge.
                   </p>
                 </div>
               </div>
@@ -1463,19 +1821,16 @@ export default function AdminVisaSuccessPage() {
                     <span className="absolute top-1.5 left-1.5 z-10 text-[9px] font-black bg-amber-400 text-slate-950 px-1.5 py-0.5 rounded-md shadow-xs">
                       #{idx + 1}
                     </span>
-                    <div className="aspect-[3/4] rounded-xl overflow-hidden bg-slate-100 border border-slate-200">
+                    <div className="aspect-[3/4] sm:aspect-[4/5] rounded-xl overflow-hidden bg-slate-100 border border-slate-200 cursor-pointer" onClick={() => setPreviewImage(item.visaLetterImage)}>
                       <img
                         src={item.visaLetterImage}
-                        alt={item.studentName}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                        alt={`${item.country} Visa`}
+                        className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-200"
                       />
                     </div>
-                    <div className="mt-2 text-center">
-                      <div className="text-[11px] font-bold text-slate-900 truncate" title={item.studentName}>
-                        {item.studentName}
-                      </div>
-                      <div className="text-[10px] font-semibold text-amber-700 truncate">
-                        {item.country}
+                    <div className="mt-1.5 text-center">
+                      <div className="text-[11px] font-extrabold text-slate-900 truncate">
+                        {item.country} Visa Grant
                       </div>
                     </div>
                     <button
@@ -1574,10 +1929,10 @@ export default function AdminVisaSuccessPage() {
                     }}
                     className="px-2.5 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-bold text-slate-800 focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs"
                   >
-                    <option value={8}>8 per page (Fastest)</option>
-                    <option value={12}>12 per page</option>
+                    <option value={50}>50 per page (Recommended)</option>
+                    <option value={100}>100 per page</option>
                     <option value={24}>24 per page</option>
-                    <option value={48}>48 per page</option>
+                    <option value={12}>12 per page</option>
                   </select>
                 </div>
 
@@ -1625,12 +1980,6 @@ export default function AdminVisaSuccessPage() {
             <div className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {paginatedItems.map((item) => {
-                  const isMissingInfo =
-                    !item.studentName?.trim() ||
-                    item.studentName === 'Student Visa Success' ||
-                    item.studentName === 'Visa Success Poster' ||
-                    !item.university?.trim() ||
-                    item.university === 'Global University';
                   const isSelected = isItemSelected(item.id);
 
                   return (
@@ -1644,7 +1993,7 @@ export default function AdminVisaSuccessPage() {
                     >
                       {/* Card Poster Image with Anti-Crop Showcase */}
                       <div
-                        className="relative aspect-[3/4] bg-slate-900/5 overflow-hidden cursor-pointer flex items-center justify-center select-none"
+                        className="relative aspect-[3/4] sm:aspect-[4/5] bg-slate-900/5 overflow-hidden cursor-pointer flex items-center justify-center select-none"
                         onClick={() => setPreviewImage(item.visaLetterImage)}
                       >
                         {/* Ambient backdrop blur */}
@@ -1657,8 +2006,8 @@ export default function AdminVisaSuccessPage() {
                         {/* Foreground crisp image */}
                         <img
                           src={item.visaLetterImage}
-                          alt={item.studentName || 'Visa Success Poster'}
-                          className="relative z-10 w-full h-full object-contain p-1.5 group-hover:scale-105 transition-transform duration-300 drop-shadow-xs"
+                          alt={`${item.country || 'Visa'} Success Proof`}
+                          className="relative z-10 w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-300 drop-shadow-xs"
                           onError={(e) => {
                             const target = e.currentTarget as HTMLImageElement;
                             if (!target.src.includes('unsplash.com/photo-1544717305-2782549b5136')) {
@@ -1693,46 +2042,20 @@ export default function AdminVisaSuccessPage() {
                         {/* Hover Click to Zoom */}
                         <div className="absolute inset-0 z-20 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                           <span className="px-3 py-1.5 rounded-xl bg-white text-slate-950 font-bold text-xs flex items-center gap-1 shadow-md">
-                            <Eye className="w-3.5 h-3.5 text-amber-600" /> Full Preview
+                            <Eye className="w-3.5 h-3.5 text-amber-600" /> Click to Zoom
                           </span>
                         </div>
                       </div>
 
-                      {/* Card Info */}
-                      <div className="p-3.5 space-y-1.5">
-                        <div className="flex items-center justify-between gap-1">
-                          <div className="font-bold text-slate-900 text-xs truncate" title={item.studentName || 'No Name Entered'}>
-                            {item.studentName?.trim() && item.studentName !== 'Student Visa Success' && item.studentName !== 'Visa Success Poster' ? (
-                              item.studentName
-                            ) : (
-                              <span className="text-amber-800 italic font-semibold">No Student Name</span>
-                            )}
-                          </div>
-                          {isMissingInfo && (
-                            <span className="text-[9px] bg-amber-100 text-amber-900 border border-amber-300 px-1.5 py-0.5 rounded font-bold shrink-0" title="Student name and university required for homepage slider">
-                              Edit Needed
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="flex items-center justify-between text-[11px] text-slate-500">
-                          <span className="flex items-center gap-1 font-semibold text-amber-700">
-                            <Globe className="w-3 h-3" /> {item.country}
-                          </span>
-                          <span>{item.approvalDays || 'Approved'}</span>
-                        </div>
-
-                        {item.university && item.university !== 'Global University' ? (
-                          <div className="text-[10px] text-slate-600 font-medium truncate flex items-center gap-1 pt-0.5">
-                            <Building className="w-3 h-3 text-amber-600 shrink-0" />
-                            <span className="truncate">{item.university}</span>
-                          </div>
-                        ) : (
-                          <div className="text-[10px] text-slate-400 italic flex items-center gap-1 pt-0.5">
-                            <Building className="w-3 h-3 text-slate-300 shrink-0" />
-                            <span>No University Set</span>
-                          </div>
-                        )}
+                      {/* Clean Card Info - Country & Approval, No Student Name / University */}
+                      <div className="p-2.5 bg-white border-t border-slate-100 flex items-center justify-between text-xs">
+                        <span className="font-extrabold text-slate-900 flex items-center gap-1.5 truncate">
+                          <Globe className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                          <span className="truncate">{item.country} Visa Grant</span>
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 shrink-0">
+                          {item.approvalDays || 'Approved'}
+                        </span>
                       </div>
 
                       {/* Homepage Slider Checkbox Option */}
@@ -1749,7 +2072,7 @@ export default function AdminVisaSuccessPage() {
                             className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer accent-amber-500"
                           />
                           <span className={Boolean(item.showOnHomepage) ? 'font-black text-amber-950 flex items-center gap-1 text-[11px]' : 'font-medium text-slate-600 hover:text-slate-900 text-[11px]'}>
-                            {Boolean(item.showOnHomepage) ? '★ On Homepage Slider (Active)' : '+ Add to Homepage Slider'}
+                            {Boolean(item.showOnHomepage) ? '★ Live on Homepage Slider (Active)' : '+ Allow / Add to Homepage Slider'}
                           </span>
                         </label>
                       </div>
@@ -1993,7 +2316,7 @@ export default function AdminVisaSuccessPage() {
                         else if (c === 'New Zealand') code = 'NZ';
                         else if (c === 'Sweden') code = 'SE';
                         else if (c === 'Netherlands') code = 'NL';
-                        setForm((prev) => ({ ...prev, country: c, countryCode: code }));
+                        setForm((prev) => ({ ...prev, country: c, countryCode: code, university: '' }));
                       }
                     }}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white font-medium cursor-pointer"
@@ -2040,6 +2363,7 @@ export default function AdminVisaSuccessPage() {
                         ...prev,
                         country: val,
                         countryCode: val.slice(0, 2).toUpperCase() || 'GL',
+                        university: '',
                       }));
                     }}
                     placeholder="e.g. Italy, France, Malaysia, Turkey, Cyprus, Poland, etc."
@@ -2064,14 +2388,27 @@ export default function AdminVisaSuccessPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 mb-1 font-semibold">University / Intake (Optional)</label>
-                  <input
-                    type="text"
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-slate-700 font-semibold">University ({form.country || 'Target Country'})</label>
+                    <span className="text-[10px] text-amber-700 font-medium">
+                      {universities.filter((u) => u.country?.toLowerCase() === (form.country || '').toLowerCase()).length} in {form.country || 'Selected Country'}
+                    </span>
+                  </div>
+                  <select
                     value={form.university || ''}
                     onChange={(e) => setForm({ ...form, university: e.target.value })}
-                    placeholder="e.g. Imperial College / Fall 2026"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
-                  />
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white cursor-pointer"
+                  >
+                    <option value="">-- Choose {form.country || 'Country'} University or Open --</option>
+                    {universities
+                      .filter((u) => u.country?.toLowerCase() === (form.country || '').toLowerCase())
+                      .map((u) => (
+                        <option key={u.id || u.name} value={u.name}>
+                          {u.name} {u.city ? `(${u.city})` : ''}
+                        </option>
+                      ))}
+                    <option value="Other">Other / Unlisted University</option>
+                  </select>
                 </div>
               </div>
 
@@ -2583,14 +2920,14 @@ export default function AdminVisaSuccessPage() {
           onClick={() => setPreviewImage(null)}
         >
           <div
-            className="relative max-w-2xl max-h-[90vh] bg-white rounded-3xl p-3 shadow-2xl overflow-hidden flex flex-col"
+            className="relative max-w-4xl w-full max-h-[92vh] bg-white rounded-3xl p-3 sm:p-4 shadow-2xl overflow-hidden flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative flex-1 overflow-auto max-h-[78vh] flex items-center justify-center bg-slate-100 rounded-2xl p-2">
+            <div className="relative flex-1 overflow-auto max-h-[80vh] flex items-center justify-center bg-slate-900/5 rounded-2xl p-2 sm:p-4">
               <img
                 src={previewImage}
                 alt="Visa Proof Preview"
-                className="max-w-full max-h-[74vh] object-contain rounded-xl shadow-md"
+                className="max-w-full max-h-[76vh] object-contain rounded-xl shadow-lg"
               />
             </div>
             <div className="p-3 flex items-center justify-between text-xs border-t border-slate-100 mt-2">

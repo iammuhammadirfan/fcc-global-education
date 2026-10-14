@@ -441,7 +441,13 @@ export default function AdminAppointmentsPage() {
                         <span className="inline-flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-lg">
                           <Globe className="w-3 h-3 text-amber-700" /> {country}
                         </span>
-                        <div className="text-[11px] text-slate-500 mt-1 flex items-center gap-1 font-medium">
+                        {(appt.targetUniversity || (appt as any).university) && (
+                          <div className="text-[11px] text-amber-900 font-semibold mt-1 flex items-center gap-1">
+                            <Building2 className="w-3 h-3 text-amber-600" />
+                            <span>{appt.targetUniversity || (appt as any).university}</span>
+                          </div>
+                        )}
+                        <div className="text-[11px] text-slate-500 mt-0.5 flex items-center gap-1 font-medium">
                           <GraduationCap className="w-3 h-3 text-slate-400" /> {appt.studyLevel || 'Degree Program'}
                         </div>
                       </td>
@@ -596,15 +602,21 @@ export default function AdminAppointmentsPage() {
 
                     {/* 4 Stat Cards */}
                     <div className="grid grid-cols-2 gap-3 text-xs">
-                      {/* Destination */}
+                      {/* Destination & Target University */}
                       <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
                         <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1">
                           <Globe className="w-3.5 h-3.5 text-blue-600" />
-                          <span>Destination</span>
+                          <span>Destination & Target Uni</span>
                         </span>
                         <div className="font-black text-amber-700 text-sm mt-1 truncate">
                           {country}
                         </div>
+                        {(selectedAppt.targetUniversity || (selectedAppt as any).university) && (
+                          <div className="text-[11px] text-slate-700 font-semibold mt-0.5 truncate flex items-center gap-1">
+                            <Building2 className="w-3 h-3 text-amber-600" />
+                            <span>{selectedAppt.targetUniversity || (selectedAppt as any).university}</span>
+                          </div>
+                        )}
                       </div>
 
                       {/* Study Level */}

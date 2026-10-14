@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { Review } from '@/lib/types';
+import { logActivity, getClientActor } from '@/lib/auditLogger';
 
 export const dynamic = 'force-dynamic';
 
@@ -44,6 +45,18 @@ export async function POST(request: Request) {
     allReviews.unshift(newReview);
     await db.updateTable('reviews' as any, allReviews);
 
+    const actor = getClientActor(request);
+    await logActivity({
+      action: 'create',
+      entity: 'Review',
+      entityId: newReview.id,
+      entityTitle: `${newReview.name} (${newReview.university}, ${newReview.country})`,
+      details: `New student review created with rating ${newReview.rating}/5`,
+      userEmail: actor.userEmail,
+      ipAddress: actor.ipAddress,
+      userAgent: actor.userAgent,
+    });
+
     return NextResponse.json({ success: true, review: newReview });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to create review' }, { status: 500 });
@@ -76,6 +89,18 @@ export async function PUT(request: Request) {
     allReviews[index] = updated;
     await db.updateTable('reviews' as any, allReviews);
 
+    const actor = getClientActor(request);
+    await logActivity({
+      action: 'update',
+      entity: 'Review',
+      entityId: updated.id,
+      entityTitle: `${updated.name} (${updated.university})`,
+      details: `Updated review status: ${updated.status}, homepage: ${updated.showOnHome}`,
+      userEmail: actor.userEmail,
+      ipAddress: actor.ipAddress,
+      userAgent: actor.userAgent,
+    });
+
     return NextResponse.json({ success: true, review: updated });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update review' }, { status: 500 });
@@ -92,8 +117,21 @@ export async function DELETE(request: Request) {
     }
 
     let allReviews: Review[] = ((await db.getTable('reviews' as any)) as any) || [];
+    const target = allReviews.find((r) => r.id === id);
     allReviews = allReviews.filter((r) => r.id !== id);
     await db.updateTable('reviews' as any, allReviews);
+
+    const actor = getClientActor(request);
+    await logActivity({
+      action: 'delete',
+      entity: 'Review',
+      entityId: id,
+      entityTitle: target ? `${target.name} (${target.university})` : id,
+      details: `Deleted student review`,
+      userEmail: actor.userEmail,
+      ipAddress: actor.ipAddress,
+      userAgent: actor.userAgent,
+    });
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

@@ -15,6 +15,8 @@ export default function AdminReviewsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'pending' | 'approved' | 'rejected' | 'home'>('all');
+  const [countryFilter, setCountryFilter] = useState<string>('all');
+  const [universityFilter, setUniversityFilter] = useState<string>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -62,21 +64,29 @@ export default function AdminReviewsPage() {
 
   const openAddModal = () => {
     setEditingReview(null);
+    const defaultCountry = countries[0]?.name || 'United Kingdom';
+    const countryUnis = universities.filter(
+      (u) => u.country?.toLowerCase() === defaultCountry.toLowerCase()
+    );
     setForm({
       ...initialForm,
-      country: countries[0]?.name || 'United Kingdom',
-      university: universities[0]?.name || 'University of Oxford',
+      country: defaultCountry,
+      university: countryUnis[0]?.name || universities[0]?.name || 'University of Oxford',
     });
     setIsModalOpen(true);
   };
 
   const openEditModal = (r: Review) => {
     setEditingReview(r);
+    const country = r.country || countries[0]?.name || 'United Kingdom';
+    const countryUnis = universities.filter(
+      (u) => u.country?.toLowerCase() === country.toLowerCase()
+    );
     setForm({
       ...r,
       rating: r.rating || 5,
-      country: r.country || 'United Kingdom',
-      university: r.university || 'University of Oxford',
+      country,
+      university: r.university || countryUnis[0]?.name || '',
     });
     setIsModalOpen(true);
   };
@@ -178,6 +188,10 @@ export default function AdminReviewsPage() {
     ? (reviews.reduce((acc, curr) => acc + (curr.rating || 5), 0) / reviews.length).toFixed(1)
     : '5.0';
 
+  const filterUnis = countryFilter === 'all'
+    ? universities
+    : universities.filter((u) => u.country?.toLowerCase() === countryFilter.toLowerCase());
+
   const filtered = reviews.filter((r) => {
     const matchesSearch =
       r.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -185,6 +199,11 @@ export default function AdminReviewsPage() {
       r.university?.toLowerCase().includes(search.toLowerCase()) ||
       r.country?.toLowerCase().includes(search.toLowerCase()) ||
       r.comment?.toLowerCase().includes(search.toLowerCase());
+
+    const matchesCountry = countryFilter === 'all' || r.country?.toLowerCase() === countryFilter.toLowerCase();
+    const matchesUni = universityFilter === 'all' || r.university?.toLowerCase() === universityFilter.toLowerCase();
+
+    if (!matchesCountry || !matchesUni) return false;
 
     if (statusFilter === 'pending') return matchesSearch && r.status === 'pending';
     if (statusFilter === 'approved') return matchesSearch && (r.status === 'approved' || r.published === true);
@@ -253,59 +272,100 @@ export default function AdminReviewsPage() {
         </div>
       </div>
 
-      {/* Filter Tabs & Search */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs">
-          <button
-            onClick={() => setStatusFilter('all')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition ${
-              statusFilter === 'all' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            All ({reviews.length})
-          </button>
-          <button
-            onClick={() => setStatusFilter('pending')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 ${
-              statusFilter === 'pending'
-                ? 'bg-amber-500 text-slate-950 shadow'
-                : 'text-amber-400 hover:text-amber-300'
-            }`}
-          >
-            <span>Pending</span>
-            {pendingCount > 0 && (
-              <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-400 text-slate-950 font-black">
-                {pendingCount}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setStatusFilter('approved')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition ${
-              statusFilter === 'approved' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            Approved ({approvedCount})
-          </button>
-          <button
-            onClick={() => setStatusFilter('home')}
-            className={`px-3 py-1.5 rounded-lg font-bold transition ${
-              statusFilter === 'home' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
-            }`}
-          >
-            On Homepage ({homeCount})
-          </button>
-        </div>
+      {/* Filter Tabs, Country/University Dropdowns & Search */}
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="flex flex-wrap gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs">
+            <button
+              onClick={() => setStatusFilter('all')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition ${
+                statusFilter === 'all' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              All ({reviews.length})
+            </button>
+            <button
+              onClick={() => setStatusFilter('pending')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition flex items-center gap-1.5 ${
+                statusFilter === 'pending'
+                  ? 'bg-amber-500 text-slate-950 shadow'
+                  : 'text-amber-400 hover:text-amber-300'
+              }`}
+            >
+              <span>Pending</span>
+              {pendingCount > 0 && (
+                <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-400 text-slate-950 font-black">
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => setStatusFilter('approved')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition ${
+                statusFilter === 'approved' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              Approved ({approvedCount})
+            </button>
+            <button
+              onClick={() => setStatusFilter('home')}
+              className={`px-3 py-1.5 rounded-lg font-bold transition ${
+                statusFilter === 'home' ? 'bg-amber-500 text-slate-950 shadow' : 'text-slate-400 hover:text-white'
+              }`}
+            >
+              On Homepage ({homeCount})
+            </button>
+          </div>
 
-        <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
-          <input
-            type="text"
-            placeholder="Search reviews..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
-          />
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5">
+            {/* Country Filter */}
+            <div className="relative min-w-[150px]">
+              <select
+                value={countryFilter}
+                onChange={(e) => {
+                  setCountryFilter(e.target.value);
+                  setUniversityFilter('all');
+                }}
+                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
+              >
+                <option value="all">🌍 All Countries</option>
+                {countries.map((c) => (
+                  <option key={c.id} value={c.name}>
+                    {c.flag || '🌍'} {c.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* University Filter (Dependent on Country Filter) */}
+            <div className="relative min-w-[180px]">
+              <select
+                value={universityFilter}
+                onChange={(e) => setUniversityFilter(e.target.value)}
+                className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
+              >
+                <option value="all">
+                  🏛️ {countryFilter === 'all' ? 'All Universities' : `All in ${countryFilter}`}
+                </option>
+                {filterUnis.map((u) => (
+                  <option key={u.id} value={u.name}>
+                    {u.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="relative w-full sm:w-60">
+              <Search className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search reviews..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-white text-xs placeholder:text-slate-500 focus:outline-none focus:border-amber-500"
+              />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -522,7 +582,17 @@ export default function AdminReviewsPage() {
                   <label className="block text-slate-300 mb-1 font-semibold">Destination Country</label>
                   <select
                     value={form.country || ''}
-                    onChange={(e) => setForm({ ...form, country: e.target.value })}
+                    onChange={(e) => {
+                      const newCountry = e.target.value;
+                      const matchingUnis = universities.filter(
+                        (u) => u.country?.toLowerCase() === newCountry.toLowerCase()
+                      );
+                      setForm({
+                        ...form,
+                        country: newCountry,
+                        university: matchingUnis[0]?.name || '',
+                      });
+                    }}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
                   >
                     {countries.map((c) => (
@@ -531,15 +601,24 @@ export default function AdminReviewsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">University</label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-slate-300 font-semibold">University</label>
+                    <span className="text-[10px] text-amber-400">
+                      {universities.filter((u) => u.country?.toLowerCase() === (form.country || '').toLowerCase()).length} in {form.country}
+                    </span>
+                  </div>
                   <select
                     value={form.university || ''}
                     onChange={(e) => setForm({ ...form, university: e.target.value })}
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
                   >
-                    {universities.map((u) => (
-                      <option key={u.id} value={u.name}>{u.name}</option>
-                    ))}
+                    <option value="">-- Choose {form.country} University --</option>
+                    {universities
+                      .filter((u) => u.country?.toLowerCase() === (form.country || '').toLowerCase())
+                      .map((u) => (
+                        <option key={u.id} value={u.name}>{u.name}</option>
+                      ))}
+                    <option value="Other">Other / Not in list</option>
                   </select>
                 </div>
               </div>

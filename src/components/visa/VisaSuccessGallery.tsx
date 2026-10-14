@@ -74,19 +74,12 @@ function GalleryCard({
   const flag = countryFlags[item.country] || '🌍';
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200/90 p-3 shadow-xs hover:shadow-xl hover:border-amber-400 transition-all duration-300 flex flex-col justify-between group">
-      {/* Visa Poster Container */}
+    <div className="rounded-2xl bg-white border border-slate-200/90 p-2 sm:p-2.5 shadow-xs hover:shadow-xl hover:border-amber-400 transition-all duration-300 flex flex-col justify-between group">
+      {/* Visa Poster Container - Tall A4 Proportion for Clear Legibility */}
       <div
-        className="relative aspect-[4/5] rounded-xl overflow-hidden bg-slate-100 border border-slate-200/80 cursor-pointer group-hover:shadow-md transition-all select-none"
+        className="relative aspect-[1/1.36] sm:aspect-[1/1.38] rounded-xl overflow-hidden bg-slate-900/5 border border-slate-200/80 cursor-pointer group-hover:shadow-md transition-all select-none"
         onClick={() => onZoom(item.visaLetterImage)}
       >
-        {/* Subtle background pulse while downloading */}
-        {!isLoaded && !imageError && (
-          <div className="absolute inset-0 bg-slate-100 animate-pulse flex items-center justify-center">
-            <div className="w-6 h-6 rounded-full border-2 border-amber-500/20 border-t-amber-500 animate-spin" />
-          </div>
-        )}
-
         {/* Fallback branded certificate if image fails to load */}
         {imageError ? (
           <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-amber-950 p-3 flex flex-col justify-between text-white text-center">
@@ -99,23 +92,20 @@ function GalleryCard({
               </span>
             </div>
 
-            <div className="my-auto py-1">
-              <div className="w-10 h-10 mx-auto rounded-full bg-amber-400/20 border border-amber-400/50 flex items-center justify-center mb-1.5 shadow-inner">
-                <GraduationCap className="w-5 h-5 text-amber-400" />
+            <div className="my-auto py-2">
+              <div className="w-12 h-12 mx-auto rounded-full bg-amber-400/20 border border-amber-400/50 flex items-center justify-center mb-2 shadow-inner">
+                <GraduationCap className="w-6 h-6 text-amber-400" />
               </div>
-              <h4 className="text-xs font-extrabold text-white leading-tight truncate">
-                {item.studentName}
+              <h4 className="text-sm font-extrabold text-white leading-tight">
+                {item.country} Visa Grant
               </h4>
-              <p className="text-[10px] text-amber-200/90 font-medium mt-0.5">
-                {item.country} Visa Approved
+              <p className="text-[10px] text-amber-200/90 font-medium mt-1">
+                Official Consulate Visa Letter
               </p>
-              <div className="mt-1.5 inline-block px-2 py-0.5 rounded bg-white/10 text-[9px] text-slate-200 border border-white/15 truncate max-w-full">
-                {item.university}
-              </div>
             </div>
 
             <div className="pt-1.5 border-t border-white/10 text-[9px] text-slate-400 font-medium">
-              Official Consulate Visa Letter
+              Click to view verification proof
             </div>
           </div>
         ) : (
@@ -131,8 +121,8 @@ function GalleryCard({
             <img
               ref={imgRef}
               src={item.visaLetterImage}
-              alt={`${item.studentName || 'Student'} Visa Proof`}
-              className="relative z-10 w-full h-full object-contain p-1.5 group-hover:scale-105 transition-all duration-300 drop-shadow-xs select-none"
+              alt={`${item.country || 'Visa'} Proof`}
+              className="relative z-10 w-full h-full object-contain p-1 group-hover:scale-105 transition-all duration-300 drop-shadow-xs select-none"
               onLoad={() => setIsLoaded(true)}
               onError={() => setImageError(true)}
             />
@@ -147,6 +137,14 @@ function GalleryCard({
           </span>
         </div>
 
+        {/* Country Badge */}
+        <div className="absolute top-2 right-2 z-20 pointer-events-none">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-extrabold bg-amber-500 text-slate-950 shadow-sm border border-amber-300">
+            <span>{flag}</span>
+            <span>{item.country}</span>
+          </span>
+        </div>
+
         {/* Hover Zoom Overlay */}
         <div className="absolute inset-0 z-20 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center p-3">
           <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-white text-slate-950 font-bold text-[11px] shadow-lg transform translate-y-1.5 group-hover:translate-y-0 transition-transform">
@@ -155,41 +153,14 @@ function GalleryCard({
         </div>
       </div>
 
-      {/* Student & Course Details */}
-      <div className="mt-2.5 space-y-1.5">
-        <div className="flex items-center justify-between gap-1.5">
-          <h3 className="text-xs sm:text-sm font-extrabold text-slate-900 truncate group-hover:text-amber-700 transition-colors">
-            {item.studentName}
-          </h3>
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-300 shrink-0">
-            <span>{flag}</span>
-            <span className="truncate max-w-[80px]">{item.country}</span>
-          </span>
-        </div>
-
-        {item.university && item.university !== 'Global University' && (
-          <div className="bg-slate-50 p-2 rounded-xl border border-slate-100 space-y-0.5 text-[11px]">
-            <div className="flex items-center gap-1.5 font-bold text-slate-800 truncate">
-              <Building className="w-3 h-3 text-amber-600 shrink-0" />
-              <span className="truncate">{item.university}</span>
-            </div>
-            {item.program && item.program !== 'Academic Degree Program' && (
-              <div className="text-[10px] text-slate-500 font-medium truncate pl-4.5">
-                {item.program}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Card Footer Tag */}
-      <div className="mt-2 pt-2 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-500">
-        <span className="text-emerald-700 font-bold flex items-center gap-1">
-          <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified Grant
-        </span>
-        <span className="font-semibold text-slate-600 flex items-center gap-1">
+      {/* Clean Bottom Country & Verified Bar (No student name or university) */}
+      <div className="mt-2.5 px-1 flex items-center justify-between text-xs">
+        <span className="font-extrabold text-slate-900 flex items-center gap-1.5 truncate">
           <span>{flag}</span>
-          <span>{item.country}</span>
+          <span className="truncate">{item.country} Visa Grant</span>
+        </span>
+        <span className="text-emerald-700 font-bold flex items-center gap-1 text-[10px] bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 shrink-0">
+          <ShieldCheck className="w-3 h-3 text-emerald-600" /> Verified
         </span>
       </div>
     </div>
@@ -203,8 +174,8 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
   const [currentPage, setCurrentPage] = useState(1);
   const galleryRef = useRef<HTMLDivElement>(null);
 
-  // Exactly 2 rows of results (4 cards in 1 row on desktop = 8 cards per page)
-  const itemsPerPage = 8;
+  // 50 cards per page
+  const itemsPerPage = 50;
 
   // 1. Dynamic country calculation from active items
   const activeItems = items.filter((i) => i.published !== false);

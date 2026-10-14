@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { University } from '@/lib/types';
+import { logActivity, getClientActor } from '@/lib/auditLogger';
 
 export async function GET() {
   const universities = await db.getTable('universities');
@@ -75,6 +76,18 @@ export async function POST(request: Request) {
     universities.unshift(newUniversity);
     await db.updateTable('universities', universities);
 
+    const actor = getClientActor(request);
+    await logActivity({
+      action: 'create',
+      entity: 'University',
+      entityId: newUniversity.slug,
+      entityTitle: `${newUniversity.name} (${newUniversity.country})`,
+      details: `Added new university in ${newUniversity.country}`,
+      userEmail: actor.userEmail,
+      ipAddress: actor.ipAddress,
+      userAgent: actor.userAgent,
+    });
+
     return NextResponse.json({ success: true, university: newUniversity });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to create university' }, { status: 500 });
@@ -117,6 +130,18 @@ export async function PUT(request: Request) {
     universities[index] = updatedUni;
     await db.updateTable('universities', universities);
 
+    const actor = getClientActor(request);
+    await logActivity({
+      action: 'update',
+      entity: 'University',
+      entityId: updatedUni.slug,
+      entityTitle: `${updatedUni.name} (${updatedUni.country})`,
+      details: `Updated university details and curriculum/fees`,
+      userEmail: actor.userEmail,
+      ipAddress: actor.ipAddress,
+      userAgent: actor.userAgent,
+    });
+
     return NextResponse.json({ success: true, university: universities[index] });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || 'Failed to update university' }, { status: 500 });
@@ -133,10 +158,25 @@ export async function DELETE(request: Request) {
     }
 
     let universities = await db.getTable('universities');
+    const targetUni = universities.find(
+      (u) => u.slug?.toLowerCase() === target.toLowerCase() || u.id === target
+    );
     universities = universities.filter(
       (u) => u.slug?.toLowerCase() !== target.toLowerCase() && u.id !== target
     );
     await db.updateTable('universities', universities);
+
+    const actor = getClientActor(request);
+    await logActivity({
+      action: 'delete',
+      entity: 'University',
+      entityId: target,
+      entityTitle: targetUni ? `${targetUni.name} (${targetUni.country})` : target,
+      details: `Deleted university from database`,
+      userEmail: actor.userEmail,
+      ipAddress: actor.ipAddress,
+      userAgent: actor.userAgent,
+    });
 
     return NextResponse.json({ success: true });
   } catch (err: any) {

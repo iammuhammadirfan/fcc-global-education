@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { VisaSuccessItem } from '@/lib/types';
+import { getClientActor, logActivity } from '@/lib/auditLogger';
 
 export async function GET() {
   try {
@@ -25,9 +26,11 @@ export async function POST(request: Request) {
     const showOnHome = body.showOnHomepage !== undefined ? Boolean(body.showOnHomepage) : false;
 
     if (showOnHome) {
-      const currentHome = items.filter((it: VisaSuccessItem) => it.showOnHomepage === true);
-      if (currentHome.length >= 10) {
-        const oldest = currentHome[currentHome.length - 1];
+      const currentCountryHome = items.filter(
+        (it: VisaSuccessItem) => it.showOnHomepage === true && it.country?.toLowerCase() === body.country?.toLowerCase()
+      );
+      if (currentCountryHome.length >= 10) {
+        const oldest = currentCountryHome[currentCountryHome.length - 1];
         if (oldest) {
           oldest.showOnHomepage = false;
         }
@@ -59,6 +62,20 @@ export async function POST(request: Request) {
     items.unshift(newItem);
     await db.updateTable('visaSuccess', items);
 
+    const actor = await getClientActor(request);
+    await logActivity({
+      action: 'UPLOAD',
+      entity: 'VisaSuccess',
+      entityId: newItem.id,
+      userId: actor.userId,
+      userName: actor.userName,
+      userEmail: actor.userEmail,
+      userRole: actor.userRole,
+      ip: actor.ip,
+      userAgent: actor.userAgent,
+      details: `${actor.userName} added/uploaded visa success poster for ${newItem.country}${newItem.university ? ` (${newItem.university})` : ''}`,
+    }).catch(() => null);
+
     return NextResponse.json({ success: true, item: newItem });
   } catch (error: any) {
     return NextResponse.json({ error: error?.message || 'Failed to create visa success record' }, { status: 500 });
@@ -81,11 +98,14 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Visa success record not found' }, { status: 404 });
     }
 
-    // If enabling showOnHomepage and already 10, remove least recent
+    // If enabling showOnHomepage and already 10 for that country, remove least recent of that country
     if (updates.showOnHomepage === true) {
-      const currentHome = items.filter((it) => it.id !== id && it.showOnHomepage === true);
-      if (currentHome.length >= 10) {
-        const oldest = currentHome[currentHome.length - 1];
+      const targetCountry = updates.country || items[index]?.country;
+      const currentCountryHome = items.filter(
+        (it) => it.id !== id && it.showOnHomepage === true && it.country?.toLowerCase() === targetCountry?.toLowerCase()
+      );
+      if (currentCountryHome.length >= 10) {
+        const oldest = currentCountryHome[currentCountryHome.length - 1];
         if (oldest) {
           oldest.showOnHomepage = false;
         }
@@ -98,6 +118,20 @@ export async function PUT(request: Request) {
     };
 
     await db.updateTable('visaSuccess', items);
+
+    const actor = await getClientActor(request);
+    await logActivity({
+      action: 'UPDATE',
+      entity: 'VisaSuccess',
+      entityId: id,
+      userId: actor.userId,
+      userName: actor.userName,
+      userEmail: actor.userEmail,
+      userRole: actor.userRole,
+      ip: actor.ip,
+      userAgent: actor.userAgent,
+      details: `${actor.userName} updated visa record for ${items[index].country}${updates.showOnHomepage !== undefined ? ` (Homepage: ${updates.showOnHomepage ? 'Pinned' : 'Unpinned'})` : ''}`,
+    }).catch(() => null);
 
     return NextResponse.json({ success: true, item: items[index] });
   } catch (error: any) {
@@ -145,6 +179,19 @@ export async function DELETE(request: Request) {
 
     await db.updateTable('visaSuccess', items);
     db.clearCache();
+
+    const actor = await getClientActor(request);
+    await logActivity({
+      action: 'DELETE',
+      entity: 'VisaSuccess',
+      userId: actor.userId,
+      userName: actor.userName,
+      userEmail: actor.userEmail,
+      userRole: actor.userRole,
+      ip: actor.ip,
+      userAgent: actor.userAgent,
+      details: `${actor.userName} deleted ${deletedCount} visa success poster(s)`,
+    }).catch(() => null);
 
     return NextResponse.json({
       success: true,
