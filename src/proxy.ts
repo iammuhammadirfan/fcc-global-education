@@ -57,14 +57,23 @@ export function proxy(request: NextRequest) {
 
   // Protect all Admin API routes (/api/admin/*)
   if (pathname.startsWith('/api/admin')) {
-    const sessionCookie = request.cookies.get(AUTH_COOKIE_NAME)?.value;
-    const hasValidSession = isValidAdminSession(sessionCookie);
+    // Allow public read of general settings (logo, company name) for login page branding
+    const { searchParams } = new URL(request.url);
+    const isPublicBranding =
+      request.method === 'GET' &&
+      pathname === '/api/admin/settings' &&
+      searchParams.get('type') === 'general';
 
-    if (!hasValidSession) {
-      return NextResponse.json(
-        { error: 'Unauthorized. Valid admin session is required to perform this action.' },
-        { status: 401 }
-      );
+    if (!isPublicBranding) {
+      const sessionCookie = request.cookies.get(AUTH_COOKIE_NAME)?.value;
+      const hasValidSession = isValidAdminSession(sessionCookie);
+
+      if (!hasValidSession) {
+        return NextResponse.json(
+          { error: 'Unauthorized. Valid admin session is required to perform this action.' },
+          { status: 401 }
+        );
+      }
     }
   }
 
