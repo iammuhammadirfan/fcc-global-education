@@ -58,22 +58,55 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
-    const { slug } = body;
 
-    if (!slug) {
-      return NextResponse.json({ error: 'Country slug is required' }, { status: 400 });
+    // Support bulk reordering if requested
+    if (body.action === 'reorder' && Array.isArray(body.items)) {
+      const countries = await db.getTable('countries');
+      const orderMap = new Map<string, number>();
+      body.items.forEach((it: any) => {
+        if (it.id) orderMap.set(String(it.id).toLowerCase(), Number(it.order));
+        if (it.slug) orderMap.set(String(it.slug).toLowerCase(), Number(it.order));
+      });
+
+      const updated = countries.map((c) => {
+        const customOrder = orderMap.get(c.id.toLowerCase()) ?? orderMap.get(c.slug.toLowerCase());
+        if (customOrder !== undefined) {
+          return { ...c, order: customOrder, sortOrder: customOrder };
+        }
+        return c;
+      });
+
+      // Sort by order ascending
+      updated.sort((a, b) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+      await db.updateTable('countries', updated);
+      return NextResponse.json({ success: true, countries: updated });
+    }
+
+    const { slug, id } = body;
+    if (!slug && !id) {
+      return NextResponse.json({ error: 'Country slug or id is required' }, { status: 400 });
     }
 
     const countries = await db.getTable('countries');
-    const index = countries.findIndex((c) => c.slug.toLowerCase() === slug.toLowerCase());
+    const cleanSlug = slug?.toLowerCase().trim();
+    const cleanId = id?.toLowerCase().trim();
+    const index = countries.findIndex(
+      (c) => (cleanSlug && c.slug.toLowerCase() === cleanSlug) || (cleanId && c.id.toLowerCase() === cleanId)
+    );
 
     if (index === -1) {
       return NextResponse.json({ error: 'Country not found' }, { status: 404 });
     }
 
-    countries[index] = { ...countries[index], ...body };
-    await db.updateTable('countries', countries);
+    const numOrder = body.order !== undefined ? Number(body.order) : (body.sortOrder !== undefined ? Number(body.sortOrder) : undefined);
 
+    countries[index] = {
+      ...countries[index],
+      ...body,
+      ...(numOrder !== undefined ? { order: numOrder, sortOrder: numOrder } : {})
+    };
+
+    await db.updateTable('countries', countries);
     return NextResponse.json({ success: true, country: countries[index] });
   } catch {
     return NextResponse.json({ error: 'Failed to update country' }, { status: 500 });

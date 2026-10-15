@@ -17,11 +17,15 @@ export default function AdminSuccessStoriesPage() {
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
 
+  const DUMMY_MAN_AVATAR = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+  const DUMMY_WOMAN_AVATAR = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+
   const initialForm: Partial<SuccessStory> = {
     name: '',
     studentName: '',
-    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400',
-    studentPhoto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400',
+    gender: 'man',
+    image: DUMMY_MAN_AVATAR,
+    studentPhoto: DUMMY_MAN_AVATAR,
     country: 'United Kingdom',
     university: 'University of Oxford',
     program: 'MSc Advanced Computer Science',
@@ -29,6 +33,7 @@ export default function AdminSuccessStoriesPage() {
     scholarshipAmount: '£10,000 Global Award',
     visaGrantTime: '12 Days Visa Granted',
     visaResult: '12 Days Visa Granted',
+    intake: 'Fall 2025',
     testimonial: 'FCC Global Education guided me through university shortlisting and visa filing with incredible precision.',
     quote: 'From application to visa stamp, the experience was seamless.',
     rating: 5,
@@ -70,17 +75,20 @@ export default function AdminSuccessStoriesPage() {
     const studentPhoto = s.studentPhoto || s.image || '';
     const visaResult = s.visaGrantTime || s.visaResult || '';
     const scholarship = s.scholarship || s.scholarshipAmount || '';
+    const isWoman = s.gender === 'woman' || s.gender === 'female';
 
     setForm({
       ...s,
       name: studentName,
       studentName,
-      image: studentPhoto,
-      studentPhoto,
+      gender: s.gender || (isWoman ? 'woman' : 'man'),
+      image: studentPhoto || (isWoman ? DUMMY_WOMAN_AVATAR : DUMMY_MAN_AVATAR),
+      studentPhoto: studentPhoto || (isWoman ? DUMMY_WOMAN_AVATAR : DUMMY_MAN_AVATAR),
       visaGrantTime: visaResult,
       visaResult,
       scholarship,
       scholarshipAmount: scholarship,
+      intake: s.intake || 'Fall 2025',
       testimonial: s.testimonial || s.quote || '',
     });
     setIsModalOpen(true);
@@ -99,6 +107,10 @@ export default function AdminSuccessStoriesPage() {
 
     setSubmitting(true);
     try {
+      const isWoman = form.gender === 'woman' || form.gender === 'female';
+      const defaultPhoto = isWoman ? DUMMY_WOMAN_AVATAR : DUMMY_MAN_AVATAR;
+      const finalPhoto = form.studentPhoto || form.image || defaultPhoto;
+
       const payload = {
         ...form,
         id: editingStory?.id || undefined,
@@ -106,8 +118,10 @@ export default function AdminSuccessStoriesPage() {
         studentName,
         university,
         country,
-        image: form.image || form.studentPhoto || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400',
-        studentPhoto: form.studentPhoto || form.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400',
+        gender: form.gender || (isWoman ? 'woman' : 'man'),
+        image: finalPhoto,
+        studentPhoto: finalPhoto,
+        intake: form.intake || 'Fall 2025',
         visaGrantTime: form.visaGrantTime || form.visaResult || 'Visa Granted',
         visaResult: form.visaResult || form.visaGrantTime || 'Visa Granted',
         scholarship: form.scholarship || form.scholarshipAmount || '',
@@ -386,7 +400,12 @@ export default function AdminSuccessStoriesPage() {
 
       {/* Add / Edit Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsModalOpen(false);
+          }}
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto"
+        >
           <div className="bg-white border border-slate-200 rounded-2xl w-full max-w-xl max-h-[92vh] overflow-y-auto p-6 space-y-5 shadow-2xl text-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
@@ -453,13 +472,102 @@ export default function AdminSuccessStoriesPage() {
                 </div>
               </div>
 
-              {/* Student Photo with Direct Upload */}
+              {/* Student Gender / Avatar Selector (Auto-Assigned Photo) */}
               <div>
+                <label className="block text-slate-700 mb-1.5 font-bold">
+                  Student Gender & Photo (Auto Dummy Avatar) *
+                </label>
+                <div className="grid grid-cols-2 gap-3 mb-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        gender: 'man',
+                        studentPhoto: (!form.studentPhoto || form.studentPhoto === DUMMY_WOMAN_AVATAR) ? DUMMY_MAN_AVATAR : form.studentPhoto,
+                        image: (!form.image || form.image === DUMMY_WOMAN_AVATAR) ? DUMMY_MAN_AVATAR : form.image,
+                      })
+                    }
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition cursor-pointer ${
+                      (form.gender || 'man') === 'man'
+                        ? 'bg-amber-50 border-amber-500 text-amber-900 font-bold shadow-xs ring-1 ring-amber-400'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    <img
+                      src={DUMMY_MAN_AVATAR}
+                      alt="Man Avatar"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shrink-0"
+                    />
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">👨 Man / Male</div>
+                      <div className="text-[11px] text-amber-700 font-medium">Default Male Photo</div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        gender: 'woman',
+                        studentPhoto: (!form.studentPhoto || form.studentPhoto === DUMMY_MAN_AVATAR) ? DUMMY_WOMAN_AVATAR : form.studentPhoto,
+                        image: (!form.image || form.image === DUMMY_MAN_AVATAR) ? DUMMY_WOMAN_AVATAR : form.image,
+                      })
+                    }
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition cursor-pointer ${
+                      form.gender === 'woman'
+                        ? 'bg-amber-50 border-amber-500 text-amber-900 font-bold shadow-xs ring-1 ring-amber-400'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-300'
+                    }`}
+                  >
+                    <img
+                      src={DUMMY_WOMAN_AVATAR}
+                      alt="Woman Avatar"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-amber-400 shrink-0"
+                    />
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">👩 Woman / Female</div>
+                      <div className="text-[11px] text-amber-700 font-medium">Default Female Photo</div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Optional Custom Student Photo Upload */}
                 <ImageUploadInput
-                  label="Student Photo (Upload or URL)"
+                  label="Custom Student Photo (Optional Override)"
                   value={form.image || form.studentPhoto || ''}
                   onChange={(url) => setForm({ ...form, image: url, studentPhoto: url })}
-                  placeholder="Upload student photo or enter URL..."
+                  placeholder="Upload custom student photo or enter URL..."
+                />
+              </div>
+
+              {/* Student Intake Season */}
+              <div>
+                <label className="block text-slate-700 mb-1 font-bold">Student Intake Season *</label>
+                <div className="flex flex-wrap gap-1.5 mb-2">
+                  {['Fall 2025', 'Spring 2026', 'Fall 2026', 'Spring 2025'].map((season) => (
+                    <button
+                      key={season}
+                      type="button"
+                      onClick={() => setForm({ ...form, intake: season })}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                        form.intake === season
+                          ? 'bg-amber-500 text-slate-950 font-bold shadow-xs'
+                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      }`}
+                    >
+                      {season}
+                    </button>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  required
+                  value={form.intake || 'Fall 2025'}
+                  onChange={(e) => setForm({ ...form, intake: e.target.value })}
+                  placeholder="e.g. Fall 2025"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
                 />
               </div>
 

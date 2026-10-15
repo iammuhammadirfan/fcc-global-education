@@ -34,11 +34,12 @@ export function proxy(request: NextRequest) {
   // Protect all /admin routes
   if (pathname.startsWith('/admin')) {
     const isLoginPage = pathname === '/admin/login';
+    const isPublicAdminPage = pathname === '/admin/login' || pathname === '/admin/reset-password';
     const sessionCookie = request.cookies.get(AUTH_COOKIE_NAME)?.value;
     const hasValidSession = isValidAdminSession(sessionCookie);
 
-    // If NOT logged in and trying to access any admin page (except /admin/login)
-    if (!hasValidSession && !isLoginPage) {
+    // If NOT logged in and trying to access any admin page (except public login/reset pages)
+    if (!hasValidSession && !isPublicAdminPage) {
       const loginUrl = new URL('/admin/login', request.url);
       const response = NextResponse.redirect(loginUrl);
       if (sessionCookie) {

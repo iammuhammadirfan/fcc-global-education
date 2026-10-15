@@ -334,20 +334,117 @@ export default function BroadcastPage() {
     }
   };
 
-  // Handle Delete Subscriber
+  // Bulk & Single Selection State for Subscribers
+  const [selectedSubscribers, setSelectedSubscribers] = useState<string[]>([]);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
+
+  // Toggle select all visible subscribers
+  const toggleSelectAllSubscribers = () => {
+    if (selectedSubscribers.length === filteredSubscribers.length && filteredSubscribers.length > 0) {
+      setSelectedSubscribers([]);
+    } else {
+      setSelectedSubscribers(filteredSubscribers.map((s) => s.id));
+    }
+  };
+
+  // Toggle individual subscriber
+  const toggleSelectSubscriber = (id: string) => {
+    setSelectedSubscribers((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Handle Delete Single Subscriber
   const handleDeleteSubscriber = async (id: string, email: string) => {
-    if (!confirm(`Are you sure you want to remove "${email}" from the audience?`)) return;
+    if (!confirm(`Are you sure you want to remove "${email}" from the audience database?`)) return;
     try {
       const res = await fetch(`/api/admin/broadcast?id=${id}`, {
         method: 'DELETE',
       });
       const data = await res.json();
       if (data.success) {
-        setSubscribers(subscribers.filter((s) => s.id !== id));
+        setSubscribers((prev) => prev.filter((s) => s.id !== id));
+        setSelectedSubscribers((prev) => prev.filter((item) => item !== id));
         setStats((prev) => ({ ...prev, total: Math.max(0, prev.total - 1) }));
+      } else {
+        alert(data.error || 'Failed to remove subscriber');
       }
     } catch (err) {
       console.error(err);
+      alert('Network error while deleting subscriber');
+    }
+  };
+
+  // Handle Bulk Delete Subscribers
+  const handleBulkDeleteSubscribers = async () => {
+    if (selectedSubscribers.length === 0) return;
+    if (
+      !confirm(
+        `Are you sure you want to delete all ${selectedSubscribers.length} selected subscriber(s) from the audience database?`
+      )
+    ) {
+      return;
+    }
+
+    setIsDeletingBulk(true);
+    try {
+      const res = await fetch('/api/admin/broadcast', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedSubscribers, type: 'subscriber' }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const deletedCount = selectedSubscribers.length;
+        setSubscribers((prev) => prev.filter((s) => !selectedSubscribers.includes(s.id)));
+        setSelectedSubscribers([]);
+        setStats((prev) => ({ ...prev, total: Math.max(0, prev.total - deletedCount) }));
+      } else {
+        alert(data.error || 'Failed to delete selected subscribers');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error while deleting subscribers');
+    } finally {
+      setIsDeletingBulk(false);
+    }
+  };
+
+  // Handle Delete Campaign Record
+  const handleDeleteCampaign = async (campaignId: string) => {
+    if (!confirm('Are you sure you want to delete this campaign history entry?')) return;
+    try {
+      const res = await fetch(`/api/admin/broadcast?type=campaign&id=${campaignId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCampaigns((prev) => prev.filter((c) => c.id !== campaignId));
+      } else {
+        alert(data.error || 'Failed to delete campaign');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error deleting campaign history.');
+    }
+  };
+
+  // Handle Clear All Campaign History
+  const handleClearAllCampaigns = async () => {
+    if (!confirm('Are you sure you want to completely clear ALL campaign broadcast history?')) return;
+    try {
+      const res = await fetch('/api/admin/broadcast?type=campaign&all=true', {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCampaigns([]);
+      } else {
+        alert(data.error || 'Failed to clear history');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network error clearing campaign history.');
     }
   };
 
@@ -620,12 +717,54 @@ export default function BroadcastPage() {
             </button>
           </div>
 
+          {/* Bulk Selection Action Bar */}
+          {selectedSubscribers.length > 0 && (
+            <div className="flex items-center justify-between p-3.5 bg-rose-50 border border-rose-200 rounded-2xl shadow-xs animate-in fade-in">
+              <div className="flex items-center gap-2 text-rose-950 font-bold text-xs sm:text-sm">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>
+                  {selectedSubscribers.length} of {filteredSubscribers.length} subscriber(s) selected
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedSubscribers([])}
+                  className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer"
+                >
+                  Clear Selection
+                </button>
+                <button
+                  type="button"
+                  onClick={handleBulkDeleteSubscribers}
+                  disabled={isDeletingBulk}
+                  className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition cursor-pointer disabled:opacity-50"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{isDeletingBulk ? 'Deleting...' : `Delete Selected (${selectedSubscribers.length})`}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Subscribers Table */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm text-slate-600">
                 <thead className="bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                   <tr>
+                    <th className="py-3.5 px-4 w-12 text-center">
+                      <input
+                        type="checkbox"
+                        checked={
+                          filteredSubscribers.length > 0 &&
+                          selectedSubscribers.length === filteredSubscribers.length
+                        }
+                        onChange={toggleSelectAllSubscribers}
+                        className="w-4 h-4 rounded text-amber-600 border-slate-300 focus:ring-amber-500 cursor-pointer"
+                        title="Select All Subscribers"
+                      />
+                    </th>
                     <th className="py-3.5 px-6">Subscriber</th>
                     <th className="py-3.5 px-6">Phone / WhatsApp</th>
                     <th className="py-3.5 px-6">Source</th>
@@ -637,13 +776,28 @@ export default function BroadcastPage() {
                 <tbody className="divide-y divide-slate-100 font-medium">
                   {filteredSubscribers.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="py-12 text-center text-slate-400">
+                      <td colSpan={7} className="py-12 text-center text-slate-400">
                         No subscribers found matching your criteria.
                       </td>
                     </tr>
                   ) : (
                     filteredSubscribers.map((sub) => (
-                      <tr key={sub.id} className="hover:bg-slate-50/50 transition-colors">
+                      <tr
+                        key={sub.id}
+                        className={`transition-colors ${
+                          selectedSubscribers.includes(sub.id)
+                            ? 'bg-amber-50/60'
+                            : 'hover:bg-slate-50/50'
+                        }`}
+                      >
+                        <td className="py-4 px-4 text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectedSubscribers.includes(sub.id)}
+                            onChange={() => toggleSelectSubscriber(sub.id)}
+                            className="w-4 h-4 rounded text-amber-600 border-slate-300 focus:ring-amber-500 cursor-pointer"
+                          />
+                        </td>
                         <td className="py-4 px-6">
                           <div className="font-bold text-slate-900">{sub.email}</div>
                           {sub.name && <div className="text-xs text-slate-400">{sub.name}</div>}
@@ -1036,43 +1190,72 @@ export default function BroadcastPage() {
 
       {/* TAB 3: CAMPAIGN HISTORY */}
       {activeTab === 'history' && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm text-slate-600">
-              <thead className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
-                <tr>
-                  <th className="py-3.5 px-6">Subject Line</th>
-                  <th className="py-3.5 px-6">Campaign Title</th>
-                  <th className="py-3.5 px-6">Recipients Reached</th>
-                  <th className="py-3.5 px-6">Sent Date</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 font-medium">
-                {campaigns.length === 0 ? (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="text-xs text-slate-500 font-semibold">
+              Showing total <span className="font-bold text-slate-800">{campaigns.length}</span> recorded campaign dispatch(es).
+            </div>
+            {campaigns.length > 0 && (
+              <button
+                type="button"
+                onClick={handleClearAllCampaigns}
+                className="px-3.5 py-1.5 rounded-xl border border-rose-300 text-rose-700 hover:bg-rose-50 text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                <span>Clear All History</span>
+              </button>
+            )}
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm text-slate-600">
+                <thead className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200">
                   <tr>
-                    <td colSpan={4} className="py-12 text-center text-slate-400">
-                      No broadcast campaigns have been dispatched yet.
-                    </td>
+                    <th className="py-3.5 px-6">Subject Line</th>
+                    <th className="py-3.5 px-6">Campaign Title</th>
+                    <th className="py-3.5 px-6">Recipients Reached</th>
+                    <th className="py-3.5 px-6">Sent Date</th>
+                    <th className="py-3.5 px-6 text-right">Actions</th>
                   </tr>
-                ) : (
-                  campaigns.map((camp) => (
-                    <tr key={camp.id} className="hover:bg-slate-50/50">
-                      <td className="py-4 px-6 font-bold text-slate-900">{camp.subject}</td>
-                      <td className="py-4 px-6 text-xs text-slate-600">{camp.campaignTitle}</td>
-                      <td className="py-4 px-6">
-                        <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                          <span>{camp.recipientCount} Recipients</span>
-                        </span>
-                      </td>
-                      <td className="py-4 px-6 text-xs text-slate-500">
-                        {camp.sentAt ? new Date(camp.sentAt).toLocaleString('en-GB') : 'Recently'}
+                </thead>
+                <tbody className="divide-y divide-slate-100 font-medium">
+                  {campaigns.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} className="py-12 text-center text-slate-400">
+                        No broadcast campaigns have been dispatched yet.
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
+                  ) : (
+                    campaigns.map((camp) => (
+                      <tr key={camp.id} className="hover:bg-slate-50/50">
+                        <td className="py-4 px-6 font-bold text-slate-900">{camp.subject}</td>
+                        <td className="py-4 px-6 text-xs text-slate-600">{camp.campaignTitle}</td>
+                        <td className="py-4 px-6">
+                          <span className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>{camp.recipientCount} Recipients</span>
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-xs text-slate-500">
+                          {camp.sentAt ? new Date(camp.sentAt).toLocaleString('en-GB') : 'Recently'}
+                        </td>
+                        <td className="py-4 px-6 text-right">
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteCampaign(camp.id)}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                            title="Delete this campaign record"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}

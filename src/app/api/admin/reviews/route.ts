@@ -14,22 +14,60 @@ export async function GET() {
   }
 }
 
+const COUNTRY_SLUG_MAP: Record<string, string> = {
+  'united kingdom': 'uk',
+  'uk': 'uk',
+  'great britain': 'uk',
+  'england': 'uk',
+  'united-kingdom': 'uk',
+  'united states': 'usa',
+  'united states of america': 'usa',
+  'usa': 'usa',
+  'us': 'usa',
+  'united-states': 'usa',
+  'canada': 'canada',
+  'australia': 'australia',
+  'germany': 'germany',
+  'ireland': 'ireland',
+  'malaysia': 'malaysia',
+  'turkey': 'turkey',
+  'cyprus': 'cyprus',
+  'uae': 'uae',
+  'united arab emirates': 'uae',
+  'china': 'china',
+  'italy': 'italy',
+  'france': 'france',
+  'new zealand': 'new-zealand',
+};
+
+function resolveCountrySlug(country?: string): string {
+  if (!country) return 'uk';
+  const key = country.toLowerCase().trim();
+  if (COUNTRY_SLUG_MAP[key]) return COUNTRY_SLUG_MAP[key];
+  return key.replace(/[^a-z0-9]+/g, '-') || 'uk';
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, rating, country, university, program, comment, status, published, showOnHome } = body;
+    const { name, email, rating, country, university, program, comment, status, published, showOnHome, gender, avatar, intake } = body;
 
     if (!name || !comment) {
       return NextResponse.json({ error: 'Name and comment are required' }, { status: 400 });
     }
+
+    const isWoman = gender === 'woman' || gender === 'female';
+    const defaultAvatar = isWoman
+      ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
 
     const newReview: Review = {
       id: `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       name: String(name).trim(),
       email: email ? String(email).trim().toLowerCase() : '',
       rating: Number(rating) || 5,
-      country: country || 'International',
-      countrySlug: country ? country.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'international',
+      country: country || 'United Kingdom',
+      countrySlug: resolveCountrySlug(country),
       university: university || 'General',
       universitySlug: university ? university.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'general',
       program: program || undefined,
@@ -37,6 +75,9 @@ export async function POST(request: Request) {
       status: status || 'approved',
       published: published !== undefined ? Boolean(published) : true,
       showOnHome: showOnHome !== undefined ? Boolean(showOnHome) : true,
+      gender: gender || 'man',
+      avatar: avatar && String(avatar).trim() ? String(avatar).trim() : defaultAvatar,
+      intake: intake && String(intake).trim() ? String(intake).trim() : 'Fall 2025',
       verifiedStudent: true,
       createdAt: new Date().toISOString(),
     };
@@ -81,10 +122,18 @@ export async function PUT(request: Request) {
       return NextResponse.json({ error: 'Review not found' }, { status: 404 });
     }
 
+    const isWoman = body.gender === 'woman' || body.gender === 'female';
+    const defaultAvatar = isWoman
+      ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+
     const updated = {
       ...allReviews[index],
       ...body,
-      countrySlug: body.country ? body.country.toLowerCase().replace(/[^a-z0-9]+/g, '-') : allReviews[index].countrySlug,
+      gender: body.gender || allReviews[index].gender || 'man',
+      avatar: body.avatar && String(body.avatar).trim() ? String(body.avatar).trim() : (allReviews[index].avatar || defaultAvatar),
+      intake: body.intake && String(body.intake).trim() ? String(body.intake).trim() : (allReviews[index].intake || 'Fall 2025'),
+      countrySlug: body.country ? resolveCountrySlug(body.country) : allReviews[index].countrySlug,
       universitySlug: body.university ? body.university.toLowerCase().replace(/[^a-z0-9]+/g, '-') : allReviews[index].universitySlug,
     };
 

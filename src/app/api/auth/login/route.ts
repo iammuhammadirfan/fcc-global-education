@@ -16,7 +16,27 @@ export async function POST(request: Request) {
     }
 
     // 1. Direct secure MySQL database authentication
-    const authenticatedUser = await verifyUserCredentialsMySQL(email, password);
+    let authenticatedUser = await verifyUserCredentialsMySQL(email, password);
+
+    // 2. Resilient fallback: Check db.getTable('users') in case of MySQL sync lag or fallback storage
+    if (!authenticatedUser) {
+      try {
+        const usersList: any[] = (await db.getTable('users')) || [];
+        const cleanEmail = email.trim().toLowerCase();
+        const match = usersList.find((u) => u.email?.toLowerCase().trim() === cleanEmail);
+        if (match && match.passwordHash && verifyPassword(password, match.passwordHash)) {
+          authenticatedUser = {
+            id: match.id,
+            name: match.name,
+            email: match.email,
+            role: match.role,
+            avatar: match.avatar,
+          };
+        }
+      } catch (e) {
+        console.warn('Fallback authentication error:', e);
+      }
+    }
 
     if (!authenticatedUser) {
       const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || request.headers.get('x-real-ip') || '127.0.0.1';

@@ -48,7 +48,10 @@ export default function AdminCountriesPage() {
       const res = await fetch('/api/admin/countries');
       const data = await res.json();
       if (data.success) {
-        setCountries(data.countries || []);
+        const sorted = (data.countries || []).sort(
+          (a: any, b: any) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999)
+        );
+        setCountries(sorted);
       }
     } catch (err) {
       console.error(err);
@@ -61,6 +64,60 @@ export default function AdminCountriesPage() {
     fetchCountries();
   }, []);
 
+  const handleQuickOrderChange = async (slugOrId: string, newOrder: number) => {
+    setCountries((prev) => {
+      const updated = prev.map((c) =>
+        c.slug === slugOrId || c.id === slugOrId
+          ? { ...c, order: newOrder, sortOrder: newOrder }
+          : c
+      );
+      return updated.sort((a, b) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+    });
+
+    try {
+      await fetch('/api/admin/countries', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: slugOrId, id: slugOrId, order: newOrder }),
+      });
+    } catch (err) {
+      console.error('Failed to update country order', err);
+    }
+  };
+
+  const handleMoveOrder = async (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= countries.length) return;
+
+    const newCountries = [...countries];
+    const current = newCountries[index];
+    const target = newCountries[targetIndex];
+
+    const currentOrder = current.order ?? current.sortOrder ?? index + 1;
+    const targetOrder = target.order ?? target.sortOrder ?? targetIndex + 1;
+
+    current.order = targetOrder;
+    current.sortOrder = targetOrder;
+    target.order = currentOrder === targetOrder ? (direction === 'up' ? targetOrder + 1 : targetOrder - 1) : currentOrder;
+    target.sortOrder = target.order;
+
+    newCountries.sort((a, b) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+    setCountries(newCountries);
+
+    try {
+      await fetch('/api/admin/countries', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'reorder',
+          items: newCountries.map((c, idx) => ({ id: c.id, slug: c.slug, order: idx + 1 })),
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to reorder countries', err);
+    }
+  };
+
   const openAddModal = () => {
     setEditingCountry(null);
     setForm({
@@ -72,7 +129,10 @@ export default function AdminCountriesPage() {
 
   const openEditModal = (c: Country) => {
     setEditingCountry(c);
-    setForm(c);
+    setForm({
+      ...c,
+      order: c.order ?? c.sortOrder ?? 1,
+    });
     setIsModalOpen(true);
   };
 
@@ -97,10 +157,15 @@ export default function AdminCountriesPage() {
     setSubmitting(true);
     try {
       const method = editingCountry ? 'PUT' : 'POST';
+      const cleanOrder = Number(form.order) || 1;
       const res = await fetch('/api/admin/countries', {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
+        body: JSON.stringify({
+          ...form,
+          order: cleanOrder,
+          sortOrder: cleanOrder,
+        })
       });
       const data = await res.json();
       if (data.success) {
@@ -228,10 +293,39 @@ export default function AdminCountriesPage() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((c) => (
+                filtered.map((c, index) => (
                   <tr key={c.id} className="hover:bg-slate-800/30 transition">
-                    <td className="py-3.5 px-4 text-xs font-mono text-slate-500">
-                      #{c.order || 0}
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            type="button"
+                            disabled={index === 0}
+                            onClick={() => handleMoveOrder(index, 'up')}
+                            className="p-0.5 rounded hover:bg-slate-800 text-slate-400 hover:text-amber-400 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed transition"
+                            title="Move Destination Up"
+                          >
+                            <MoveUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={index === filtered.length - 1}
+                            onClick={() => handleMoveOrder(index, 'down')}
+                            className="p-0.5 rounded hover:bg-slate-800 text-slate-400 hover:text-amber-400 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed transition"
+                            title="Move Destination Down"
+                          >
+                            <MoveDown className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <input
+                          type="number"
+                          min={1}
+                          value={c.order ?? c.sortOrder ?? index + 1}
+                          onChange={(e) => handleQuickOrderChange(c.slug || c.id, parseInt(e.target.value) || 1)}
+                          className="w-14 px-1.5 py-1 text-center bg-slate-950 border border-slate-700 hover:border-amber-500/60 focus:border-amber-500 rounded-lg text-amber-400 font-black text-xs focus:outline-none transition"
+                          title="Display order number on Homepage (1 = first)"
+                        />
+                      </div>
                     </td>
                     <td className="py-3.5 px-4">
                       <div className="flex items-center gap-3">

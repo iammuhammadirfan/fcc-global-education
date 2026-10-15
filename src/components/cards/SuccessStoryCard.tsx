@@ -6,20 +6,55 @@ interface SuccessStoryCardProps {
   story: any;
 }
 
+const COUNTRY_SLUG_MAP: Record<string, string> = {
+  'united kingdom': 'uk',
+  'uk': 'uk',
+  'great britain': 'uk',
+  'united-kingdom': 'uk',
+  'england': 'uk',
+  'united states': 'usa',
+  'united states of america': 'usa',
+  'usa': 'usa',
+  'us': 'usa',
+  'united-states': 'usa',
+  'canada': 'canada',
+  'australia': 'australia',
+  'germany': 'germany',
+  'ireland': 'ireland',
+  'malaysia': 'malaysia',
+  'turkey': 'turkey',
+  'cyprus': 'cyprus',
+  'uae': 'uae',
+  'united arab emirates': 'uae',
+  'china': 'china',
+  'italy': 'italy',
+  'france': 'france',
+  'new zealand': 'new-zealand',
+};
+
+const DUMMY_MAN_AVATAR = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+const DUMMY_WOMAN_AVATAR = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+
 export default function SuccessStoryCard({ story }: SuccessStoryCardProps) {
+  const isWoman = story.gender === 'woman' || story.gender === 'female';
   const photo =
     story.studentPhoto ||
     story.avatar ||
-    'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80';
+    story.image ||
+    (isWoman ? DUMMY_WOMAN_AVATAR : DUMMY_MAN_AVATAR);
   const name = story.studentName || story.name || 'Verified Scholar';
   const education =
     story.previousEducation ||
     story.cgpa ||
     (story.program ? 'Enrolled Student' : 'Verified Academic Profile');
-  const country = story.country || 'International';
+  const country = story.country || 'United Kingdom';
+  const rawCountryKey = (story.country || '').trim().toLowerCase();
+  const rawSlugKey = (story.countrySlug || '').trim().toLowerCase();
   const countrySlug =
+    COUNTRY_SLUG_MAP[rawCountryKey] ||
+    COUNTRY_SLUG_MAP[rawSlugKey] ||
     story.countrySlug ||
-    (country ? country.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'destinations');
+    (country ? country.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'uk');
   const university = story.university || 'Partner University';
   const program = story.program || 'Admitted Degree Program';
   const scholarship = story.scholarshipAmount || story.scholarship;

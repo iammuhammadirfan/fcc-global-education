@@ -21,6 +21,8 @@ import HeroSection from '@/components/home/HeroSection';
 import PartnerTicker from '@/components/home/PartnerTicker';
 import CountryCard from '@/components/cards/CountryCard';
 import UniversityCard from '@/components/cards/UniversityCard';
+import ExpandableCountries from '@/components/home/ExpandableCountries';
+import ExpandableUniversities from '@/components/home/ExpandableUniversities';
 import ServiceCard from '@/components/cards/ServiceCard';
 import SuccessStoryCard from '@/components/cards/SuccessStoryCard';
 import VideoCard from '@/components/cards/VideoCard';
@@ -139,8 +141,14 @@ export default async function HomePage() {
   const statScholarships = homepageSettings?.scholarshipsSecured || (Array.isArray(homepageSettings?.stats) ? homepageSettings.stats[3]?.number : homepageSettings?.stats?.scholarshipsSecured) || '$14.2M+';
   const statScholarshipsLabel = homepageSettings?.scholarshipsSecuredLabel || (Array.isArray(homepageSettings?.stats) ? homepageSettings.stats[3]?.label : homepageSettings?.stats?.scholarshipsSecuredLabel) || 'Scholarships Claimed';
 
-  const featuredCountries = allCountries.filter((c: any) => c.published !== false).slice(0, 6);
-  const featuredUniversities = allUniversities.filter((u: any) => u.published !== false).slice(0, 6);
+  const featuredCountries = allCountries
+    .filter((c: any) => c.published !== false)
+    .sort((a: any, b: any) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+
+  const featuredUniversities = allUniversities
+    .filter((u: any) => u.published !== false)
+    .sort((a: any, b: any) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+
   const featuredServices = allServices.filter((s: any) => s.active !== false).slice(0, 6);
   const featuredStories = allStories.filter((s: any) => s.published !== false).slice(0, 3);
   const featuredVideos = allVideos.filter((v: any) => v.published !== false).slice(0, 3);
@@ -258,19 +266,41 @@ export default async function HomePage() {
             href="/destinations"
             className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors group"
           >
-            <span>View All 12 Destinations</span>
+            <span>View All {featuredCountries.length} Destinations</span>
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredCountries.map((country) => (
-            <CountryCard key={country.id} country={country} />
-          ))}
-        </div>
+        <ExpandableCountries countries={featuredCountries} />
       </section>
 
-      {/* 5. Core Services Showcase */}
+      {/* 5. Top Universities Spotlight */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <div>
+            <span className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+              World-Class Institutions
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-2">
+              Featured Global Universities
+            </h2>
+            <p className="text-slate-600 text-sm mt-1 max-w-xl">
+              Explore admission criteria, tuition fees, and scholarship opportunities at leading institutions.
+            </p>
+          </div>
+          <Link
+            href="/universities"
+            className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors group"
+          >
+            <span>Search Full University Directory</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </div>
+
+        <ExpandableUniversities universities={featuredUniversities} />
+      </section>
+
+      {/* 6. Core Services Showcase */}
       <section className="bg-slate-100/70 py-16 sm:py-20 border-y border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto space-y-3 mb-12">
@@ -300,36 +330,6 @@ export default async function HomePage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* 6. Top Universities Spotlight */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-          <div>
-            <span className="text-xs font-bold text-amber-600 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-              World-Class Institutions
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-2">
-              Featured Global Universities
-            </h2>
-            <p className="text-slate-600 text-sm mt-1 max-w-xl">
-              Explore admission criteria, tuition fees, and scholarship opportunities at leading institutions.
-            </p>
-          </div>
-          <Link
-            href="/universities"
-            className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-amber-600 transition-colors group"
-          >
-            <span>Search Full University Directory</span>
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featuredUniversities.map((uni) => (
-            <UniversityCard key={uni.id} university={uni} />
-          ))}
         </div>
       </section>
 

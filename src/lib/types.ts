@@ -389,6 +389,8 @@ export interface Review {
   published: boolean;
   showOnHome: boolean;
   avatar?: string;
+  gender?: 'man' | 'woman' | 'male' | 'female' | string;
+  intake?: string;
   createdAt: string;
   verifiedStudent?: boolean;
 }

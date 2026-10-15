@@ -115,61 +115,66 @@ export default async function VisaSuccessPage() {
     : defaultAuditStages;
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-20">
-      {/* 1. Hero Section */}
-      <section className="bg-gradient-to-b from-amber-50/50 via-white to-slate-50 text-slate-900 pt-10 pb-20 border-b border-slate-200/80 relative overflow-hidden">
-        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none" />
+    <div className="space-y-6 sm:space-y-10 pb-16">
+      {/* 1. Hero Section - Sleek & Compact */}
+      <section className="bg-gradient-to-b from-amber-50/40 via-white to-slate-50/60 text-slate-900 pt-3 sm:pt-4 pb-4 sm:pb-5 border-b border-slate-200/80 relative overflow-hidden">
+        <div className="absolute top-0 right-1/4 w-72 h-72 bg-emerald-100/30 rounded-full blur-3xl pointer-events-none" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <Breadcrumbs items={[{ label: 'Visa Success' }]} />
-
-          <div className="max-w-3xl space-y-4 pt-6">
-            <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-100 px-3.5 py-1.5 rounded-full border border-emerald-300">
-              {pageSettings.heroBadge || 'Verified Legal Immigration Compliance'}
-            </span>
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              {pageSettings.heroTitle || 'Turning Study Dreams Into'}{' '}
-              <span className="text-emerald-600">
-                {pageSettings.heroTitleHighlight || 'Visa Success'}
-              </span>
-            </h1>
-            <p className="text-slate-600 text-sm sm:text-lg leading-relaxed">
-              {pageSettings.heroDescription ||
-                'Our certified immigration solicitors and visa compliance officers audit every bank statement, tax filing, and sponsor affidavit before submission, ensuring near-perfect approval outcomes.'}
-            </p>
+          <div className="mb-2">
+            <Breadcrumbs items={[{ label: 'Visa Success' }]} />
           </div>
 
-          {/* Key Trust Statistics */}
-          <div className="mt-10 sm:mt-12 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
-            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-2xl sm:text-4xl font-extrabold text-emerald-600 truncate">
-                {pageSettings.stats?.stat1Value || '98.6%'}
-              </div>
-              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
-                {pageSettings.stats?.stat1Label || 'Audited Visa Approval Rate'}
-              </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-6 items-center">
+            {/* Left: Headline & Badge */}
+            <div className="lg:col-span-7 space-y-1.5 sm:space-y-2">
+              <span className="inline-block text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider bg-emerald-100/90 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                {pageSettings.heroBadge || 'Verified Legal Immigration Compliance'}
+              </span>
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                {pageSettings.heroTitle || 'Turning Study Dreams Into'}{' '}
+                <span className="text-emerald-600">
+                  {pageSettings.heroTitleHighlight || 'Visa Success'}
+                </span>
+              </h1>
+              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed max-w-2xl">
+                {pageSettings.heroDescription ||
+                  'Our certified immigration solicitors and visa compliance officers audit every bank statement, tax filing, and sponsor affidavit before submission, ensuring near-perfect approval outcomes.'}
+              </p>
             </div>
-            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-2xl sm:text-4xl font-extrabold text-slate-900 truncate">
-                {pageSettings.stats?.stat2Value || '5,000+'}
+
+            {/* Right: 4 Compact Trust Statistics */}
+            <div className="lg:col-span-5 grid grid-cols-2 gap-2 sm:gap-2.5">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-xl sm:text-2xl font-black text-emerald-600 truncate">
+                  {pageSettings.stats?.stat1Value || '98.6%'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold truncate leading-tight mt-0.5">
+                  {pageSettings.stats?.stat1Label || 'Audited Approval Rate'}
+                </div>
               </div>
-              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
-                {pageSettings.stats?.stat2Label || 'Approved Student Visas'}
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-xl sm:text-2xl font-black text-slate-900 truncate">
+                  {pageSettings.stats?.stat2Value || '5,000+'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold truncate leading-tight mt-0.5">
+                  {pageSettings.stats?.stat2Label || 'Approved Visas'}
+                </div>
               </div>
-            </div>
-            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-2xl sm:text-4xl font-extrabold text-amber-600 truncate">
-                {pageSettings.stats?.stat3Value || `${countries.length || 12}+`}
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-xl sm:text-2xl font-black text-amber-600 truncate">
+                  {pageSettings.stats?.stat3Value || `${countries.length || 12}+`}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold truncate leading-tight mt-0.5">
+                  {pageSettings.stats?.stat3Label || 'Destination Consulates'}
+                </div>
               </div>
-              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
-                {pageSettings.stats?.stat3Label || 'Destination Consulates & Embassies'}
-              </div>
-            </div>
-            <div className="p-3.5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="text-2xl sm:text-4xl font-extrabold text-cyan-600 truncate">
-                {pageSettings.stats?.stat4Value || '0%'}
-              </div>
-              <div className="text-[11px] sm:text-xs text-slate-600 mt-1 font-semibold truncate">
-                {pageSettings.stats?.stat4Label || 'Refusal on Compliant Files'}
+              <div className="p-2 sm:p-2.5 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-xl sm:text-2xl font-black text-cyan-600 truncate">
+                  {pageSettings.stats?.stat4Value || '0%'}
+                </div>
+                <div className="text-[10px] sm:text-[11px] text-slate-600 font-semibold truncate leading-tight mt-0.5">
+                  {pageSettings.stats?.stat4Label || 'Refusal on Compliant Files'}
+                </div>
               </div>
             </div>
           </div>
@@ -178,14 +183,16 @@ export default async function VisaSuccessPage() {
 
       {/* 2. Official Visa Grant Letters & Proofs Gallery Showcase */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3 mb-10">
-          <span className="text-xs font-bold text-emerald-700 uppercase tracking-widest bg-emerald-50 px-3.5 py-1.5 rounded-full border border-emerald-200">
-            {pageSettings.galleryBadge || 'Real Proofs & Official Stamps'}
-          </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
-            {pageSettings.galleryTitle || 'Verified Student Visa Approval Letters'}
-          </h2>
-          <p className="text-slate-600 text-xs sm:text-base leading-relaxed">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-3 sm:mb-4">
+          <div>
+            <span className="text-[10px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 inline-block mb-1">
+              {pageSettings.galleryBadge || 'Real Proofs & Official Stamps'}
+            </span>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight">
+              {pageSettings.galleryTitle || 'Verified Student Visa Approval Letters'}
+            </h2>
+          </div>
+          <p className="text-slate-500 text-xs sm:text-xs max-w-md sm:text-right leading-relaxed">
             {pageSettings.galleryDescription ||
               'Browse genuine visa grant decisions and embassy approval stamps obtained by our scholars across the UK, USA, Canada, Australia, Germany, and Europe.'}
           </p>

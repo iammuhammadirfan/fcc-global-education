@@ -22,9 +22,11 @@ export default function AdminAppointmentsPage() {
   const [rescheduleTime, setRescheduleTime] = useState('');
   const [rescheduleReason, setRescheduleReason] = useState('');
   const [sendRescheduleEmail, setSendRescheduleEmail] = useState(true);
-  const [meetingLinkInput, setMeetingLinkInput] = useState('');
-  const [isEditingMeetingLink, setIsEditingMeetingLink] = useState(false);
   const [actionSuccessMsg, setActionSuccessMsg] = useState('');
+
+  // Bulk & Single Selection State
+  const [selectedApptIds, setSelectedApptIds] = useState<string[]>([]);
+  const [isDeletingBulk, setIsDeletingBulk] = useState(false);
 
   const fetchAppointments = async () => {
     try {
@@ -51,8 +53,6 @@ export default function AdminAppointmentsPage() {
     setRescheduleDate(appt.preferredDate || (appt as any).date || '');
     setRescheduleTime(appt.preferredTime || (appt as any).time || '');
     setRescheduleReason('');
-    setMeetingLinkInput(appt.meetingLink || '');
-    setIsEditingMeetingLink(false);
     setActionSuccessMsg('');
     setIsModalOpen(true);
   };
@@ -136,32 +136,6 @@ export default function AdminAppointmentsPage() {
     }
   };
 
-  const handleSaveMeetingLink = async () => {
-    if (!selectedAppt) return;
-    setUpdating(true);
-    try {
-      const res = await fetch('/api/appointments', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: selectedAppt.id,
-          meetingLink: meetingLinkInput.trim(),
-        }),
-      });
-      const data = await res.json();
-      if (data.success) {
-        setAppointments((prev) => prev.map((a) => (a.id === selectedAppt.id ? data.appointment : a)));
-        setSelectedAppt(data.appointment);
-        setIsEditingMeetingLink(false);
-        showTempSuccess('Meeting room link updated.');
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setUpdating(false);
-    }
-  };
-
   const handleSaveNotes = async () => {
     if (!selectedAppt) return;
     setUpdating(true);
@@ -187,18 +161,77 @@ export default function AdminAppointmentsPage() {
     }
   };
 
+  // Single Delete
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this appointment record?')) return;
+    if (!confirm('Are you sure you want to delete this appointment consultation record?')) return;
     try {
       const res = await fetch(`/api/appointments?id=${id}`, { method: 'DELETE' });
       const data = await res.json();
       if (data.success) {
         setAppointments((prev) => prev.filter((a) => a.id !== id));
+        setSelectedApptIds((prev) => prev.filter((item) => item !== id));
         if (selectedAppt?.id === id) closeModal();
+        showTempSuccess('Appointment record deleted successfully.');
+      } else {
+        alert(data.error || 'Failed to delete appointment.');
       }
     } catch (err) {
       console.error(err);
+      alert('An error occurred while deleting.');
     }
+  };
+
+  // Bulk Delete
+  const handleBulkDelete = async () => {
+    if (selectedApptIds.length === 0) return;
+    if (
+      !confirm(
+        `Are you sure you want to delete all ${selectedApptIds.length} selected appointment(s)? This action cannot be undone.`
+      )
+    ) {
+      return;
+    }
+
+    setIsDeletingBulk(true);
+    try {
+      const res = await fetch('/api/appointments', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ids: selectedApptIds }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        const deletedCount = selectedApptIds.length;
+        setAppointments((prev) => prev.filter((a) => !selectedApptIds.includes(a.id)));
+        if (selectedAppt && selectedApptIds.includes(selectedAppt.id)) {
+          closeModal();
+        }
+        setSelectedApptIds([]);
+        showTempSuccess(`Successfully deleted ${deletedCount} appointment(s).`);
+      } else {
+        alert(data.error || 'Failed to delete selected appointments.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('An error occurred during bulk deletion.');
+    } finally {
+      setIsDeletingBulk(false);
+    }
+  };
+
+  // Toggle selection
+  const toggleSelectAll = (filteredItems: Appointment[]) => {
+    if (selectedApptIds.length === filteredItems.length && filteredItems.length > 0) {
+      setSelectedApptIds([]);
+    } else {
+      setSelectedApptIds(filteredItems.map((a) => a.id));
+    }
+  };
+
+  const toggleSelectOne = (id: string) => {
+    setSelectedApptIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
   };
 
   const handleExportCSV = async () => {
@@ -363,12 +396,51 @@ export default function AdminAppointmentsPage() {
         </div>
       </div>
 
+      {/* Bulk Selection Action Bar */}
+      {selectedApptIds.length > 0 && (
+        <div className="flex items-center justify-between p-3.5 bg-rose-50 border border-rose-200 rounded-2xl shadow-xs animate-in fade-in">
+          <div className="flex items-center gap-2 text-rose-950 font-bold text-xs sm:text-sm">
+            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <span>
+              {selectedApptIds.length} of {filtered.length} appointment(s) selected
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedApptIds([])}
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition cursor-pointer"
+            >
+              Clear Selection
+            </button>
+            <button
+              type="button"
+              onClick={handleBulkDelete}
+              disabled={isDeletingBulk}
+              className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-xs transition cursor-pointer disabled:opacity-50"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>{isDeletingBulk ? 'Deleting...' : `Delete Selected (${selectedApptIds.length})`}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Full Width Table (Spacious, No Cutoffs) */}
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm border-collapse">
             <thead className="bg-slate-50 border-b border-slate-200 text-xs text-slate-600 uppercase font-bold tracking-wider">
               <tr>
+                <th className="py-3.5 px-4 w-12 text-center">
+                  <input
+                    type="checkbox"
+                    checked={filtered.length > 0 && selectedApptIds.length === filtered.length}
+                    onChange={() => toggleSelectAll(filtered)}
+                    className="w-4 h-4 rounded text-amber-600 border-slate-300 focus:ring-amber-500 cursor-pointer"
+                    title="Select All Appointments"
+                  />
+                </th>
                 <th className="py-3.5 px-5">Student Information</th>
                 <th className="py-3.5 px-5">Consultation Session</th>
                 <th className="py-3.5 px-5">Destination & Level</th>
@@ -381,14 +453,14 @@ export default function AdminAppointmentsPage() {
             <tbody className="divide-y divide-slate-100">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-16 text-center text-slate-500">
+                  <td colSpan={8} className="py-16 text-center text-slate-500">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-amber-500" />
                     Loading appointments...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-16 text-center text-slate-500">
+                  <td colSpan={8} className="py-16 text-center text-slate-500">
                     <Calendar className="w-10 h-10 text-slate-300 mx-auto mb-2" />
                     <div className="font-bold text-slate-800 text-sm">No consultations found matching your filters.</div>
                   </td>
@@ -402,13 +474,28 @@ export default function AdminAppointmentsPage() {
                   const isOffice =
                     appt.meetingMode === 'in_person' ||
                     appt.format?.toLowerCase().includes('office');
+                  const isSelected = selectedApptIds.includes(appt.id);
 
                   return (
                     <tr
                       key={appt.id}
                       onClick={() => openApptModal(appt)}
-                      className="hover:bg-amber-50/40 cursor-pointer transition group"
+                      className={`cursor-pointer transition group ${
+                        isSelected ? 'bg-amber-50/70' : 'hover:bg-amber-50/40'
+                      }`}
                     >
+                      {/* Selection Checkbox */}
+                      <td
+                        className="py-4 px-4 text-center"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSelectOne(appt.id)}
+                          className="w-4 h-4 rounded text-amber-600 border-slate-300 focus:ring-amber-500 cursor-pointer"
+                        />
+                      </td>
                       {/* Student Info */}
                       <td className="py-4 px-5">
                         <div className="flex items-center gap-3">
@@ -653,67 +740,7 @@ export default function AdminAppointmentsPage() {
                       </div>
                     </div>
 
-                    {/* Google Meet / Video Room Link Editor */}
-                    {!isOffice && (
-                      <div className="p-3.5 rounded-2xl bg-sky-50 border border-sky-200 text-xs space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-sky-950 flex items-center gap-1.5">
-                            <Video className="w-4 h-4 text-sky-600" />
-                            Virtual Meeting Room Link:
-                          </span>
-                          {!isEditingMeetingLink && (
-                            <button
-                              type="button"
-                              onClick={() => setIsEditingMeetingLink(true)}
-                              className="text-[11px] font-bold text-sky-700 hover:text-sky-900 underline cursor-pointer"
-                            >
-                              Edit Link
-                            </button>
-                          )}
-                        </div>
 
-                        {isEditingMeetingLink ? (
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={meetingLinkInput}
-                              onChange={(e) => setMeetingLinkInput(e.target.value)}
-                              placeholder="https://meet.google.com/xxx-xxxx-xxx"
-                              className="flex-1 px-3 py-1.5 rounded-xl bg-white border border-sky-300 text-xs text-slate-900 focus:outline-none focus:border-sky-500"
-                            />
-                            <button
-                              type="button"
-                              onClick={handleSaveMeetingLink}
-                              disabled={updating}
-                              className="px-3 py-1.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs cursor-pointer"
-                            >
-                              Save
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setIsEditingMeetingLink(false)}
-                              className="px-2.5 py-1.5 rounded-xl bg-slate-200 text-slate-700 text-xs font-semibold cursor-pointer"
-                            >
-                              Cancel
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="font-mono text-slate-700 truncate max-w-[280px]">
-                              {selectedAppt.meetingLink || 'https://meet.google.com/aur-aglb-edu'}
-                            </span>
-                            <a
-                              href={selectedAppt.meetingLink || 'https://meet.google.com/aur-aglb-edu'}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="px-3 py-1 rounded-xl bg-sky-600 hover:bg-sky-700 text-white font-bold text-[11px] inline-flex items-center gap-1 shrink-0"
-                            >
-                              Open <ExternalLink className="w-3 h-3" />
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    )}
 
                     {/* Student Notes / Inquiry */}
                     {selectedAppt.message && (

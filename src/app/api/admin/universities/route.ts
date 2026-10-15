@@ -99,6 +99,30 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const body = await request.json();
+
+    // Support bulk reordering if requested
+    if (body.action === 'reorder' && Array.isArray(body.items)) {
+      const universities = await db.getTable('universities');
+      const orderMap = new Map<string, number>();
+      body.items.forEach((it: any) => {
+        if (it.id) orderMap.set(String(it.id).toLowerCase(), Number(it.order));
+        if (it.slug) orderMap.set(String(it.slug).toLowerCase(), Number(it.order));
+      });
+
+      const updated = universities.map((u) => {
+        const customOrder = orderMap.get(u.id.toLowerCase()) ?? orderMap.get(u.slug.toLowerCase());
+        if (customOrder !== undefined) {
+          return { ...u, order: customOrder, sortOrder: customOrder };
+        }
+        return u;
+      });
+
+      // Sort by order ascending
+      updated.sort((a, b) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+      await db.updateTable('universities', updated);
+      return NextResponse.json({ success: true, universities: updated });
+    }
+
     const { slug, id } = body;
 
     if (!slug && !id) {
@@ -115,9 +139,12 @@ export async function PUT(request: Request) {
     }
 
     const existing = universities[index];
+    const numOrder = body.order !== undefined ? Number(body.order) : (body.sortOrder !== undefined ? Number(body.sortOrder) : undefined);
+
     const updatedUni: any = {
       ...existing,
       ...body,
+      ...(numOrder !== undefined ? { order: numOrder, sortOrder: numOrder } : {}),
       countrySlug: body.countrySlug || (body.country ? body.country.toLowerCase().replace(/[^a-z0-9]+/g, '-') : existing.countrySlug),
       image: body.image || body.coverImage || existing.image,
       overview: body.overview || body.description || existing.overview,

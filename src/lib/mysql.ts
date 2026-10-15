@@ -1001,7 +1001,8 @@ export async function loadDataFromMySQL(): Promise<any | null> {
         visaRequirements: safeJsonParse(r.visa_requirements, []),
         postStudyOpportunities: safeJsonParse(r.post_study_opportunities, []),
         applicationDeadlines: r.application_deadlines,
-        sortOrder: r.sort_order,
+        sortOrder: r.sort_order ?? 1,
+        order: r.sort_order ?? 1,
         published: Boolean(r.published),
         seoTitle: r.seo_title,
         seoDescription: r.seo_description,
@@ -1029,7 +1030,8 @@ export async function loadDataFromMySQL(): Promise<any | null> {
         highlights: safeJsonParse(r.highlights, []),
         officialRep: Boolean(r.official_rep),
         featured: Boolean(r.featured),
-        sortOrder: r.sort_order,
+        sortOrder: r.sort_order ?? 1,
+        order: r.sort_order ?? 1,
         published: Boolean(r.published),
         website: r.website,
         seoTitle: r.seo_title,
@@ -1271,6 +1273,12 @@ export async function syncTableToMySQL(table: string, data: any) {
 
     // 3. Appointments table
     if (table === 'appointments' && Array.isArray(data)) {
+      const ids = data.map((apt: any) => apt.id).filter(Boolean);
+      if (ids.length > 0) {
+        await p.query('DELETE FROM appointments WHERE id NOT IN (?)', [ids]);
+      } else {
+        await p.execute('DELETE FROM appointments');
+      }
       for (const apt of data) {
         await saveAppointmentToMySQL(apt);
       }
@@ -1279,6 +1287,10 @@ export async function syncTableToMySQL(table: string, data: any) {
 
     // 4. Users table
     if (table === 'users' && Array.isArray(data)) {
+      const ids = data.map((u: any) => u.id).filter(Boolean);
+      if (ids.length > 0) {
+        await p.query('DELETE FROM users WHERE id NOT IN (?)', [ids]);
+      }
       for (const u of data) {
         await p.execute(
           `INSERT INTO users (id, name, email, password_hash, role, avatar)
@@ -1286,10 +1298,10 @@ export async function syncTableToMySQL(table: string, data: any) {
            ON DUPLICATE KEY UPDATE
              name = VALUES(name),
              email = VALUES(email),
-             password_hash = VALUES(password_hash),
+             password_hash = COALESCE(VALUES(password_hash), password_hash),
              role = VALUES(role),
              avatar = VALUES(avatar)`,
-          [u.id, u.name, u.email, u.passwordHash, u.role, u.avatar || null]
+          [u.id, u.name, u.email, u.passwordHash || null, u.role, u.avatar || null]
         );
       }
       return true;
@@ -1328,7 +1340,7 @@ export async function syncTableToMySQL(table: string, data: any) {
             c.visaSuccessRate || null, c.workWhileStudying || null,
             JSON.stringify(c.topUniversityNames || []), c.scholarshipsOverview || null,
             JSON.stringify(c.visaRequirements || []), JSON.stringify(c.postStudyOpportunities || []),
-            c.applicationDeadlines || null, c.sortOrder || 1, c.published ?? true,
+            c.applicationDeadlines || null, c.order ?? c.sortOrder ?? 1, c.published ?? true,
           ]
         );
       }
@@ -1367,7 +1379,7 @@ export async function syncTableToMySQL(table: string, data: any) {
             JSON.stringify(u.studyFields || []), JSON.stringify(u.entryRequirements || {}),
             JSON.stringify(u.scholarships || []), JSON.stringify(u.intakes || []),
             JSON.stringify(u.highlights || []), u.officialRep ?? true, u.featured ?? false,
-            u.sortOrder || 1, u.published ?? true, u.website || null,
+            u.order ?? u.sortOrder ?? 1, u.published ?? true, u.website || null,
           ]
         );
       }
@@ -1707,6 +1719,7 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
         postStudyOpportunities: safeJsonParse(r.post_study_opportunities, []),
         applicationDeadlines: r.application_deadlines,
         sortOrder: r.sort_order,
+        order: r.sort_order ?? 1,
         published: Boolean(r.published),
         seoTitle: r.seo_title,
         seoDescription: r.seo_description,
@@ -1741,6 +1754,7 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
         officialRep: Boolean(r.official_rep),
         featured: Boolean(r.featured),
         sortOrder: r.sort_order,
+        order: r.sort_order ?? 1,
         published: Boolean(r.published),
         website: r.website,
         seoTitle: r.seo_title,

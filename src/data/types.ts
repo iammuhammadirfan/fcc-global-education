@@ -24,6 +24,7 @@ export interface Country {
   applicationDeadlines: string;
   // Optional CMS extensions
   order?: number;
+  sortOrder?: number;
   published?: boolean;
   shortDescription?: string;
   longDescription?: string;
@@ -72,6 +73,7 @@ export interface University {
   officialRep: boolean;
   // Optional CMS extensions
   order?: number;
+  sortOrder?: number;
   published?: boolean;
   featured?: boolean;
   coverImage?: string;
@@ -130,6 +132,7 @@ export interface SuccessStory {
   quote?: string;
   published?: boolean;
   videoUrl?: string;
+  gender?: 'man' | 'woman' | 'male' | 'female' | string;
 }
 
 export interface VideoTestimonial {

@@ -72,6 +72,7 @@ interface DatabaseSchema {
   broadcastCampaigns?: BroadcastCampaign[];
   aiChatSettings?: AiChatSettings;
   broadcastDraft?: any;
+  deletedSubscribers?: string[];
 }
 
 const DB_DIR = path.join(process.cwd(), 'data');
