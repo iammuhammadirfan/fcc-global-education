@@ -33,16 +33,21 @@ export default function AdminLoginPage() {
   const [forgotSuccess, setForgotSuccess] = useState(false);
   const [forgotError, setForgotError] = useState('');
   const [devResetUrl, setDevResetUrl] = useState('');
-  const [logoUrl, setLogoUrl] = useState<string>('/api/media/file/med_1791830203753_dp897t');
+  const [logoUrl, setLogoUrl] = useState<string>('/uploads/FCC_Global_Education_Logo__1__1791173041145.png');
+  const [logoFailed, setLogoFailed] = useState(false);
   const [companyName, setCompanyName] = useState<string>('FCC Global Education');
 
   // Fetch brand logo & company settings
   useEffect(() => {
     fetch('/api/admin/settings?type=general')
-      .then((res) => res.json())
+      .then((res) => (res.ok ? res.json() : Promise.reject(res)))
       .then((data) => {
-        if (data.general?.logoUrl) setLogoUrl(data.general.logoUrl);
-        if (data.general?.companyName) setCompanyName(data.general.companyName);
+        if (data.general?.logoUrl && data.general.logoUrl.trim() !== '' && data.general.logoUrl !== '/logo.svg') {
+          setLogoUrl(data.general.logoUrl);
+        }
+        if (data.general?.companyName) {
+          setCompanyName(data.general.companyName);
+        }
       })
       .catch(() => {});
   }, []);
@@ -124,11 +129,26 @@ export default function AdminLoginPage() {
         {/* Brand Header with Main Logo */}
         <div className="text-center space-y-3">
           <div className="flex justify-center">
-            {logoUrl ? (
-              <div className="p-3.5 sm:p-4 rounded-2xl bg-white border border-slate-200/90 shadow-md flex items-center justify-center max-w-[260px] hover:shadow-lg transition">
+            {!logoFailed && logoUrl ? (
+              <div className="p-3 sm:p-3.5 rounded-2xl bg-white border border-slate-200/90 shadow-md flex items-center justify-center max-w-[260px] hover:shadow-lg transition">
                 <img
                   src={logoUrl}
                   alt={companyName}
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.dataset.fallback1) {
+                      target.dataset.fallback1 = 'true';
+                      target.src = '/uploads/FCC_Global_Education_Logo__1__1791173041145.png';
+                    } else if (!target.dataset.fallback2) {
+                      target.dataset.fallback2 = 'true';
+                      target.src = '/uploads/FCC_Global_Education_Logo__1__1791178438060.png';
+                    } else if (!target.dataset.fallback3) {
+                      target.dataset.fallback3 = 'true';
+                      target.src = '/logo.png';
+                    } else {
+                      setLogoFailed(true);
+                    }
+                  }}
                   className="h-10 sm:h-12 w-auto max-h-14 object-contain"
                 />
               </div>
