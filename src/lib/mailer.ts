@@ -804,3 +804,65 @@ export async function sendTestEmail({
     };
   }
 }
+
+// 6. Send Administrator Password Reset Email
+export async function sendPasswordResetEmail({
+  toEmail,
+  userName,
+  resetLink,
+}: {
+  toEmail: string;
+  userName: string;
+  resetLink: string;
+}) {
+  try {
+    const { transporter, from, replyTo } = await getTransporter();
+    const brand = await getBrandSettings();
+
+    const bodyHtml = `
+      <p style="font-size: 15px; color: #1e293b; margin: 0 0 12px;">Hello <strong>${userName}</strong>,</p>
+      <p style="font-size: 14px; color: #334155; line-height: 1.6; margin: 0 0 16px;">
+        We received a request to reset the password for your administrator account on the <strong>${brand.companyName}</strong> portal (<code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: #0f172a;">${toEmail}</code>).
+      </p>
+      <p style="font-size: 14px; color: #334155; line-height: 1.6; margin: 0 0 20px;">
+        Click the button below to set a new password. For security purposes, this password reset link is valid for <strong>1 hour</strong>.
+      </p>
+      <div style="background-color: #fffbeb; border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 18px 0; border-radius: 0 8px 8px 0;">
+        <span style="font-size: 11px; font-weight: 700; color: #b45309; text-transform: uppercase;">Security Alert:</span>
+        <p style="margin: 4px 0 0; font-size: 12px; color: #92400e; line-height: 1.5;">
+          If you did not request this password change, no action is needed. Your current credentials remain secure and intact.
+        </p>
+      </div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-top: 24px; font-size: 11px; color: #64748b; word-break: break-all; line-height: 1.5;">
+        Button not working? Copy and paste this URL into your browser:<br />
+        <a href="${resetLink}" style="color: #d97706; text-decoration: underline;">${resetLink}</a>
+      </div>
+    `;
+
+    const html = wrapHtmlEmail({
+      previewText: `Password Reset Request — ${brand.companyName}`,
+      badgeText: 'Admin Security',
+      headline: 'Reset Your Administrator Password',
+      bodyHtml,
+      ctaText: 'Reset Password Now',
+      ctaLink: resetLink,
+      ctaIcon: '🔐',
+      brand,
+    });
+
+    const info = await transporter.sendMail({
+      from,
+      replyTo,
+      to: toEmail,
+      subject: `🔐 Password Reset Request — ${brand.companyName} Admin`,
+      html,
+    });
+
+    console.log(`[Email Sent] Password reset link sent to ${toEmail} (MessageId: ${info.messageId})`);
+    return { success: true, messageId: info.messageId };
+  } catch (err: any) {
+    console.error('[Mailer Error] Could not send password reset email:', err);
+    return { success: false, error: err?.message };
+  }
+}
+

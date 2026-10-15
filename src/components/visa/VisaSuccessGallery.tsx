@@ -224,19 +224,19 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
   };
 
   return (
-    <div ref={galleryRef} className="space-y-6 scroll-mt-28">
+    <div ref={galleryRef} className="space-y-4 scroll-mt-20">
       {/* ========================================================================= */}
       {/* REDESIGNED CLEAN CONTROL TOOLBAR & NATURAL WRAPPING DESTINATION CHIPS */}
       {/* ========================================================================= */}
-      <div className="bg-white rounded-3xl border border-slate-200/90 p-4 sm:p-5 shadow-sm space-y-4">
+      <div className="bg-white rounded-2xl border border-slate-200/90 p-3 sm:p-3.5 shadow-2xs space-y-2.5">
         {/* Top Row: Search Box + Status Summary */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2.5 flex-wrap">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 pb-2.5 border-b border-slate-100">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="text-xs font-extrabold text-slate-900 flex items-center gap-1.5">
-              <SlidersHorizontal className="w-4 h-4 text-amber-600" />
+              <SlidersHorizontal className="w-3.5 h-3.5 text-amber-600" />
               <span>Select Destination:</span>
             </span>
-            <span className="text-xs font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+            <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
               Showing {filtered.length} of {activeItems.length} Grants
             </span>
             {(selectedCountry !== 'all' || search) && (
@@ -251,20 +251,20 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
           </div>
 
           {/* Search Box */}
-          <div className="relative w-full sm:w-80">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          <div className="relative w-full sm:w-72">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search student, university, country..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-8 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white shadow-2xs"
+              className="w-full pl-9 pr-7 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:bg-white shadow-2xs"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => setSearch('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700"
               >
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -272,8 +272,8 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
           </div>
         </div>
 
-        {/* Natural Wrapping Destination Chips (Clean, no clunky scroll arrows) */}
-        <div className="flex flex-wrap items-center gap-2">
+        {/* Natural Wrapping Destination Chips (Clean, compact) */}
+        <div className="flex flex-wrap items-center gap-1.5">
           {countries.map((c) => {
             const count = c === 'all' ? activeItems.length : countryCounts[c] || 0;
             const flag = countryFlags[c] || '🌍';
@@ -284,16 +284,16 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
                 key={c}
                 type="button"
                 onClick={() => setSelectedCountry(c)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-2 border ${
+                className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 border ${
                   isSelected
-                    ? 'bg-slate-950 text-white border-slate-950 shadow-md ring-2 ring-amber-400/50'
+                    ? 'bg-slate-950 text-white border-slate-950 shadow-xs ring-2 ring-amber-400/40'
                     : 'bg-slate-50 hover:bg-amber-50 text-slate-700 hover:text-amber-950 border-slate-200 hover:border-amber-300'
                 }`}
               >
-                <span className="text-base leading-none">{flag}</span>
+                <span className="text-sm leading-none">{flag}</span>
                 <span>{c === 'all' ? 'All Countries' : c}</span>
                 <span
-                  className={`text-[10px] font-black px-1.5 py-0.5 rounded-full ${
+                  className={`text-[10px] font-black px-1.5 py-0.2 rounded-full ${
                     isSelected
                       ? 'bg-amber-400 text-slate-950'
                       : 'bg-white text-slate-600 border border-slate-200'
@@ -321,7 +321,7 @@ export default function VisaSuccessGallery({ items = [] }: VisaSuccessGalleryPro
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
           {paginatedItems.map((item) => (
             <GalleryCard
               key={item.id}

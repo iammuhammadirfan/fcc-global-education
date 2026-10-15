@@ -3,18 +3,22 @@ import { db, addSubscriber } from '@/lib/db';
 import { Subscriber, BroadcastCampaign } from '@/lib/types';
 import { sendBroadcastEmail } from '@/lib/mailer';
 
-// Auto-sync existing leads and appointments into subscribers on GET
+// Auto-sync existing leads and appointments into subscribers on GET (skipping deleted ones)
 async function syncExistingContacts(subscribers: Subscriber[]) {
   const subscriberMap = new Map<string, Subscriber>();
   subscribers.forEach((s) => subscriberMap.set(s.email.toLowerCase(), s));
   let hasChanges = false;
 
   try {
+    const deletedList: string[] = ((await db.getTable('deletedSubscribers')) || []).map((e: string) =>
+      e.toLowerCase()
+    );
+
     // 1. Sync from appointments
     const appointments = (await db.getTable('appointments')) || [];
     for (const apt of appointments) {
       const cleanEmail = apt.email?.trim().toLowerCase();
-      if (cleanEmail && cleanEmail.includes('@')) {
+      if (cleanEmail && cleanEmail.includes('@') && !deletedList.includes(cleanEmail)) {
         const phone = apt.phone || apt.whatsapp || undefined;
         const name = apt.fullName || apt.studentName || undefined;
 
@@ -49,7 +53,7 @@ async function syncExistingContacts(subscribers: Subscriber[]) {
     const leads = (await db.getTable('leads')) || [];
     for (const lead of leads) {
       const cleanEmail = lead.email?.trim().toLowerCase();
-      if (cleanEmail && cleanEmail.includes('@')) {
+      if (cleanEmail && cleanEmail.includes('@') && !deletedList.includes(cleanEmail)) {
         const phone = lead.phone || undefined;
         const name = lead.fullName || undefined;
 
@@ -255,22 +259,83 @@ export async function POST(request: Request) {
   }
 }
 
-// DELETE: Remove subscriber
+// DELETE: Remove subscriber(s) or campaign(s)
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
+    const type = searchParams.get('type') || 'subscriber';
     const id = searchParams.get('id');
+    const idsParam = searchParams.get('ids');
+    const all = searchParams.get('all') === 'true';
 
-    if (!id) {
-      return NextResponse.json({ error: 'Subscriber ID is required.' }, { status: 400 });
+    // Parse JSON body if present
+    let bodyIds: string[] | undefined;
+    let bodyType: string | undefined;
+    let bodyAll = false;
+    try {
+      const body = await request.json();
+      if (body) {
+        if (Array.isArray(body.ids)) bodyIds = body.ids;
+        if (body.id) bodyIds = [body.id];
+        if (body.type) bodyType = body.type;
+        if (body.all) bodyAll = true;
+      }
+    } catch {}
+
+    const targetType = bodyType || type;
+    const isAll = all || bodyAll;
+
+    // A. Handle Campaign Deletion
+    if (targetType === 'campaign') {
+      let campaigns: BroadcastCampaign[] = (await db.getTable('broadcastCampaigns')) || [];
+      if (isAll) {
+        campaigns = [];
+      } else {
+        const toDeleteIds: string[] = bodyIds || (idsParam ? idsParam.split(',').map(s => s.trim()) : (id ? [id] : []));
+        if (toDeleteIds.length === 0) {
+          return NextResponse.json({ error: 'Campaign ID or IDs required.' }, { status: 400 });
+        }
+        campaigns = campaigns.filter((c) => !toDeleteIds.includes(c.id));
+      }
+      await db.updateTable('broadcastCampaigns', campaigns);
+      return NextResponse.json({ success: true, message: 'Campaign history updated.' });
     }
 
+    // B. Handle Subscriber Deletion (Single or Bulk)
     let subscribers: Subscriber[] = (await db.getTable('subscribers')) || [];
-    subscribers = subscribers.filter((s) => s.id !== id);
+    let toDeleteIds: string[] = bodyIds || (idsParam ? idsParam.split(',').map(s => s.trim()) : (id ? [id] : []));
+
+    if (isAll) {
+      toDeleteIds = subscribers.map((s) => s.id);
+    }
+
+    if (toDeleteIds.length === 0) {
+      return NextResponse.json({ error: 'Subscriber ID(s) required.' }, { status: 400 });
+    }
+
+    // Find emails of deleted subscribers so we blacklist them from auto-sync
+    const deletedEmails: string[] = subscribers
+      .filter((s) => toDeleteIds.includes(s.id))
+      .map((s) => s.email.trim().toLowerCase())
+      .filter(Boolean);
+
+    // Save into deletedSubscribers
+    if (deletedEmails.length > 0) {
+      const existingDeleted: string[] = (await db.getTable('deletedSubscribers')) || [];
+      const updatedDeleted = Array.from(new Set([...existingDeleted, ...deletedEmails]));
+      await db.updateTable('deletedSubscribers', updatedDeleted);
+    }
+
+    subscribers = subscribers.filter((s) => !toDeleteIds.includes(s.id));
     await db.updateTable('subscribers', subscribers);
 
-    return NextResponse.json({ success: true, message: 'Subscriber removed.' });
+    return NextResponse.json({
+      success: true,
+      message: `Successfully removed ${toDeleteIds.length} subscriber(s).`,
+      remaining: subscribers.length,
+    });
   } catch (error: any) {
-    return NextResponse.json({ error: 'Failed to delete subscriber.' }, { status: 500 });
+    console.error('[Admin Broadcast DELETE Error]:', error);
+    return NextResponse.json({ error: 'Failed to delete record.' }, { status: 500 });
   }
 }

@@ -48,10 +48,43 @@ export async function GET(request: Request) {
   }
 }
 
+const COUNTRY_SLUG_MAP: Record<string, string> = {
+  'united kingdom': 'uk',
+  'uk': 'uk',
+  'great britain': 'uk',
+  'england': 'uk',
+  'united-kingdom': 'uk',
+  'united states': 'usa',
+  'united states of america': 'usa',
+  'usa': 'usa',
+  'us': 'usa',
+  'united-states': 'usa',
+  'canada': 'canada',
+  'australia': 'australia',
+  'germany': 'germany',
+  'ireland': 'ireland',
+  'malaysia': 'malaysia',
+  'turkey': 'turkey',
+  'cyprus': 'cyprus',
+  'uae': 'uae',
+  'united arab emirates': 'uae',
+  'china': 'china',
+  'italy': 'italy',
+  'france': 'france',
+  'new zealand': 'new-zealand',
+};
+
+function resolveCountrySlug(country?: string): string {
+  if (!country) return 'uk';
+  const key = country.toLowerCase().trim();
+  if (COUNTRY_SLUG_MAP[key]) return COUNTRY_SLUG_MAP[key];
+  return key.replace(/[^a-z0-9]+/g, '-') || 'uk';
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, rating, country, university, program, comment } = body;
+    const { name, email, rating, country, university, program, comment, gender, avatar, intake } = body;
 
     if (!name || !email || !rating || !comment) {
       return NextResponse.json(
@@ -78,17 +111,25 @@ export async function POST(request: Request) {
       );
     }
 
+    const isWoman = gender === 'woman' || gender === 'female';
+    const defaultAvatar = isWoman
+      ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+
     const newReview: Review = {
       id: `rev_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
       name: String(name).trim(),
       email: emailLower,
       rating: numericRating,
-      country: country ? String(country).trim() : 'International',
-      countrySlug: country ? String(country).toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'international',
+      country: country ? String(country).trim() : 'United Kingdom',
+      countrySlug: resolveCountrySlug(country),
       university: university ? String(university).trim() : 'General Consultation',
       universitySlug: university ? String(university).toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'general',
       program: program ? String(program).trim() : undefined,
       comment: String(comment).trim(),
+      gender: gender || 'man',
+      avatar: avatar && String(avatar).trim() ? String(avatar).trim() : defaultAvatar,
+      intake: intake && String(intake).trim() ? String(intake).trim() : 'Fall 2025',
       status: 'pending',
       published: false,
       showOnHome: false,

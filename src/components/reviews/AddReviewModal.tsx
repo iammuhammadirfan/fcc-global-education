@@ -26,6 +26,8 @@ export default function AddReviewModal({
   const [university, setUniversity] = useState(defaultUniversity || '');
   const [program, setProgram] = useState('');
   const [comment, setComment] = useState('');
+  const [gender, setGender] = useState<'man' | 'woman'>('man');
+  const [intake, setIntake] = useState('Fall 2025');
 
   const [countriesList, setCountriesList] = useState<any[]>([]);
   const [universitiesList, setUniversitiesList] = useState<any[]>([]);
@@ -101,6 +103,8 @@ export default function AddReviewModal({
           university: university || 'FCC Global Education Counseling',
           program: program.trim() || undefined,
           comment: comment.trim(),
+          gender,
+          intake: intake.trim() || 'Fall 2025',
         }),
       });
 
@@ -119,26 +123,33 @@ export default function AddReviewModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-      <div className="bg-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden border border-slate-200/90 animate-in fade-in zoom-in-95 duration-200">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4.5 border-b border-slate-100 bg-gradient-to-r from-amber-500/10 via-white to-amber-500/5">
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) onClose();
+      }}
+      className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+    >
+      <div className="bg-white rounded-2xl sm:rounded-3xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200/90 animate-in fade-in zoom-in-95 duration-200 my-auto">
+        {/* Sticky Header with prominent Close button */}
+        <div className="flex items-center justify-between px-5 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 bg-gradient-to-r from-amber-500/10 via-white to-amber-500/5 shrink-0">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
-              <Star className="w-5 h-5 fill-amber-500 text-amber-500" />
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold shrink-0">
+              <Star className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-500 text-amber-500" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-tight">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-tight">
                 Submit a Student Review
               </h3>
-              <p className="text-[11px] text-slate-500 mt-0.5">
+              <p className="text-[10px] sm:text-[11px] text-slate-500 mt-0.5">
                 Share your authentic university admission & visa experience
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition"
+            className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer shrink-0 ml-2"
+            aria-label="Close dialog"
           >
             <X className="w-4 h-4" />
           </button>
@@ -146,7 +157,7 @@ export default function AddReviewModal({
 
         {/* Content */}
         {submitted ? (
-          <div className="p-8 text-center space-y-4">
+          <div className="p-8 text-center space-y-4 overflow-y-auto">
             <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 mx-auto flex items-center justify-center">
               <CheckCircle2 className="w-10 h-10" />
             </div>
@@ -159,15 +170,16 @@ export default function AddReviewModal({
             </p>
             <div className="pt-2">
               <button
+                type="button"
                 onClick={onClose}
-                className="px-6 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition shadow"
+                className="px-6 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition shadow cursor-pointer"
               >
                 Close Window
               </button>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+          <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-5 sm:p-6 space-y-3.5 text-xs">
             {errorMessage && (
               <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs font-medium">
                 {errorMessage}
@@ -296,18 +308,66 @@ export default function AddReviewModal({
               </div>
             </div>
 
-            {/* Course / Program */}
+            {/* Student Gender (Auto Dummy Avatar) */}
             <div>
-              <label className="block text-slate-700 mb-1 font-bold">
-                Degree / Course Program (Optional)
+              <label className="block text-slate-700 mb-1.5 font-bold">
+                Student Profile Type *
               </label>
-              <input
-                type="text"
-                value={program}
-                onChange={(e) => setProgram(e.target.value)}
-                placeholder="e.g. MSc Data Science / BA Economics"
-                className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition"
-              />
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setGender('man')}
+                  className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                    gender === 'man'
+                      ? 'bg-amber-500/15 border-amber-500 text-amber-800 shadow-xs ring-1 ring-amber-400'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-base">👨</span>
+                  <span>Male Student</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setGender('woman')}
+                  className={`flex items-center justify-center gap-2 p-2.5 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                    gender === 'woman'
+                      ? 'bg-amber-500/15 border-amber-500 text-amber-800 shadow-xs ring-1 ring-amber-400'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-base">👩</span>
+                  <span>Female Student</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Course / Program & Student Intake */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-slate-700 mb-1 font-bold">
+                  Degree / Program (Optional)
+                </label>
+                <input
+                  type="text"
+                  value={program}
+                  onChange={(e) => setProgram(e.target.value)}
+                  placeholder="e.g. MSc Data Science"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                />
+              </div>
+              <div>
+                <label className="block text-slate-700 mb-1 font-bold">
+                  Admission Intake *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={intake}
+                  onChange={(e) => setIntake(e.target.value)}
+                  placeholder="e.g. Fall 2025"
+                  className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition"
+                />
+              </div>
             </div>
 
             {/* Comment */}
@@ -316,17 +376,17 @@ export default function AddReviewModal({
                 Your Review / Experience *
               </label>
               <textarea
-                rows={4}
+                rows={3}
                 required
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Describe your journey: counselor guidance, university offer turnaround, visa mock interviews, and helpful tips for other applicants..."
-                className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition leading-relaxed"
+                className="w-full p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white transition leading-relaxed"
               />
             </div>
 
-            {/* Footer Buttons */}
-            <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+            {/* Footer Buttons (Sticky Bottom inside form) */}
+            <div className="pt-3 pb-1 flex items-center justify-between border-t border-slate-100 sticky bottom-0 bg-white/95 backdrop-blur-xs">
               <span className="text-[10px] text-slate-400">
                 🔒 Vetted for privacy & authenticity
               </span>
@@ -334,14 +394,14 @@ export default function AddReviewModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold transition"
+                  className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold transition shadow-md shadow-amber-500/20 flex items-center gap-1.5 disabled:opacity-50"
+                  className="px-5 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-bold text-xs transition shadow-md shadow-amber-500/20 flex items-center gap-1.5 disabled:opacity-50 cursor-pointer"
                 >
                   <Send className="w-3.5 h-3.5" />
                   <span>{loading ? 'Submitting...' : 'Submit Review'}</span>

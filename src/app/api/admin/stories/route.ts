@@ -7,6 +7,39 @@ export async function GET() {
   return NextResponse.json({ success: true, stories: successStories, successStories });
 }
 
+const COUNTRY_SLUG_MAP: Record<string, string> = {
+  'united kingdom': 'uk',
+  'uk': 'uk',
+  'great britain': 'uk',
+  'england': 'uk',
+  'united-kingdom': 'uk',
+  'united states': 'usa',
+  'united states of america': 'usa',
+  'usa': 'usa',
+  'us': 'usa',
+  'united-states': 'usa',
+  'canada': 'canada',
+  'australia': 'australia',
+  'germany': 'germany',
+  'ireland': 'ireland',
+  'malaysia': 'malaysia',
+  'turkey': 'turkey',
+  'cyprus': 'cyprus',
+  'uae': 'uae',
+  'united arab emirates': 'uae',
+  'china': 'china',
+  'italy': 'italy',
+  'france': 'france',
+  'new zealand': 'new-zealand',
+};
+
+function resolveCountrySlug(country?: string): string {
+  if (!country) return 'uk';
+  const key = country.toLowerCase().trim();
+  if (COUNTRY_SLUG_MAP[key]) return COUNTRY_SLUG_MAP[key];
+  return key.replace(/[^a-z0-9]+/g, '-') || 'uk';
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -19,7 +52,11 @@ export async function POST(request: Request) {
     }
 
     const successStories = (await db.getTable('successStories')) || [];
-    const studentPhoto = body.studentPhoto || body.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+    const isWoman = body.gender === 'woman' || body.gender === 'female';
+    const defaultDummy = isWoman
+      ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80'
+      : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+    const studentPhoto = body.studentPhoto || body.image || defaultDummy;
     const visaResult = body.visaResult || body.visaGrantTime || 'Visa Approved';
     const scholarship = body.scholarship || body.scholarshipAmount || '';
 
@@ -32,7 +69,7 @@ export async function POST(request: Request) {
       previousEducation: body.previousEducation || 'Bachelor Degree',
       cgpa: body.cgpa || '',
       country,
-      countrySlug: body.countrySlug || country.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
+      countrySlug: resolveCountrySlug(country),
       university,
       universitySlug: body.universitySlug || university.toLowerCase().replace(/[^a-z0-9]+/g, '-'),
       program: body.program || 'Admitted Degree Program',
@@ -40,12 +77,13 @@ export async function POST(request: Request) {
       visaResult,
       visaGrantTime: visaResult,
       visaGrantedDate: body.visaGrantedDate || 'Recent',
-      intake: body.intake || 'Fall 2026',
+      intake: body.intake || 'Fall 2025',
       scholarshipAmount: scholarship,
       scholarship: scholarship,
       testimonial: body.testimonial || '',
       quote: body.quote || body.testimonial || '',
       rating: Number(body.rating) || 5,
+      gender: body.gender || (isWoman ? 'woman' : 'man'),
       featured: Boolean(body.featured),
       published: body.published !== false,
       videoUrl: body.videoUrl || '',

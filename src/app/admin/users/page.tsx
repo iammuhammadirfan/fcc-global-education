@@ -60,19 +60,23 @@ export default function AdminUsersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email) {
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail) {
       alert('Name and email are required');
       return;
     }
-    if (!editingUser && !password) {
+    if (!editingUser && !trimmedPassword) {
       alert('Password is required for new users');
       return;
     }
 
     setSubmitting(true);
     try {
-      const payload: any = { name, email, role };
-      if (password) payload.password = password;
+      const payload: any = { name: trimmedName, email: trimmedEmail, role };
+      if (trimmedPassword) payload.password = trimmedPassword;
 
       let res;
       if (editingUser) {
@@ -93,13 +97,15 @@ export default function AdminUsersPage() {
       const data = await res.json();
       if (data.success) {
         setIsModalOpen(false);
-        fetchUsers();
+        setPassword('');
+        await fetchUsers();
+        alert(editingUser ? '✅ User successfully updated!' : '✅ New user successfully created!');
       } else {
         alert(data.error || 'Failed to save user');
       }
     } catch (err) {
       console.error(err);
-      alert('Operation failed');
+      alert('Operation failed. Please try again.');
     } finally {
       setSubmitting(false);
     }

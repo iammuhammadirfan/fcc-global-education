@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db, addSubscriber } from '@/lib/db';
 import { Appointment } from '@/lib/types';
-import { saveAppointmentToMySQL } from '@/lib/mysql';
+import { saveAppointmentToMySQL, getPool } from '@/lib/mysql';
 import { sendAppointmentConfirmation, sendAppointmentRescheduledEmail } from '@/lib/mailer';
 
 // Public submission of appointment booking
@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       whatsapp: body.whatsapp || body.phone,
       message: body.message || '',
       status: 'pending',
-      meetingLink: meetingMode === 'video' ? 'https://meet.google.com/aur-aglb-edu' : undefined,
+      meetingLink: undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -185,22 +185,62 @@ export async function PATCH(request: Request) {
   }
 }
 
-// Delete appointment
+// Delete appointment (single or bulk)
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
+    const singleId = searchParams.get('id');
+    const idsParam = searchParams.get('ids');
 
-    if (!id) {
-      return NextResponse.json({ error: 'Appointment ID is required' }, { status: 400 });
+    let idsToDelete: string[] = [];
+
+    if (singleId) {
+      idsToDelete.push(singleId);
+    } else if (idsParam) {
+      idsToDelete = idsParam.split(',').map((s) => s.trim()).filter(Boolean);
+    } else {
+      // Check if body contains ids
+      try {
+        const body = await request.json();
+        if (body.all === true) {
+          let appointments = await db.getTable('appointments');
+          idsToDelete = appointments.map((a: any) => a.id);
+        } else if (Array.isArray(body.ids)) {
+          idsToDelete = body.ids;
+        } else if (body.id) {
+          idsToDelete = [body.id];
+        }
+      } catch {}
     }
 
-    let appointments = await db.getTable('appointments');
-    appointments = appointments.filter((a) => a.id !== id);
+    if (idsToDelete.length === 0) {
+      return NextResponse.json({ error: 'No appointment ID(s) provided for deletion.' }, { status: 400 });
+    }
+
+    const idsSet = new Set(idsToDelete);
+
+    // 1. Update in-memory / JSON db
+    let appointments: any[] = (await db.getTable('appointments')) || [];
+    appointments = appointments.filter((a) => !idsSet.has(a.id));
     await db.updateTable('appointments', appointments);
 
-    return NextResponse.json({ success: true });
-  } catch {
-    return NextResponse.json({ error: 'Failed to delete appointment' }, { status: 500 });
+    // 2. Direct MySQL deletion for immediate consistency
+    try {
+      const p = getPool();
+      if (idsToDelete.length > 0) {
+        await p.query('DELETE FROM appointments WHERE id IN (?)', [idsToDelete]);
+      }
+    } catch (mysqlErr: any) {
+      console.warn('[MySQL Delete Error]:', mysqlErr?.message || mysqlErr);
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `Successfully deleted ${idsToDelete.length} appointment(s).`,
+      deletedCount: idsToDelete.length,
+    });
+  } catch (error: any) {
+    console.error('Delete appointment error:', error);
+    return NextResponse.json({ error: 'Failed to delete appointment(s).' }, { status: 500 });
   }
 }

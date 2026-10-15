@@ -21,6 +21,9 @@ export default function AdminReviewsPage() {
   const [editingReview, setEditingReview] = useState<Review | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  const DUMMY_MAN_AVATAR = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
+  const DUMMY_WOMAN_AVATAR = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
+
   const initialForm = {
     name: '',
     email: '',
@@ -32,6 +35,9 @@ export default function AdminReviewsPage() {
     status: 'approved',
     published: true,
     showOnHome: true,
+    gender: 'man',
+    avatar: DUMMY_MAN_AVATAR,
+    intake: 'Fall 2025',
   };
 
   const [form, setForm] = useState<any>(initialForm);
@@ -72,6 +78,9 @@ export default function AdminReviewsPage() {
       ...initialForm,
       country: defaultCountry,
       university: countryUnis[0]?.name || universities[0]?.name || 'University of Oxford',
+      gender: 'man',
+      avatar: DUMMY_MAN_AVATAR,
+      intake: 'Fall 2025',
     });
     setIsModalOpen(true);
   };
@@ -82,11 +91,15 @@ export default function AdminReviewsPage() {
     const countryUnis = universities.filter(
       (u) => u.country?.toLowerCase() === country.toLowerCase()
     );
+    const isWoman = r.gender === 'woman' || r.gender === 'female';
     setForm({
       ...r,
       rating: r.rating || 5,
       country,
       university: r.university || countryUnis[0]?.name || '',
+      gender: r.gender || (isWoman ? 'woman' : 'man'),
+      avatar: r.avatar || (isWoman ? DUMMY_WOMAN_AVATAR : DUMMY_MAN_AVATAR),
+      intake: r.intake || 'Fall 2025',
     });
     setIsModalOpen(true);
   };
@@ -401,26 +414,38 @@ export default function AdminReviewsPage() {
                   <tr key={r.id} className="hover:bg-slate-800/40 transition">
                     {/* Student & Rating */}
                     <td className="py-3.5 px-4 font-semibold text-white whitespace-nowrap">
-                      <div className="space-y-1">
-                        <div className="font-bold text-slate-100 flex items-center gap-1.5">
-                          <span>{r.name}</span>
-                          {r.verifiedStudent && (
-                            <span className="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/30">
-                              Verified
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={r.avatar || (r.gender === 'woman' ? DUMMY_WOMAN_AVATAR : DUMMY_MAN_AVATAR)}
+                          alt={r.name}
+                          className="w-10 h-10 rounded-full object-cover border-2 border-amber-400/80 shadow-md shrink-0"
+                        />
+                        <div className="space-y-0.5">
+                          <div className="font-bold text-slate-100 flex items-center gap-1.5">
+                            <span>{r.name}</span>
+                            {r.verifiedStudent && (
+                              <span className="text-[9px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.2 rounded border border-emerald-500/30">
+                                Verified
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-[10px] text-amber-300 font-semibold bg-amber-400/10 px-1.5 py-0.5 rounded border border-amber-400/20">
+                              Intake: {r.intake || 'Fall 2025'}
                             </span>
-                          )}
-                        </div>
-                        {r.email && (
-                          <div className="text-[10px] text-slate-400 font-normal">{r.email}</div>
-                        )}
-                        <div className="flex items-center gap-0.5 text-amber-400 pt-0.5">
-                          {[1, 2, 3, 4, 5].map((st) => (
-                            <Star
-                              key={st}
-                              className={`w-3 h-3 ${st <= (r.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-slate-700'}`}
-                            />
-                          ))}
-                          <span className="text-[10px] text-slate-400 ml-1 font-bold">({r.rating || 5}.0)</span>
+                            {r.email && (
+                              <span className="text-[10px] text-slate-400 font-normal">{r.email}</span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-0.5 text-amber-400 pt-0.5">
+                            {[1, 2, 3, 4, 5].map((st) => (
+                              <Star
+                                key={st}
+                                className={`w-3 h-3 ${st <= (r.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-slate-700'}`}
+                              />
+                            ))}
+                            <span className="text-[10px] text-slate-400 ml-1 font-bold">({r.rating || 5}.0)</span>
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -513,9 +538,14 @@ export default function AdminReviewsPage() {
 
       {/* Add / Edit Review Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 overflow-y-auto">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4 bg-slate-950/80">
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsModalOpen(false);
+          }}
+          className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+        >
+          <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl overflow-hidden my-auto">
+            <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4 bg-slate-950/80 shrink-0">
               <h2 className="text-base font-bold text-white flex items-center gap-2">
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                 {editingReview ? 'Edit Student Review' : 'Add Student Review'}
@@ -530,7 +560,7 @@ export default function AdminReviewsPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
+            <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs flex-1 overflow-y-auto">
               {/* Rating selection */}
               <div>
                 <label className="block text-slate-300 mb-1 font-semibold">Star Rating (1 - 5)</label>
@@ -623,16 +653,114 @@ export default function AdminReviewsPage() {
                 </div>
               </div>
 
-              {/* Program */}
+              {/* Student Gender / Avatar (Auto-Assigned Photo) */}
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Program / Course (Optional)</label>
+                <label className="block text-slate-300 mb-1.5 font-semibold">
+                  Student Gender & Photo (Auto Dummy Avatar) *
+                </label>
+                <div className="grid grid-cols-2 gap-3 mb-2">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        gender: 'man',
+                        avatar: (!form.avatar || form.avatar === DUMMY_WOMAN_AVATAR) ? DUMMY_MAN_AVATAR : form.avatar,
+                      })
+                    }
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition cursor-pointer ${
+                      (form.gender || 'man') === 'man'
+                        ? 'bg-amber-500/20 border-amber-400 text-amber-300 font-bold shadow-sm ring-1 ring-amber-400/50'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <img
+                      src={DUMMY_MAN_AVATAR}
+                      alt="Man Avatar"
+                      className="w-9 h-9 rounded-full object-cover border-2 border-amber-400/70 shrink-0"
+                    />
+                    <div>
+                      <div className="text-xs text-white font-bold">👨 Man / Male</div>
+                      <div className="text-[10px] text-amber-300/80">Default Male Photo</div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setForm({
+                        ...form,
+                        gender: 'woman',
+                        avatar: (!form.avatar || form.avatar === DUMMY_MAN_AVATAR) ? DUMMY_WOMAN_AVATAR : form.avatar,
+                      })
+                    }
+                    className={`flex items-center gap-3 p-2.5 rounded-xl border text-left transition cursor-pointer ${
+                      form.gender === 'woman'
+                        ? 'bg-amber-500/20 border-amber-400 text-amber-300 font-bold shadow-sm ring-1 ring-amber-400/50'
+                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700'
+                    }`}
+                  >
+                    <img
+                      src={DUMMY_WOMAN_AVATAR}
+                      alt="Woman Avatar"
+                      className="w-9 h-9 rounded-full object-cover border-2 border-amber-400/70 shrink-0"
+                    />
+                    <div>
+                      <div className="text-xs text-white font-bold">👩 Woman / Female</div>
+                      <div className="text-[10px] text-amber-300/80">Default Female Photo</div>
+                    </div>
+                  </button>
+                </div>
+
+                {/* Optional Custom Photo Input */}
                 <input
                   type="text"
-                  value={form.program || ''}
-                  onChange={(e) => setForm({ ...form, program: e.target.value })}
-                  placeholder="e.g. MSc Data Science / BA Economics"
-                  className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
+                  value={form.avatar || ''}
+                  onChange={(e) => setForm({ ...form, avatar: e.target.value })}
+                  placeholder="Custom student photo URL (optional)..."
+                  className="w-full px-3 py-1.5 rounded-xl bg-slate-950/70 border border-slate-800 text-slate-300 text-[11px] focus:outline-none focus:border-amber-500"
                 />
+              </div>
+
+              {/* Program & Student Intake Season */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-slate-300 mb-1 font-semibold">Program / Course (Optional)</label>
+                  <input
+                    type="text"
+                    value={form.program || ''}
+                    onChange={(e) => setForm({ ...form, program: e.target.value })}
+                    placeholder="e.g. MSc Data Science / BA Economics"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-300 mb-1 font-semibold">Target Student Intake *</label>
+                  <input
+                    type="text"
+                    required
+                    value={form.intake || 'Fall 2025'}
+                    onChange={(e) => setForm({ ...form, intake: e.target.value })}
+                    placeholder="e.g. Fall 2025"
+                    className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
+                  />
+                  <div className="flex flex-wrap gap-1 mt-1.5">
+                    {['Fall 2025', 'Spring 2026', 'Fall 2026', 'Spring 2025'].map((season) => (
+                      <button
+                        key={season}
+                        type="button"
+                        onClick={() => setForm({ ...form, intake: season })}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-semibold transition cursor-pointer ${
+                          form.intake === season
+                            ? 'bg-amber-400 text-slate-950 font-bold'
+                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+                        }`}
+                      >
+                        {season}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
               {/* Review Comment */}

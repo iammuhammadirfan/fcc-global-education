@@ -57,4 +57,31 @@ export async function getCurrentAdminUser(getUserById: (id: string) => User | un
   return user || null;
 }
 
+export function signPasswordResetToken(payload: { userId: string; email: string }): string {
+  // Token valid for 1 hour
+  const data = Buffer.from(
+    JSON.stringify({ ...payload, purpose: 'admin_password_reset', exp: Date.now() + 60 * 60 * 1000 })
+  ).toString('base64url');
+  const signature = crypto.createHmac('sha256', SESSION_SECRET).update(data).digest('base64url');
+  return `${data}.${signature}`;
+}
+
+export function verifyPasswordResetToken(token: string): { userId: string; email: string } | null {
+  try {
+    const [data, signature] = token.split('.');
+    if (!data || !signature) return null;
+    const expectedSignature = crypto.createHmac('sha256', SESSION_SECRET).update(data).digest('base64url');
+    if (signature !== expectedSignature) return null;
+    const payload = JSON.parse(Buffer.from(data, 'base64url').toString('utf-8'));
+    if (payload.purpose !== 'admin_password_reset') return null;
+    if (payload.exp && Date.now() > payload.exp) return null;
+    return {
+      userId: payload.userId,
+      email: payload.email,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export { AUTH_COOKIE_NAME };

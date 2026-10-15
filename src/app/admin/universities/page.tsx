@@ -5,7 +5,7 @@ import {
   GraduationCap, Plus, Search, Edit3, Trash2, CheckCircle2, 
   XCircle, Eye, RefreshCw, Filter, Building2, MapPin, 
   Award, DollarSign, BookOpen, FileCheck, Star, HelpCircle,
-  ExternalLink, Layers, X
+  ExternalLink, Layers, X, MoveUp, MoveDown
 } from 'lucide-react';
 import { University, Country } from '@/lib/types';
 import ImageUploadInput from '@/components/admin/ImageUploadInput';
@@ -43,6 +43,7 @@ export default function AdminUniversitiesPage() {
     worldRank: 50,
     rankingBadge: 'QS World #50',
     acceptanceRate: '65%',
+    order: 1,
     logo: 'https://images.unsplash.com/photo-1592280771190-3e2e4d571952?q=80&w=200',
     image: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1200',
     overview: '',
@@ -74,7 +75,12 @@ export default function AdminUniversitiesPage() {
       ]);
       const uData = await uRes.json();
       const cData = await cRes.json();
-      if (uData.success) setUniversities(uData.universities || []);
+      if (uData.success) {
+        const sorted = (uData.universities || []).sort(
+          (a: any, b: any) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999)
+        );
+        setUniversities(sorted);
+      }
       if (cData.success) setCountries(cData.countries || []);
     } catch (err) {
       console.error(err);
@@ -87,10 +93,65 @@ export default function AdminUniversitiesPage() {
     fetchData();
   }, []);
 
+  const handleQuickOrderChange = async (slugOrId: string, newOrder: number) => {
+    setUniversities((prev) => {
+      const updated = prev.map((u) =>
+        u.slug === slugOrId || u.id === slugOrId
+          ? { ...u, order: newOrder, sortOrder: newOrder }
+          : u
+      );
+      return updated.sort((a, b) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+    });
+
+    try {
+      await fetch('/api/admin/universities', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug: slugOrId, id: slugOrId, order: newOrder, sortOrder: newOrder }),
+      });
+    } catch (err) {
+      console.error('Failed to update university order', err);
+    }
+  };
+
+  const handleMoveOrder = async (index: number, direction: 'up' | 'down') => {
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= universities.length) return;
+
+    const newUnis = [...universities];
+    const current = newUnis[index];
+    const target = newUnis[targetIndex];
+
+    const currentOrder = current.order ?? current.sortOrder ?? index + 1;
+    const targetOrder = target.order ?? target.sortOrder ?? targetIndex + 1;
+
+    current.order = targetOrder;
+    current.sortOrder = targetOrder;
+    target.order = currentOrder === targetOrder ? (direction === 'up' ? targetOrder + 1 : targetOrder - 1) : currentOrder;
+    target.sortOrder = target.order;
+
+    newUnis.sort((a, b) => (a.order ?? a.sortOrder ?? 999) - (b.order ?? b.sortOrder ?? 999));
+    setUniversities(newUnis);
+
+    try {
+      await fetch('/api/admin/universities', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'reorder',
+          items: newUnis.map((u, idx) => ({ id: u.id, slug: u.slug, order: idx + 1 })),
+        }),
+      });
+    } catch (err) {
+      console.error('Failed to reorder universities', err);
+    }
+  };
+
   const openAddModal = () => {
     setEditingUni(null);
     setForm({
       ...initialForm,
+      order: universities.length + 1,
       country: countries[0]?.name || 'United Kingdom',
       scholarships: [{ ...defaultScholarship }]
     });
@@ -160,6 +221,7 @@ export default function AdminUniversitiesPage() {
       worldRank: u.worldRank || '',
       rankingBadge: u.rankingBadge || (u.ranking ? u.ranking : (u.worldRank ? `QS World #${u.worldRank}` : '')),
       acceptanceRate: u.acceptanceRate || '65%',
+      order: u.order ?? u.sortOrder ?? 1,
       logo: u.logo || '',
       image: u.image || u.coverImage || '',
       overview: u.overview || u.description || '',
@@ -226,8 +288,11 @@ export default function AdminUniversitiesPage() {
     setSubmitting(true);
     try {
       // Format payload properly
+      const cleanOrder = Number(form.order) || 1;
       const payload = {
         ...form,
+        order: cleanOrder,
+        sortOrder: cleanOrder,
         image: form.image || form.coverImage,
         coverImage: form.image || form.coverImage,
         overview: form.overview || form.description,
@@ -379,6 +444,7 @@ export default function AdminUniversitiesPage() {
           <table className="w-full text-left text-xs text-slate-400">
             <thead className="bg-slate-950/60 text-[11px] uppercase tracking-wider text-slate-400 border-b border-slate-800">
               <tr>
+                <th className="py-3 px-4 w-28">Order</th>
                 <th className="py-3 px-4">University</th>
                 <th className="py-3 px-4">Location</th>
                 <th className="py-3 px-4">Ranking</th>
@@ -391,19 +457,51 @@ export default function AdminUniversitiesPage() {
             <tbody className="divide-y divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-slate-500">
+                  <td colSpan={8} className="text-center py-12 text-slate-500">
                     Loading institutions...
                   </td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-center py-12 text-slate-500">
+                  <td colSpan={8} className="text-center py-12 text-slate-500">
                     No universities found matching your search.
                   </td>
                 </tr>
               ) : (
-                filtered.map((u) => (
+                filtered.map((u, index) => (
                   <tr key={u.id} className="hover:bg-slate-800/40 transition">
+                    <td className="py-3 px-4">
+                      <div className="flex items-center gap-1.5">
+                        <div className="flex flex-col gap-0.5">
+                          <button
+                            type="button"
+                            disabled={index === 0}
+                            onClick={() => handleMoveOrder(index, 'up')}
+                            className="p-0.5 rounded hover:bg-slate-800 text-slate-400 hover:text-amber-400 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed transition"
+                            title="Move University Up"
+                          >
+                            <MoveUp className="w-3 h-3" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={index === filtered.length - 1}
+                            onClick={() => handleMoveOrder(index, 'down')}
+                            className="p-0.5 rounded hover:bg-slate-800 text-slate-400 hover:text-amber-400 disabled:opacity-20 cursor-pointer disabled:cursor-not-allowed transition"
+                            title="Move University Down"
+                          >
+                            <MoveDown className="w-3 h-3" />
+                          </button>
+                        </div>
+                        <input
+                          type="number"
+                          min={1}
+                          value={u.order ?? u.sortOrder ?? index + 1}
+                          onChange={(e) => handleQuickOrderChange(u.slug || u.id, parseInt(e.target.value) || 1)}
+                          className="w-14 px-1.5 py-1 text-center bg-slate-950 border border-slate-700 hover:border-amber-500/60 focus:border-amber-500 rounded-lg text-amber-400 font-black text-xs focus:outline-none transition"
+                          title="Display order number on Homepage (1 = first)"
+                        />
+                      </div>
+                    </td>
                     <td className="py-3.5 px-4 font-semibold text-white">
                       <div className="flex items-center gap-3">
                         <img
@@ -629,8 +727,8 @@ export default function AdminUniversitiesPage() {
                     </div>
                   </div>
 
-                  {/* Row 3: World Rank & Ranking Badge */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {/* Row 3: World Rank, Ranking Badge & Display Order */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                       <label className="block text-slate-300 mb-1 font-semibold">QS World Rank (Number)</label>
                       <input
@@ -649,6 +747,17 @@ export default function AdminUniversitiesPage() {
                         onChange={(e) => setForm({ ...form, rankingBadge: e.target.value })}
                         placeholder="e.g. QS World #3 | Times Higher Ed #1"
                         className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-300 mb-1 font-semibold">Display Order (Homepage)</label>
+                      <input
+                        type="number"
+                        min={1}
+                        value={form.order || 1}
+                        onChange={(e) => setForm({ ...form, order: parseInt(e.target.value) || 1 })}
+                        placeholder="1"
+                        className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-amber-400 font-bold text-xs focus:outline-none focus:border-amber-500"
                       />
                     </div>
                   </div>
