@@ -631,14 +631,46 @@ export default function AdminSettingsPage() {
             </div>
           </div>
 
-          <div className="text-xs space-y-1.5">
-            <label className="block text-slate-700 font-bold">Headquarters Address</label>
-            <input
-              type="text"
-              value={general.address}
-              onChange={(e) => setGeneral({ ...general, address: e.target.value })}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
-            />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div className="space-y-1.5">
+              <label className="block text-slate-700 font-bold">Headquarters Address</label>
+              <input
+                type="text"
+                value={general.address}
+                onChange={(e) => {
+                  const newAddr = e.target.value;
+                  setGeneral({
+                    ...general,
+                    address: newAddr,
+                    googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(newAddr)}`,
+                  });
+                }}
+                placeholder="1st Floor, Imran Gujjar Plaza, Main Stop Kot Shahabuddin, Shahdara Town, Shahdara, 54950"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="block text-slate-700 font-bold">Google Maps Direction URL</label>
+                {general.googleMapsUrl && (
+                  <a
+                    href={general.googleMapsUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[11px] text-amber-600 hover:text-amber-700 font-bold underline"
+                  >
+                    Test Map Link ↗
+                  </a>
+                )}
+              </div>
+              <input
+                type="text"
+                value={general.googleMapsUrl || ''}
+                onChange={(e) => setGeneral({ ...general, googleMapsUrl: e.target.value })}
+                placeholder="https://www.google.com/maps/search/?api=1&query=..."
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
+              />
+            </div>
           </div>
         </form>
       )}

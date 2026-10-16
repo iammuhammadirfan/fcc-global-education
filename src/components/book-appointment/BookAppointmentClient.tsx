@@ -225,7 +225,7 @@ export default function BookAppointmentClient({
                 Your Consultation is Scheduled!
               </h2>
               <p className="text-sm text-slate-600 max-w-lg mx-auto mt-2 leading-relaxed">
-                A calendar invitation and Google Meet video conference link have been dispatched to <strong>{formData.email}</strong>.
+                A confirmation email has been dispatched to <strong>{formData.email}</strong>. The Google Meet link will be sent 15 minutes before your scheduled session.
               </p>
             </div>
 
@@ -372,7 +372,7 @@ export default function BookAppointmentClient({
                       )}
                     </div>
                     <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
-                      Google Meet video link dispatched automatically to your email address.
+                      Google Meet video link will be sent to your email 15 minutes before the session.
                     </p>
                   </div>
                 </div>

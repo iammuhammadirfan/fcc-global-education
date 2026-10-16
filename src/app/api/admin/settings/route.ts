@@ -97,7 +97,18 @@ async function handleSaveSettings(request: Request) {
 
     if (section === 'general') {
       const current = await db.getTable('generalSettings');
-      await db.updateTable('generalSettings', { ...current, ...data });
+      let mapUrl = (data.googleMapsUrl || '').trim();
+      if (!mapUrl || mapUrl.includes('Berkeley') || mapUrl.includes('30+St+Mary+Axe') || mapUrl === 'https://maps.google.com' || mapUrl === 'https://maps.google.com/') {
+        const addr = (data.address || current?.address || '').trim();
+        if (addr) {
+          mapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addr)}`;
+        }
+      }
+      await db.updateTable('generalSettings', {
+        ...current,
+        ...data,
+        googleMapsUrl: mapUrl || data.googleMapsUrl || current?.googleMapsUrl,
+      });
     } else if (section === 'navigation') {
       const current = await db.getTable('navigationSettings');
       await db.updateTable('navigationSettings', { ...current, ...data });

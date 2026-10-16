@@ -6,9 +6,9 @@ import { EmailSettings } from './types';
 const BRAND = {
   companyName: 'FCC Global Education',
   tagline: 'Premier International Education & Visa Advisory',
-  londonAddress: 'Berkeley Square House, Mayfair, London W1J 6BD, United Kingdom',
-  phone: '+44 (0) 20 7946 0912',
-  email: 'admissions@fccglobaleducation.com',
+  londonAddress: '1st Floor, Imran Gujjar Plaza, Main Stop Kot Shahabuddin, Shahdara Town, Shahdara, 54950',
+  phone: '+92 300 8886 536',
+  email: 'info@fccglobaleducation.com',
   websiteUrl: process.env.NEXT_PUBLIC_APP_URL || 'https://fccglobaleducation.com',
 };
 
@@ -33,12 +33,21 @@ export async function getBrandSettings() {
     }
 
     const address = (generalSettings.address || '').trim() || BRAND.londonAddress;
-    const googleMapsUrl =
-      (generalSettings.googleMapsUrl || '').trim() ||
-      (generalSettings.mapsUrl || '').trim() ||
-      (address
-        ? `https://maps.google.com/?q=${encodeURIComponent(address)}`
-        : 'https://maps.google.com/?q=Berkeley+Square+House+London');
+
+    // Always generate accurate Google Maps link for the configured address
+    let googleMapsUrl = '';
+    const customMap = (generalSettings.googleMapsUrl || '').trim();
+    if (
+      customMap &&
+      !customMap.includes('Berkeley+Square') &&
+      !customMap.includes('30+St+Mary+Axe') &&
+      customMap !== 'https://maps.google.com' &&
+      customMap !== 'https://maps.google.com/'
+    ) {
+      googleMapsUrl = customMap;
+    } else {
+      googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
+    }
 
     return {
       companyName: (generalSettings.companyName || '').trim() || BRAND.companyName,
@@ -52,16 +61,17 @@ export async function getBrandSettings() {
       googleMapsUrl,
     };
   } catch {
+    const fallbackAddress = BRAND.londonAddress;
     return {
       companyName: BRAND.companyName,
       tagline: BRAND.tagline,
-      address: BRAND.londonAddress,
+      address: fallbackAddress,
       phone: BRAND.phone,
       whatsapp: BRAND.phone,
       email: BRAND.email,
       websiteUrl: BRAND.websiteUrl,
       logoUrl: `${BRAND.websiteUrl}/uploads/FCC_Global_Education_Logo__1__1791178438060.png`,
-      googleMapsUrl: 'https://maps.google.com/?q=Berkeley+Square+House+London',
+      googleMapsUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fallbackAddress)}`,
     };
   }
 }
@@ -168,6 +178,9 @@ function wrapHtmlEmail({
   const phone = brand?.phone || BRAND.phone;
   const email = brand?.email || BRAND.email;
   const logo = brand?.logoUrl || '';
+  const googleMapsUrl =
+    brand?.googleMapsUrl ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(address)}`;
 
   return `
 <!DOCTYPE html>
@@ -237,7 +250,7 @@ function wrapHtmlEmail({
 
           <div class="footer" style="background: #f8fafc; padding: 26px 32px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 12px; color: #64748b; line-height: 1.6;">
             <p style="margin: 0 0 6px; font-weight: 800; color: #0f172a; font-size: 13px;">${company} &bull; International Advisory Directorate</p>
-            <p style="margin: 0 0 8px; color: #475569;">📍 ${address}</p>
+            <p style="margin: 0 0 8px; color: #475569;">📍 <a href="${googleMapsUrl}" target="_blank" style="color: #475569; text-decoration: underline;">${address}</a></p>
             <p style="margin: 0 0 8px;">Direct Advisory Helpline: <a href="tel:${phone.replace(/[^0-9+]/g, '')}" style="color: #d97706; text-decoration: none; font-weight: 700;">${phone}</a> | <a href="mailto:${email}" style="color: #d97706; text-decoration: none; font-weight: 700;">${email}</a></p>
             <p style="margin: 14px 0 0; font-size: 11px; color: #94a3b8;">&copy; 2026 ${company}. All rights reserved. Confidential student correspondence under GDPR compliance.</p>
           </div>
@@ -333,18 +346,25 @@ export async function sendAppointmentConfirmation({
             Meeting Location
           </td>
           <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; line-height: 1.5; vertical-align: top;">
-            ${brand.address}
+            <a href="${brand.googleMapsUrl}" target="_blank" style="color: #0f172a !important; text-decoration: underline !important;">${brand.address}</a>
           </td>
         </tr>` : `
         <tr>
           <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: middle;">
-            Virtual Meeting Room
+            Virtual Meeting Link
           </td>
-          <td style="padding: 13px 18px; font-size: 13px; text-align: right; vertical-align: middle;">
-            <a href="${videoLink}" target="_blank" style="color: #d97706 !important; font-weight: 700; text-decoration: underline !important;">Join Google Meet Room</a>
+          <td style="padding: 13px 18px; font-size: 13px; text-align: right; vertical-align: middle; color: #0284c7; font-weight: 700;">
+            Will be sent 15 minutes before the session
           </td>
         </tr>`}
       </table>
+
+      ${!isOffice ? `
+      <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; padding: 14px 18px; margin: 20px 0 10px; border-radius: 8px;">
+        <p style="margin: 0; font-size: 13px; color: #166534; font-weight: 600; line-height: 1.5;">
+          📌 <strong>Meeting Link Notice:</strong> The Google Meet video consultation link will be sent to your email 15 minutes before your scheduled meeting time.
+        </p>
+      </div>` : ''}
 
       <h4 style="font-size: 14px; color: #0f172a; margin: 22px 0 8px; font-weight: 700;">What to prepare for your session:</h4>
       <ul style="font-size: 13px; color: #475569; padding-left: 20px; margin: 0 0 16px; line-height: 1.6;">
@@ -362,9 +382,9 @@ export async function sendAppointmentConfirmation({
       badgeText: isOffice ? 'In-Person Office Visit' : 'Video Call Confirmed',
       headline: 'Your Strategy Session is Booked',
       bodyHtml,
-      ctaText: isOffice ? 'View Office Directions on Google Maps' : 'Join Video Consultation Room',
-      ctaLink: isOffice ? brand.googleMapsUrl : videoLink,
-      ctaIcon: isOffice ? '📍' : '🎥',
+      ctaText: isOffice ? 'View Office Directions on Google Maps' : undefined,
+      ctaLink: isOffice ? brand.googleMapsUrl : undefined,
+      ctaIcon: isOffice ? '📍' : undefined,
       brand,
     });
 
@@ -492,18 +512,25 @@ export async function sendAppointmentRescheduledEmail({
             Meeting Location
           </td>
           <td style="padding: 13px 18px; font-size: 13px; color: #0f172a; font-weight: 700; text-align: right; line-height: 1.5; vertical-align: top;">
-            ${brand.address}
+            <a href="${brand.googleMapsUrl}" target="_blank" style="color: #0f172a !important; text-decoration: underline !important;">${brand.address}</a>
           </td>
         </tr>` : `
         <tr>
           <td style="padding: 13px 18px; font-size: 13px; color: #64748b; font-weight: 600; vertical-align: middle;">
-            Virtual Meeting Room
+            Virtual Meeting Link
           </td>
-          <td style="padding: 13px 18px; font-size: 13px; text-align: right; vertical-align: middle;">
-            <a href="${videoLink}" target="_blank" style="color: #d97706 !important; font-weight: 700; text-decoration: underline !important;">Join Google Meet Room</a>
+          <td style="padding: 13px 18px; font-size: 13px; text-align: right; vertical-align: middle; color: #0284c7; font-weight: 700;">
+            Will be sent 15 minutes before the session
           </td>
         </tr>`}
       </table>
+
+      ${!isOffice ? `
+      <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #16a34a; padding: 14px 18px; margin: 20px 0 10px; border-radius: 8px;">
+        <p style="margin: 0; font-size: 13px; color: #166534; font-weight: 600; line-height: 1.5;">
+          📌 <strong>Meeting Link Notice:</strong> The Google Meet video consultation link will be sent to your email 15 minutes before your scheduled meeting time.
+        </p>
+      </div>` : ''}
 
       ${rescheduleReason ? `
       <div style="background-color: #f8fafc; border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 18px 0; border-radius: 0 8px 8px 0;">
@@ -523,9 +550,9 @@ export async function sendAppointmentRescheduledEmail({
       badgeText: 'Slot Rescheduled',
       headline: 'Your Consultation Has Been Rescheduled',
       bodyHtml,
-      ctaText: isOffice ? 'View Office Directions on Google Maps' : 'Join Video Consultation Room',
-      ctaLink: isOffice ? brand.googleMapsUrl : videoLink,
-      ctaIcon: isOffice ? '📍' : '🎥',
+      ctaText: isOffice ? 'View Office Directions on Google Maps' : undefined,
+      ctaLink: isOffice ? brand.googleMapsUrl : undefined,
+      ctaIcon: isOffice ? '📍' : undefined,
       brand,
     });
 
