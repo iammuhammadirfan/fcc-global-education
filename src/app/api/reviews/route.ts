@@ -130,10 +130,10 @@ export async function POST(request: Request) {
       gender: gender || 'man',
       avatar: avatar && String(avatar).trim() ? String(avatar).trim() : defaultAvatar,
       intake: intake && String(intake).trim() ? String(intake).trim() : 'Fall 2025',
-      status: 'pending',
-      published: false,
-      showOnHome: false,
-      verifiedStudent: false,
+      status: 'approved',
+      published: true,
+      showOnHome: true,
+      verifiedStudent: true,
       createdAt: new Date().toISOString(),
     };
 
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Review submitted successfully. It will be verified by admin before publishing.',
+      message: 'Review submitted and published successfully.',
       review: newReview,
     });
   } catch (err: any) {
