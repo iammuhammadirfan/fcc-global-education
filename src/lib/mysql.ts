@@ -8,6 +8,7 @@ import { blogPosts as initialBlogPosts } from '@/data/blogPosts';
 import { teamMembers as initialTeam } from '@/data/team';
 import { faqs as initialFaqs } from '@/data/faqs';
 import { initialVisaSuccessItems } from '@/data/visaSuccess';
+import { initialReviews } from '@/data/reviews';
 
 const DB_CONFIG = {
   host: process.env.DB_HOST || 'localhost',
@@ -25,6 +26,11 @@ declare global {
 }
 
 let isInitialized = false;
+let initPromise: Promise<boolean> | null = null;
+let mySqlAvailable = false;
+let lastMySQLCheck = 0;
+let hasLoggedNotice = false;
+const CHECK_COOLDOWN_MS = 25000;
 
 export function getPool(): mysql.Pool {
   if (!global.__mysql_pool) {
@@ -33,11 +39,50 @@ export function getPool(): mysql.Pool {
   return global.__mysql_pool;
 }
 
-export async function initDatabase() {
-  if (isInitialized) return;
-  const p = getPool();
+export async function checkMySQLConnectivity(): Promise<boolean> {
+  const now = Date.now();
+  if (mySqlAvailable && isInitialized) return true;
+  if (lastMySQLCheck > 0 && now - lastMySQLCheck < CHECK_COOLDOWN_MS) {
+    return mySqlAvailable;
+  }
+  lastMySQLCheck = now;
 
   try {
+    const conn = await mysql.createConnection({
+      host: DB_CONFIG.host,
+      port: DB_CONFIG.port,
+      user: DB_CONFIG.user,
+      password: DB_CONFIG.password,
+      database: DB_CONFIG.database,
+      connectTimeout: 1200,
+    });
+    await conn.ping();
+    await conn.end();
+    mySqlAvailable = true;
+    hasLoggedNotice = false;
+    return true;
+  } catch {
+    mySqlAvailable = false;
+    if (!hasLoggedNotice) {
+      console.log('[Database Info] XAMPP MySQL is currently stopped. Seamlessly running in resilient local JSON storage mode.');
+      hasLoggedNotice = true;
+    }
+    return false;
+  }
+}
+
+export async function initDatabase(): Promise<boolean> {
+  if (isInitialized) return true;
+  if (initPromise) return initPromise;
+
+  initPromise = (async () => {
+    try {
+      const isOnline = await checkMySQLConnectivity();
+      if (!isOnline) {
+        return false;
+      }
+
+      const p = getPool();
     // 1. Users Table (Highly Secure Authentication)
     await p.execute(`
       CREATE TABLE IF NOT EXISTS users (
@@ -386,6 +431,58 @@ export async function initDatabase() {
       await p.execute('ALTER TABLE visa_success ADD COLUMN show_on_homepage BOOLEAN DEFAULT FALSE');
     } catch {}
 
+    // 16. Student Reviews Table (Persistent Verified Reviews & Ratings)
+    await p.execute(`
+      CREATE TABLE IF NOT EXISTS student_reviews (
+        id VARCHAR(100) PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        email VARCHAR(255),
+        rating INT DEFAULT 5,
+        country VARCHAR(255),
+        country_slug VARCHAR(255),
+        university VARCHAR(255),
+        university_slug VARCHAR(255),
+        program VARCHAR(255),
+        comment TEXT,
+        status VARCHAR(50) DEFAULT 'approved',
+        published BOOLEAN DEFAULT TRUE,
+        show_on_home BOOLEAN DEFAULT TRUE,
+        gender VARCHAR(20) DEFAULT 'man',
+        avatar TEXT,
+        intake VARCHAR(100),
+        verified_student BOOLEAN DEFAULT TRUE,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        INDEX idx_status (status),
+        INDEX idx_published (published),
+        INDEX idx_show_on_home (show_on_home),
+        INDEX idx_university_slug (university_slug)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // Ensure student_reviews has default initial reviews if empty
+    try {
+      const [reviewCount]: any = await p.execute('SELECT COUNT(*) as count FROM student_reviews');
+      if (reviewCount && reviewCount[0]?.count === 0 && initialReviews && initialReviews.length > 0) {
+        for (const r of initialReviews) {
+          await p.execute(
+            `INSERT IGNORE INTO student_reviews (
+              id, name, email, rating, country, country_slug, university, university_slug,
+              program, comment, status, published, show_on_home, gender, avatar, intake,
+              verified_student, created_at
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              r.id, r.name, r.email || null, r.rating || 5, r.country || null, r.countrySlug || null,
+              r.university || null, r.universitySlug || null, r.program || null, r.comment || '',
+              r.status || 'approved', r.published ? 1 : 0, r.showOnHome ? 1 : 0, r.gender || 'man',
+              r.avatar || null, r.intake || 'Fall 2025', r.verifiedStudent ? 1 : 0,
+              r.createdAt ? new Date(r.createdAt) : new Date(),
+            ]
+          );
+        }
+      }
+    } catch {}
+
     // Check if initial seeding is needed
     const [userRows]: any = await p.execute('SELECT COUNT(*) as count FROM users');
     if (userRows[0].count === 0) {
@@ -393,10 +490,18 @@ export async function initDatabase() {
     }
 
     isInitialized = true;
-  } catch (error) {
-    console.error('MySQL database initialization error:', error);
-    throw error;
+    mySqlAvailable = true;
+    return true;
+  } catch (error: any) {
+    isInitialized = false;
+    mySqlAvailable = false;
+    return false;
+  } finally {
+    initPromise = null;
   }
+})();
+
+  return initPromise;
 }
 
 async function seedDatabase(p: mysql.Pool) {
@@ -749,6 +854,25 @@ async function seedDatabase(p: mysql.Pool) {
     );
   }
 
+  // 13. Seed Student Reviews
+  for (const r of initialReviews) {
+    await p.execute(
+      `INSERT INTO student_reviews (
+        id, name, email, rating, country, country_slug, university, university_slug,
+        program, comment, status, published, show_on_home, gender, avatar, intake,
+        verified_student
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE
+        name = VALUES(name), rating = VALUES(rating), comment = VALUES(comment)`,
+      [
+        r.id, r.name, r.email || null, r.rating || 5, r.country || null, r.countrySlug || null,
+        r.university || null, r.universitySlug || null, r.program || null, r.comment || '',
+        r.status || 'approved', r.published ? 1 : 0, r.showOnHome ? 1 : 0, r.gender || 'man',
+        r.avatar || null, r.intake || 'Fall 2025', r.verifiedStudent ? 1 : 0
+      ]
+    );
+  }
+
   console.log('XAMPP MySQL database successfully seeded!');
 }
 
@@ -811,7 +935,8 @@ export function normalizeNavigationSettings(nav: any) {
 
 export async function verifyUserCredentialsMySQL(email: string, password: string) {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return null;
     const p = getPool();
     const [rows]: any = await p.execute(
       'SELECT id, name, email, password_hash, role, avatar FROM users WHERE LOWER(email) = LOWER(?) LIMIT 1',
@@ -836,7 +961,8 @@ export async function verifyUserCredentialsMySQL(email: string, password: string
 
 export async function getUserByIdMySQL(id: string) {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return null;
     const p = getPool();
     const [rows]: any = await p.execute(
       'SELECT id, name, email, role, avatar FROM users WHERE id = ? LIMIT 1',
@@ -852,7 +978,8 @@ export async function getUserByIdMySQL(id: string) {
 
 export async function saveLeadToMySQL(lead: any) {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return false;
     const p = getPool();
     await p.execute(
       `INSERT INTO leads (
@@ -901,7 +1028,8 @@ export async function saveLeadToMySQL(lead: any) {
 
 export async function saveAppointmentToMySQL(apt: any) {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return false;
     const p = getPool();
     await p.execute(
       `INSERT INTO appointments (
@@ -948,7 +1076,8 @@ export async function saveAppointmentToMySQL(apt: any) {
 
 export async function loadDataFromMySQL(): Promise<any | null> {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return null;
     const p = getPool();
 
     const [userRows]: any = await p.execute('SELECT * FROM users');
@@ -965,6 +1094,7 @@ export async function loadDataFromMySQL(): Promise<any | null> {
     const [mediaRows]: any = await p.execute('SELECT * FROM media ORDER BY created_at DESC');
     const [pageRows]: any = await p.execute('SELECT * FROM custom_pages ORDER BY created_at ASC');
     const [visaSuccessRows]: any = await p.execute('SELECT * FROM visa_success ORDER BY sort_order ASC, id ASC');
+    const [reviewRows]: any = await p.execute('SELECT * FROM student_reviews ORDER BY created_at DESC, id DESC').catch(() => [[]]);
     const [settingRows]: any = await p.execute('SELECT * FROM cms_settings');
 
     const result: any = {
@@ -1203,6 +1333,26 @@ export async function loadDataFromMySQL(): Promise<any | null> {
         order: r.sort_order,
         createdAt: r.created_at?.toISOString ? r.created_at.toISOString() : String(r.created_at || ''),
       })),
+      reviews: (reviewRows || []).map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        email: r.email || '',
+        rating: r.rating || 5,
+        country: r.country || 'United Kingdom',
+        countrySlug: r.country_slug || 'uk',
+        university: r.university || 'General Consultation',
+        universitySlug: r.university_slug || 'general',
+        program: r.program || undefined,
+        comment: r.comment || '',
+        status: r.status || 'approved',
+        published: Boolean(r.published),
+        showOnHome: Boolean(r.show_on_home),
+        gender: r.gender || 'man',
+        avatar: r.avatar,
+        intake: r.intake || 'Fall 2025',
+        verifiedStudent: Boolean(r.verified_student),
+        createdAt: r.created_at?.toISOString ? r.created_at.toISOString() : String(r.created_at || ''),
+      })),
     };
 
     for (const s of settingRows) {
@@ -1233,7 +1383,8 @@ export async function loadDataFromMySQL(): Promise<any | null> {
 
 export async function syncTableToMySQL(table: string, data: any) {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return false;
     const p = getPool();
 
     // 1. Settings tables
@@ -1644,6 +1795,40 @@ export async function syncTableToMySQL(table: string, data: any) {
       return true;
     }
 
+    // 16. Reviews table (Student Reviews)
+    if (table === 'reviews' && Array.isArray(data)) {
+      const ids = data.map((r: any) => r.id).filter(Boolean);
+      if (ids.length > 0) {
+        await p.query('DELETE FROM student_reviews WHERE id NOT IN (?)', [ids]);
+      } else {
+        await p.execute('DELETE FROM student_reviews');
+      }
+      for (const r of data) {
+        await p.execute(
+          `INSERT INTO student_reviews (
+            id, name, email, rating, country, country_slug, university, university_slug,
+            program, comment, status, published, show_on_home, gender, avatar, intake,
+            verified_student
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          ON DUPLICATE KEY UPDATE
+            name = VALUES(name), email = VALUES(email), rating = VALUES(rating),
+            country = VALUES(country), country_slug = VALUES(country_slug),
+            university = VALUES(university), university_slug = VALUES(university_slug),
+            program = VALUES(program), comment = VALUES(comment), status = VALUES(status),
+            published = VALUES(published), show_on_home = VALUES(show_on_home),
+            gender = VALUES(gender), avatar = VALUES(avatar), intake = VALUES(intake),
+            verified_student = VALUES(verified_student)`,
+          [
+            r.id, r.name, r.email || null, r.rating || 5, r.country || null, r.countrySlug || null,
+            r.university || null, r.universitySlug || null, r.program || null, r.comment || '',
+            r.status || 'approved', r.published !== false ? 1 : 0, r.showOnHome !== false ? 1 : 0,
+            r.gender || 'man', r.avatar || null, r.intake || 'Fall 2025', r.verifiedStudent !== false ? 1 : 0
+          ]
+        );
+      }
+      return true;
+    }
+
     return true;
   } catch (err) {
     console.error(`Error syncing table ${table} to MySQL:`, err);
@@ -1653,7 +1838,8 @@ export async function syncTableToMySQL(table: string, data: any) {
 
 export async function fetchTableFromMySQL(table: string): Promise<any> {
   try {
-    await initDatabase();
+    const ok = await initDatabase();
+    if (!ok) return null;
     const p = getPool();
 
     // 1. Settings tables stored in cms_settings
@@ -2012,6 +2198,32 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
       }));
     }
 
+    // 16. Reviews (Student Reviews)
+    if (table === 'reviews') {
+      const [rows]: any = await p.execute('SELECT * FROM student_reviews ORDER BY created_at DESC, id DESC').catch(() => [[]]);
+      if (!rows || rows.length === 0) return null;
+      return rows.map((r: any) => ({
+        id: r.id,
+        name: r.name,
+        email: r.email || '',
+        rating: r.rating || 5,
+        country: r.country || 'United Kingdom',
+        countrySlug: r.country_slug || 'uk',
+        university: r.university || 'General Consultation',
+        universitySlug: r.university_slug || 'general',
+        program: r.program || undefined,
+        comment: r.comment || '',
+        status: r.status || 'approved',
+        published: Boolean(r.published),
+        showOnHome: Boolean(r.show_on_home),
+        gender: r.gender || 'man',
+        avatar: r.avatar,
+        intake: r.intake || 'Fall 2025',
+        verifiedStudent: Boolean(r.verified_student),
+        createdAt: r.created_at?.toISOString ? r.created_at.toISOString() : String(r.created_at || ''),
+      }));
+    }
+
     return null;
   } catch (err: any) {
     console.error(`[MySQL fetchTable Error for ${table}]:`, err?.message || err);
@@ -2023,17 +2235,24 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
 // Persistent Binary Media Storage (media_files table)
 // ==========================================
 
-export async function ensureMediaFilesTable(pool?: mysql.Pool): Promise<void> {
-  const p = pool || getPool();
-  await p.execute(`
-    CREATE TABLE IF NOT EXISTS media_files (
-      id VARCHAR(100) PRIMARY KEY,
-      mime_type VARCHAR(100),
-      size_bytes INT,
-      data LONGBLOB,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-  `);
+export async function ensureMediaFilesTable(pool?: mysql.Pool): Promise<boolean> {
+  try {
+    const ok = await initDatabase();
+    if (!ok) return false;
+    const p = pool || getPool();
+    await p.execute(`
+      CREATE TABLE IF NOT EXISTS media_files (
+        id VARCHAR(100) PRIMARY KEY,
+        mime_type VARCHAR(100),
+        size_bytes INT,
+        data LONGBLOB,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export async function saveMediaFile(
@@ -2042,7 +2261,8 @@ export async function saveMediaFile(
   sizeBytes: number,
   dataBuffer: Buffer
 ): Promise<void> {
-  await ensureMediaFilesTable();
+  const ok = await ensureMediaFilesTable();
+  if (!ok) return;
   const p = getPool();
   await p.execute(
     `INSERT INTO media_files (id, mime_type, size_bytes, data)
@@ -2059,7 +2279,8 @@ export async function getMediaFile(
   id: string
 ): Promise<{ id: string; mimeType: string; sizeBytes: number; data: Buffer } | null> {
   try {
-    await ensureMediaFilesTable();
+    const ok = await ensureMediaFilesTable();
+    if (!ok) return null;
     const p = getPool();
     const [rows]: any = await p.execute(
       'SELECT id, mime_type, size_bytes, data FROM media_files WHERE id = ? LIMIT 1',
@@ -2073,19 +2294,17 @@ export async function getMediaFile(
       sizeBytes: Number(row.size_bytes || 0),
       data: Buffer.isBuffer(row.data) ? row.data : Buffer.from(row.data),
     };
-  } catch (err: any) {
-    console.error(`[MySQL getMediaFile Error for ${id}]:`, err?.message || err);
+  } catch {
     return null;
   }
 }
 
 export async function deleteMediaFile(id: string): Promise<void> {
   try {
-    await ensureMediaFilesTable();
+    const ok = await ensureMediaFilesTable();
+    if (!ok) return;
     const p = getPool();
     await p.execute('DELETE FROM media_files WHERE id = ?', [id]);
-  } catch (err: any) {
-    console.warn(`[MySQL deleteMediaFile warning for ${id}]:`, err?.message || err);
-  }
+  } catch {}
 }
 

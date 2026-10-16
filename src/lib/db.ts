@@ -29,6 +29,7 @@ import {
   Subscriber,
   BroadcastCampaign,
   AiChatSettings,
+  Review,
 } from './types';
 import { hashPassword } from './auth';
 import { syncTableToMySQL, loadDataFromMySQL, fetchTableFromMySQL } from './mysql';
@@ -41,6 +42,7 @@ import { initialVisaSuccessItems } from '@/data/visaSuccess';
 import { blogPosts as initialBlogPosts } from '@/data/blogPosts';
 import { teamMembers as initialTeam } from '@/data/team';
 import { faqs as initialFaqs } from '@/data/faqs';
+import { initialReviews } from '@/data/reviews';
 
 interface DatabaseSchema {
   users: User[];
@@ -73,6 +75,7 @@ interface DatabaseSchema {
   aiChatSettings?: AiChatSettings;
   broadcastDraft?: any;
   deletedSubscribers?: string[];
+  reviews?: Review[];
 }
 
 const DB_DIR = path.join(process.cwd(), 'data');
@@ -694,6 +697,7 @@ We use aggregated, anonymized metrics (such as Google Analytics) to understand w
     },
     subscribers: [],
     broadcastCampaigns: [],
+    reviews: initialReviews,
   };
 }
 
@@ -740,13 +744,33 @@ class DatabaseManager {
         parsed.broadcastCampaigns = [];
         needsSave = true;
       }
+      if (!Array.isArray(parsed.reviews)) {
+        parsed.reviews = initialReviews;
+        needsSave = true;
+      }
       if (needsSave) {
         this.writeDb(parsed);
       }
       this.cache = parsed;
       return parsed;
-    } catch {
+    } catch (readErr) {
       if (this.cache) return this.cache;
+      console.error('[Database Read/Parse Warning]:', readErr);
+
+      // Protect against wiping data on temporary concurrent read glitches:
+      try {
+        if (fs.existsSync(DB_FILE)) {
+          const rawContent = fs.readFileSync(DB_FILE, 'utf-8');
+          if (rawContent && rawContent.trim().length > 20) {
+            const reParsed = JSON.parse(rawContent);
+            if (reParsed && typeof reParsed === 'object') {
+              this.cache = reParsed;
+              return reParsed;
+            }
+          }
+        }
+      } catch {}
+
       const initialData = createInitialDatabase();
       this.writeDb(initialData);
       this.cache = initialData;
@@ -757,10 +781,22 @@ class DatabaseManager {
   public writeDb(data: DatabaseSchema) {
     this.ensureDataDir();
     try {
-      fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+      const tempFile = path.join(DB_DIR, `db_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.tmp`);
+      fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
+      try {
+        fs.renameSync(tempFile, DB_FILE);
+      } catch {
+        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+        try { fs.unlinkSync(tempFile); } catch {}
+      }
       this.cache = data;
     } catch (err) {
-      console.error('[Database Write Error]:', err);
+      try {
+        fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+        this.cache = data;
+      } catch (fallbackErr) {
+        console.error('[Database Write Error]:', fallbackErr);
+      }
     }
   }
 
@@ -818,6 +854,21 @@ class DatabaseManager {
         }
         if (!merged.aboutPageSettings || typeof merged.aboutPageSettings !== 'object') {
           merged.aboutPageSettings = current.aboutPageSettings || createInitialDatabase().aboutPageSettings;
+        }
+        // Protect student reviews: merge by ID so no review from either local DB or MySQL is EVER lost
+        const currentList = Array.isArray(current.reviews) ? current.reviews : [];
+        const mysqlList = Array.isArray(mysqlData.reviews) ? mysqlData.reviews : [];
+        if (mysqlList.length > 0 || currentList.length > 0) {
+          const map = new Map<string, Review>();
+          for (const item of mysqlList) {
+            if (item && item.id) map.set(item.id, item);
+          }
+          for (const item of currentList) {
+            if (item && item.id) map.set(item.id, item);
+          }
+          merged.reviews = Array.from(map.values());
+        } else {
+          merged.reviews = initialReviews;
         }
         this.writeDb(merged);
         return true;

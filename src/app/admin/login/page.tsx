@@ -210,7 +210,7 @@ export default function AdminLoginPage() {
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="info@fccglobaleducation.com"
+                  placeholder="Enter your email"
                   className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F0F5FA] border border-[#DCE7F2] text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-1 focus:ring-amber-500/20 transition-all font-medium"
                 />
               </div>
@@ -394,7 +394,7 @@ export default function AdminLoginPage() {
                       required
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      placeholder="admin@fccglobaleducation.com"
+                      placeholder="Enter your email"
                       className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 text-xs focus:outline-none focus:border-amber-500 focus:bg-white focus:ring-1 focus:ring-amber-500/20 transition-all font-medium"
                     />
                   </div>

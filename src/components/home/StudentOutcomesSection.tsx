@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { 
   ArrowRight, Plus, Star, CheckCircle2, Globe, Building, 
-  MessageSquare, Play, Sparkles 
+  MessageSquare, Play, Sparkles, ChevronLeft, ChevronRight 
 } from 'lucide-react';
 import SuccessStoryCard from '@/components/cards/SuccessStoryCard';
 import VideoCard from '@/components/cards/VideoCard';
@@ -25,6 +25,30 @@ export default function StudentOutcomesSection({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reviewsList, setReviewsList] = useState<Review[]>(realReviews);
 
+  // Slider state
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardsPerView, setCardsPerView] = useState(3);
+  const [isPaused, setIsPaused] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  // Responsive cards per view
+  useEffect(() => {
+    const updateCardsPerView = () => {
+      if (typeof window === 'undefined') return;
+      if (window.innerWidth < 640) {
+        setCardsPerView(1);
+      } else if (window.innerWidth < 1024) {
+        setCardsPerView(2);
+      } else {
+        setCardsPerView(3);
+      }
+    };
+    updateCardsPerView();
+    window.addEventListener('resize', updateCardsPerView);
+    return () => window.removeEventListener('resize', updateCardsPerView);
+  }, []);
+
   // Filter approved real reviews that should show on home
   const approvedHomeReviews = reviewsList.filter(
     (r) => (r.status === 'approved' || r.published === true) && (r.showOnHome === true || reviewsList.length <= 6)
@@ -34,10 +58,58 @@ export default function StudentOutcomesSection({
     ? approvedHomeReviews
     : reviewsList.filter((r) => r.status === 'approved' || r.published === true);
 
+  const total = itemsToDisplay.length;
+  const maxIndex = Math.max(0, total - cardsPerView);
+
+  // Reset index if cardsPerView changes
+  useEffect(() => {
+    if (currentIndex > maxIndex) {
+      setCurrentIndex(Math.max(0, maxIndex));
+    }
+  }, [maxIndex, currentIndex]);
+
+  // Auto-play slider every 4 seconds, pause on hover
+  useEffect(() => {
+    if (maxIndex <= 0 || isPaused) return;
+    const interval = setInterval(() => {
+      setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [maxIndex, isPaused]);
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
+  };
+
+  // Touch Swipe Handlers for Mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const distance = touchStartX.current - touchEndX.current;
+    if (distance > 50) {
+      handleNext();
+    } else if (distance < -50) {
+      handlePrev();
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   return (
     <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* 1. Header with Add Review Button */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+      {/* 1. Header with Add Review Button & Slider Controls */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
         <div>
           <span className="text-xs font-bold text-amber-700 uppercase tracking-widest bg-amber-50 px-3 py-1 rounded-full border border-amber-200 inline-flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-amber-600" />
@@ -51,11 +123,32 @@ export default function StudentOutcomesSection({
           </p>
         </div>
 
-        {/* Right Action Buttons */}
+        {/* Right Action Buttons & Slider Navigation Controls */}
         <div className="flex flex-wrap sm:flex-nowrap items-center gap-2.5 sm:gap-3 w-full sm:w-auto">
+          {itemsToDisplay.length > cardsPerView && (
+            <div className="flex items-center gap-1.5 mr-1">
+              <button
+                type="button"
+                onClick={handlePrev}
+                aria-label="Previous Review"
+                className="p-2.5 rounded-xl bg-white hover:bg-amber-50 active:bg-amber-100 text-slate-800 border border-slate-200/90 transition shadow-xs cursor-pointer hover:border-amber-300"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                type="button"
+                onClick={handleNext}
+                aria-label="Next Review"
+                className="p-2.5 rounded-xl bg-white hover:bg-amber-50 active:bg-amber-100 text-slate-800 border border-slate-200/90 transition shadow-xs cursor-pointer hover:border-amber-300"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 hover:from-amber-300 hover:to-amber-400 transition-all shadow-md shadow-amber-500/20 hover:scale-[1.02] flex-1 sm:flex-initial"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 hover:from-amber-300 hover:to-amber-400 transition-all shadow-md shadow-amber-500/20 hover:scale-[1.02] flex-1 sm:flex-initial cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Write a Review</span>
@@ -71,12 +164,58 @@ export default function StudentOutcomesSection({
         </div>
       </div>
 
-      {/* 2. Real Reviews with Screenshot Card Design */}
+      {/* 2. Interactive Responsive Reviews Carousel Slider */}
       {itemsToDisplay.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {itemsToDisplay.map((item) => (
-            <SuccessStoryCard key={item.id} story={item} />
-          ))}
+        <div
+          className="relative mb-12"
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+        >
+          {/* Slider Overflow Track */}
+          <div
+            className="overflow-hidden py-2 -mx-2 sm:-mx-3"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div
+              className="flex transition-transform duration-500 ease-out"
+              style={{
+                transform: `translateX(-${currentIndex * (100 / cardsPerView)}%)`,
+              }}
+            >
+              {itemsToDisplay.map((item) => (
+                <div
+                  key={item.id}
+                  className="shrink-0 px-2 sm:px-3 flex"
+                  style={{ width: `${100 / cardsPerView}%` }}
+                >
+                  <div className="w-full h-full flex flex-col">
+                    <SuccessStoryCard story={item} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Dots Indicator & Slide Counter */}
+          {maxIndex > 0 && (
+            <div className="flex items-center justify-center gap-2 mt-4 sm:mt-6">
+              {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => setCurrentIndex(idx)}
+                  aria-label={`Go to slide ${idx + 1}`}
+                  className={`transition-all duration-300 rounded-full cursor-pointer ${
+                    currentIndex === idx
+                      ? 'w-7 sm:w-8 h-2.5 bg-amber-500 shadow-xs'
+                      : 'w-2.5 h-2.5 bg-slate-300 hover:bg-slate-400'
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       ) : (
         /* Empty state when no reviews are approved yet */
@@ -95,7 +234,7 @@ export default function StudentOutcomesSection({
           <div className="pt-2">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-amber-400 hover:bg-slate-800 transition-all shadow-md hover:scale-[1.02]"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold bg-slate-900 text-amber-400 hover:bg-slate-800 transition-all shadow-md hover:scale-[1.02] cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Write the First Review</span>
