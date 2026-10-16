@@ -95,10 +95,12 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const isLoginPage = pathname === '/admin/login';
+  const isResetPasswordPage = pathname === '/admin/reset-password' || pathname.startsWith('/admin/reset-password');
+  const isPublicAdminPage = isLoginPage || isResetPasswordPage;
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [generalSettings, setGeneralSettings] = useState<any>(null);
-  const [authChecked, setAuthChecked] = useState(isLoginPage);
+  const [authChecked, setAuthChecked] = useState(isPublicAdminPage);
   const [user, setUser] = useState<{ name: string; email: string; role: string }>({
     name: 'Admin',
     email: 'admin@fccglobaleducation.com',
@@ -111,7 +113,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const [searchResults, setSearchResults] = useState<any[]>([]);
 
   useEffect(() => {
-    if (isLoginPage) {
+    if (isPublicAdminPage) {
       setAuthChecked(true);
       return;
     }
@@ -158,7 +160,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         else if (d?.settings?.general) setGeneralSettings(d.settings.general);
       })
       .catch(() => {});
-  }, [isLoginPage, router]);
+  }, [isPublicAdminPage, router]);
 
   // Handle global search
   useEffect(() => {
@@ -178,7 +180,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
 
   // 5-Minute Inactivity Auto-Logout Tracker (Mouse / Keyboard / Scroll / Click)
   useEffect(() => {
-    if (isLoginPage || !authChecked) return;
+    if (isPublicAdminPage || !authChecked) return;
 
     let inactivityTimeout: NodeJS.Timeout;
     const INACTIVITY_LIMIT_MS = 5 * 60 * 1000; // 5 minutes
@@ -224,7 +226,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         window.removeEventListener(event, onUserActivity);
       });
     };
-  }, [isLoginPage, authChecked, router]);
+  }, [isPublicAdminPage, authChecked, router]);
 
   const handleLogout = async () => {
     try {
@@ -238,7 +240,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     router.replace('/admin/login');
   };
 
-  if (isLoginPage) {
+  if (isPublicAdminPage) {
     return <>{children}</>;
   }
 
