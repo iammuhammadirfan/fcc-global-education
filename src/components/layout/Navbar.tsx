@@ -235,7 +235,7 @@ export default function Navbar({
           <div className="flex items-center justify-between gap-2 sm:gap-4">
             
             {/* Brand Logo & Company Name */}
-            <Link href="/" prefetch={true} className="flex items-center gap-2 sm:gap-2.5 group min-w-0 shrink">
+            <Link href="/" prefetch={true} className="flex items-center gap-2 sm:gap-2.5 group shrink-0">
               {generalSettings?.logoUrl && generalSettings.logoUrl.trim() !== '' && generalSettings.logoUrl !== '/logo.svg' ? (
                 <div className="relative flex items-center shrink-0">
                   <img
@@ -250,14 +250,14 @@ export default function Navbar({
                 </div>
               )}
               <div className="flex flex-col min-w-0">
-                <span className="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-slate-950 leading-tight flex items-center gap-1 truncate">
+                <span className="text-sm sm:text-base lg:text-lg font-bold tracking-tight text-slate-950 leading-tight flex items-center gap-1 whitespace-nowrap">
                   {generalSettings?.companyName ? (
                     generalSettings.companyName
                   ) : (
                     <>Aura<span className="text-amber-600">Global</span></>
                   )}
                 </span>
-                <span className="text-[9px] sm:text-[9.5px] tracking-wider text-slate-500 uppercase font-semibold leading-tight truncate max-w-[120px] sm:max-w-[220px]">
+                <span className="text-[8px] sm:text-[9px] xl:text-[9.5px] tracking-wider text-slate-500 uppercase font-semibold leading-tight whitespace-normal sm:whitespace-nowrap">
                   {generalSettings?.tagline || 'Education Consultants'}
                 </span>
               </div>
