@@ -594,12 +594,22 @@ export default function AdminSettingsPage() {
               />
             </div>
             <div>
+              <label className="block text-slate-700 mb-1.5 font-bold">Primary Phone Heading (Footer & Contact Card)</label>
+              <input
+                type="text"
+                value={general.phoneHeading || ''}
+                onChange={(e) => setGeneral({ ...general, phoneHeading: e.target.value })}
+                placeholder="Head Office Helpline"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
+              />
+            </div>
+            <div>
               <label className="block text-slate-700 mb-1.5 font-bold">Primary Phone Number</label>
               <input
                 type="text"
                 value={general.phone}
                 onChange={(e) => setGeneral({ ...general, phone: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white font-mono"
               />
             </div>
             <div>
@@ -628,6 +638,77 @@ export default function AdminSettingsPage() {
                 onChange={(e) => setGeneral({ ...general, officeHours: e.target.value })}
                 className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
               />
+            </div>
+          </div>
+
+          {/* Regional Consultancy Helplines (Europe & Australia) */}
+          <div className="p-5 rounded-2xl bg-amber-50/50 border border-amber-200/80 space-y-4">
+            <div className="border-b border-amber-200/60 pb-2.5">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <Building className="w-4 h-4 text-amber-600" />
+                Regional Consultancy Numbers (Contact Page & Footer)
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Configure dedicated headings and phone numbers for Europe and Australia consultancy services displayed in the Footer and Contact page.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs">
+              {/* Europe Consultancy */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3">
+                <div className="font-bold text-slate-800 flex items-center justify-between">
+                  <span>🇪🇺 Europe Consultancy</span>
+                  <span className="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-semibold border border-blue-200">Europe Line</span>
+                </div>
+                <div>
+                  <label className="block text-slate-700 mb-1 font-bold">Section Heading</label>
+                  <input
+                    type="text"
+                    value={general.europeHeading || ''}
+                    onChange={(e) => setGeneral({ ...general, europeHeading: e.target.value })}
+                    placeholder="Europe Consultancy"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 mb-1 font-bold">Europe Phone Number</label>
+                  <input
+                    type="text"
+                    value={general.europePhone || ''}
+                    onChange={(e) => setGeneral({ ...general, europePhone: e.target.value })}
+                    placeholder="+44 (0) 20 7946 0912"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white font-mono"
+                  />
+                </div>
+              </div>
+
+              {/* Australia Consultancy */}
+              <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-3">
+                <div className="font-bold text-slate-800 flex items-center justify-between">
+                  <span>🇦🇺 Australia Consultancy</span>
+                  <span className="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-semibold border border-amber-200">Australia Line</span>
+                </div>
+                <div>
+                  <label className="block text-slate-700 mb-1 font-bold">Section Heading</label>
+                  <input
+                    type="text"
+                    value={general.australiaHeading || ''}
+                    onChange={(e) => setGeneral({ ...general, australiaHeading: e.target.value })}
+                    placeholder="Australia Consultancy"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="block text-slate-700 mb-1 font-bold">Australia Phone Number</label>
+                  <input
+                    type="text"
+                    value={general.australiaPhone || ''}
+                    onChange={(e) => setGeneral({ ...general, australiaPhone: e.target.value })}
+                    placeholder="+61 (0) 3 9000 1234"
+                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 font-medium focus:bg-white font-mono"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 

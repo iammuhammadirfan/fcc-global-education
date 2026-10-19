@@ -10,6 +10,7 @@ export const teamMembers: TeamMember[] = [
     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80',
     bio: 'Former senior admissions evaluator at top UK and Canadian institutions with nearly two decades of experience guiding over 4,000 students to world-class academic institutions.',
     specializations: ['Oxbridge Admissions', 'Institutional Strategy', 'Global Scholarships'],
+    phone: '+44 (0) 20 7946 0912',
   },
   {
     id: 'team-2',
@@ -20,6 +21,7 @@ export const teamMembers: TeamMember[] = [
     image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
     bio: 'Specialist in student visa jurisprudence across the UK, USA, Australia, and the Schengen zone. Oversees our 98.6% visa approval audit pipeline and interview preparation clinics.',
     specializations: ['US F-1 Visa Credibility', 'UKVI CAS Compliance', 'Financial Dossier Auditing'],
+    phone: '+44 (0) 20 7946 0915',
   },
   {
     id: 'team-3',
@@ -30,6 +32,7 @@ export const teamMembers: TeamMember[] = [
     image: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80',
     bio: 'Helped place hundreds of scholars into Ivy League and top Canadian universities with over $8 million in institutional scholarships and graduate assistantships.',
     specializations: ['Ivy League Admissions', 'STEM OPT Extensions', 'Common App Strategy'],
+    phone: '+1 (416) 555-0182',
   },
   {
     id: 'team-4',
@@ -40,6 +43,7 @@ export const teamMembers: TeamMember[] = [
     image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=600&q=80',
     bio: 'Pioneered zero-tuition German and regional Italian scholarship pathways for international students, with unmatched expertise in APS certification and uni-assist processing.',
     specializations: ['Germany Tuition-Free Admissions', 'APS Procedures', 'DSU Scholarships Italy'],
+    phone: '+49 (0) 89 289 01',
   },
 ];
 

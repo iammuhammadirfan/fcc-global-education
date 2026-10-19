@@ -15,7 +15,7 @@ export async function GET(request: Request) {
     
     // Only return approved and published reviews to the public
     let filtered = allReviews.filter(
-      (r) => (r.status === 'approved' || r.published === true) && r.status !== 'rejected'
+      (r) => r.status === 'approved' && r.published !== false
     );
 
     if (home === 'true') {
@@ -130,10 +130,10 @@ export async function POST(request: Request) {
       gender: gender || 'man',
       avatar: avatar && String(avatar).trim() ? String(avatar).trim() : defaultAvatar,
       intake: intake && String(intake).trim() ? String(intake).trim() : 'Fall 2025',
-      status: 'approved',
-      published: true,
-      showOnHome: true,
-      verifiedStudent: true,
+      status: 'pending',
+      published: false,
+      showOnHome: false,
+      verifiedStudent: false,
       createdAt: new Date().toISOString(),
     };
 
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       success: true,
-      message: 'Review submitted and published successfully.',
+      message: 'Review submitted successfully. It will be visible once approved by our administrators.',
       review: newReview,
     });
   } catch (err: any) {

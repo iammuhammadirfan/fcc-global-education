@@ -16,6 +16,8 @@ export default function AdminSuccessStoriesPage() {
   const [editingStory, setEditingStory] = useState<SuccessStory | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState(false);
+  const [countries, setCountries] = useState<any[]>([]);
+  const [universities, setUniversities] = useState<any[]>([]);
 
   const DUMMY_MAN_AVATAR = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80';
   const DUMMY_WOMAN_AVATAR = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80';
@@ -61,6 +63,19 @@ export default function AdminSuccessStoriesPage() {
 
   useEffect(() => {
     fetchStories();
+    fetch('/api/admin/countries')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.countries) setCountries(d.countries);
+      })
+      .catch(() => null);
+
+    fetch('/api/universities')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.universities) setUniversities(d.universities);
+      })
+      .catch(() => null);
   }, []);
 
   const openAddModal = () => {
@@ -440,11 +455,17 @@ export default function AdminSuccessStoriesPage() {
                   <input
                     type="text"
                     required
+                    list="story-countries-list"
                     value={form.country || ''}
                     onChange={(e) => setForm({ ...form, country: e.target.value })}
-                    placeholder="e.g. United Kingdom, Australia, USA"
+                    placeholder="e.g. United Kingdom, Japan, Australia"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
+                  <datalist id="story-countries-list">
+                    {countries.map((c: any) => (
+                      <option key={c.id || c.name} value={c.name} />
+                    ))}
+                  </datalist>
                 </div>
               </div>
 
@@ -454,11 +475,19 @@ export default function AdminSuccessStoriesPage() {
                   <input
                     type="text"
                     required
+                    list="story-unis-list"
                     value={form.university || ''}
                     onChange={(e) => setForm({ ...form, university: e.target.value })}
                     placeholder="e.g. University of Oxford"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
+                  <datalist id="story-unis-list">
+                    {universities
+                      .filter((u) => !form.country || u.country?.toLowerCase() === form.country.toLowerCase())
+                      .map((u) => (
+                        <option key={u.id || u.name} value={u.name} />
+                      ))}
+                  </datalist>
                 </div>
                 <div>
                   <label className="block text-slate-700 mb-1 font-bold">Degree & Program</label>

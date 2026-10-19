@@ -81,6 +81,11 @@ export default function ContactClient({
   };
 
   const phone = generalSettings?.phone || '+44 (0) 20 7946 0912';
+  const phoneHeading = generalSettings?.phoneHeading || 'Head Office Helpline';
+  const europeHeading = generalSettings?.europeHeading || 'Europe Consultancy';
+  const europePhone = generalSettings?.europePhone || phone;
+  const australiaHeading = generalSettings?.australiaHeading || 'Australia Consultancy';
+  const australiaPhone = generalSettings?.australiaPhone || '+61 (0) 3 9000 1234';
   const email = generalSettings?.email || 'admissions@fccglobaleducation.com';
   const address = generalSettings?.address || 'Level 4, 30 St Mary Axe, London EC3A 8EP, United Kingdom';
   const whatsappNum = (generalSettings?.whatsapp || phone).replace(/[^0-9]/g, '');
@@ -326,14 +331,41 @@ export default function ContactClient({
               </h3>
 
               <div className="space-y-4 text-xs">
+                {/* Primary / Head Office Phone */}
                 <div className="flex items-start gap-3">
                   <Phone className="w-4 h-4 text-amber-400 flex-shrink-0 mt-1" />
                   <div>
-                    <span className="text-slate-400 block font-semibold">Head Office Phone:</span>
-                    <a href={`tel:${phone}`} className="text-sm font-bold text-white hover:text-amber-400 transition-colors">
+                    <span className="text-slate-400 block font-semibold">{phoneHeading}:</span>
+                    <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="text-sm font-bold text-white hover:text-amber-400 transition-colors">
                       {phone}
                     </a>
-                    <span className="text-slate-500 block mt-0.5">Mon–Fri: 9:00 AM – 6:30 PM GMT</span>
+                    <span className="text-slate-500 block mt-0.5">
+                      {generalSettings?.officeHours ? `Mon–Fri: ${generalSettings.officeHours}` : 'Mon–Fri: 9:00 AM – 6:30 PM GMT'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Europe Consultancy */}
+                <div className="flex items-start gap-3 pt-3 border-t border-slate-800">
+                  <Phone className="w-4 h-4 text-amber-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <span className="text-slate-400 block font-semibold">{europeHeading}:</span>
+                    <a href={`tel:${europePhone.replace(/[^0-9+]/g, '')}`} className="text-sm font-bold text-white hover:text-amber-400 transition-colors">
+                      {europePhone}
+                    </a>
+                    <span className="text-slate-500 block mt-0.5">Mon–Fri: 9:00 AM – 6:30 PM GMT/CET</span>
+                  </div>
+                </div>
+
+                {/* Australia Consultancy */}
+                <div className="flex items-start gap-3 pt-3 border-t border-slate-800">
+                  <Phone className="w-4 h-4 text-amber-400 flex-shrink-0 mt-1" />
+                  <div>
+                    <span className="text-slate-400 block font-semibold">{australiaHeading}:</span>
+                    <a href={`tel:${australiaPhone.replace(/[^0-9+]/g, '')}`} className="text-sm font-bold text-white hover:text-amber-400 transition-colors">
+                      {australiaPhone}
+                    </a>
+                    <span className="text-slate-500 block mt-0.5">Mon–Fri: 9:00 AM – 5:30 PM AEST</span>
                   </div>
                 </div>
 
@@ -357,7 +389,7 @@ export default function ContactClient({
                       rel="noreferrer"
                       className="text-sm font-bold text-emerald-400 hover:underline"
                     >
-                      {phone} (Chat Now)
+                      {generalSettings?.whatsapp || phone} (Chat Now)
                     </a>
                   </div>
                 </div>

@@ -49,7 +49,10 @@ export default async function UniversityDetailPage({ params }: UniversityPagePro
   }
 
   const allStories = (await db.getTable('successStories')) || successStories;
-  const allReviews = ((await db.getTable('reviews' as any)) as any) || [];
+  const rawReviews = ((await db.getTable('reviews' as any)) as any) || [];
+  const allReviews = rawReviews.filter(
+    (r: any) => r.status === 'approved' && r.published !== false
+  );
   const uniStories = allStories.filter(
     (s: any) =>
       (s.universitySlug?.toLowerCase() === uni.slug.toLowerCase() ||

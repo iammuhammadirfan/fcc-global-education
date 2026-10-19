@@ -330,6 +330,7 @@ export async function initDatabase(): Promise<boolean> {
         specializations LONGTEXT,
         sort_order INT DEFAULT 1,
         active BOOLEAN DEFAULT TRUE,
+        phone VARCHAR(100),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -481,6 +482,11 @@ export async function initDatabase(): Promise<boolean> {
           );
         }
       }
+    } catch {}
+
+    // Ensure phone column exists on team_members table
+    try {
+      await p.execute('ALTER TABLE team_members ADD COLUMN phone VARCHAR(100) NULL');
     } catch {}
 
     // Check if initial seeding is needed
@@ -693,9 +699,14 @@ async function seedDatabase(p: mysql.Pool) {
     companyName: 'FCC Global Education Consultants',
     tagline: 'World-Class Study Abroad Counseling & Visa Guidance',
     logoUrl: '/logo.svg',
-    phone: '+92 300 8886 536',
-    whatsapp: '+923008886536',
-    email: 'info@fccglobaleducation.com',
+    phoneHeading: 'Head Office Helpline',
+    phone: '+44 (0) 20 7946 0912',
+    europeHeading: 'Europe Consultancy',
+    europePhone: '+44 (0) 20 7946 0912',
+    australiaHeading: 'Australia Consultancy',
+    australiaPhone: '+61 (0) 3 9000 1234',
+    whatsapp: '+447946091200',
+    email: 'admissions@auraglobal.com',
     address: '1st Floor, Imran Gujjar Plaza, Main Stop Kot Shahabuddin, Shahdara Town, Shahdara, 54950',
     officeHours: 'Monday - Saturday: 09:00 AM - 06:30 PM PKT',
     googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=1st+Floor%2C+Imran+Gujjar+Plaza%2C+Main+Stop+Kot+Shahabuddin%2C+Shahdara+Town%2C+Shahdara%2C+54950',
@@ -1246,6 +1257,7 @@ export async function loadDataFromMySQL(): Promise<any | null> {
         specializations: safeJsonParse(r.specializations, []),
         sortOrder: r.sort_order,
         active: Boolean(r.active),
+        phone: r.phone || (initialTeam.find((tm) => tm.id === r.id)?.phone) || '',
       })),
       faqs: faqRows.map((r: any) => ({
         id: r.id,
@@ -1344,7 +1356,7 @@ export async function loadDataFromMySQL(): Promise<any | null> {
         universitySlug: r.university_slug || 'general',
         program: r.program || undefined,
         comment: r.comment || '',
-        status: r.status || 'approved',
+        status: r.status || 'pending',
         published: Boolean(r.published),
         showOnHome: Boolean(r.show_on_home),
         gender: r.gender || 'man',
@@ -1356,9 +1368,18 @@ export async function loadDataFromMySQL(): Promise<any | null> {
     };
 
     for (const s of settingRows) {
-      const parsed = safeJsonParse(s.value_json, null);
+      const parsed = safeJsonParse<any>(s.value_json, null);
       if (!parsed) continue;
-      if (s.key_name === 'general') result.generalSettings = parsed;
+      if (s.key_name === 'general') {
+        result.generalSettings = {
+          phoneHeading: 'Head Office Helpline',
+          europeHeading: 'Europe Consultancy',
+          europePhone: '+44 (0) 20 7946 0912',
+          australiaHeading: 'Australia Consultancy',
+          australiaPhone: '+61 (0) 3 9000 1234',
+          ...(parsed || {}),
+        };
+      }
       else if (s.key_name === 'navigation') result.navigationSettings = normalizeNavigationSettings(parsed);
       else if (s.key_name === 'footer') result.footerSettings = parsed;
       else if (s.key_name === 'homepage') result.homepageSettings = parsed;
@@ -1673,16 +1694,18 @@ export async function syncTableToMySQL(table: string, data: any) {
       for (const tm of data) {
         await p.execute(
           `INSERT INTO team_members (
-            id, name, role, experience, credentials, image, bio, specializations, sort_order, active
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            id, name, role, experience, credentials, image, bio, specializations, sort_order, active, phone
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
           ON DUPLICATE KEY UPDATE
             name = VALUES(name), role = VALUES(role), experience = VALUES(experience),
             credentials = VALUES(credentials), image = VALUES(image), bio = VALUES(bio),
-            specializations = VALUES(specializations), sort_order = VALUES(sort_order), active = VALUES(active)`,
+            specializations = VALUES(specializations), sort_order = VALUES(sort_order), active = VALUES(active),
+            phone = VALUES(phone)`,
           [
             tm.id, tm.name, tm.role, tm.experience || null,
             JSON.stringify(tm.credentials || []), tm.image || null, tm.bio || null,
             JSON.stringify(tm.specializations || []), tm.sortOrder || 1, tm.active ?? true,
+            tm.phone || tm.contactNumber || null,
           ]
         );
       }
@@ -1821,8 +1844,8 @@ export async function syncTableToMySQL(table: string, data: any) {
           [
             r.id, r.name, r.email || null, r.rating || 5, r.country || null, r.countrySlug || null,
             r.university || null, r.universitySlug || null, r.program || null, r.comment || '',
-            r.status || 'approved', r.published !== false ? 1 : 0, r.showOnHome !== false ? 1 : 0,
-            r.gender || 'man', r.avatar || null, r.intake || 'Fall 2025', r.verifiedStudent !== false ? 1 : 0
+            r.status || 'pending', r.published === true ? 1 : 0, r.showOnHome === true ? 1 : 0,
+            r.gender || 'man', r.avatar || null, r.intake || 'Fall 2025', r.verifiedStudent === true ? 1 : 0
           ]
         );
       }
@@ -1867,9 +1890,19 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
         [keyName]
       );
       if (rows && rows.length > 0) {
-        const val = safeJsonParse(rows[0].value_json, null);
+        const val = safeJsonParse<any>(rows[0].value_json, null);
         if (table === 'navigationSettings' || keyName === 'navigation') {
           return normalizeNavigationSettings(val);
+        }
+        if (table === 'generalSettings' || keyName === 'general') {
+          return {
+            phoneHeading: 'Head Office Helpline',
+            europeHeading: 'Europe Consultancy',
+            europePhone: '+44 (0) 20 7946 0912',
+            australiaHeading: 'Australia Consultancy',
+            australiaPhone: '+61 (0) 3 9000 1234',
+            ...(val || {}),
+          };
         }
         return val;
       }
@@ -2059,6 +2092,7 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
         specializations: safeJsonParse(r.specializations, []),
         sortOrder: r.sort_order,
         active: Boolean(r.active),
+        phone: r.phone || (initialTeam.find((tm) => tm.id === r.id)?.phone) || '',
       }));
     }
 
@@ -2213,7 +2247,7 @@ export async function fetchTableFromMySQL(table: string): Promise<any> {
         universitySlug: r.university_slug || 'general',
         program: r.program || undefined,
         comment: r.comment || '',
-        status: r.status || 'approved',
+        status: r.status || 'pending',
         published: Boolean(r.published),
         showOnHome: Boolean(r.show_on_home),
         gender: r.gender || 'man',

@@ -11,9 +11,8 @@ export const metadata: Metadata = {
 
 export default async function SuccessStoriesPage() {
   const reviews = ((await db.getTable('reviews' as any)) as any) || [];
-  // Only display reviews managed in Admin -> Student Reviews
   const approvedReviews = reviews.filter(
-    (r: any) => r.status === 'approved' || r.published === true || (r.status !== 'rejected' && r.status !== 'pending')
+    (r: any) => r.status === 'approved' && r.published !== false
   );
   const videos = ((await db.getTable('videos')) as any) || [];
   const publishedVideos = videos.filter((v: any) => v.published !== false);

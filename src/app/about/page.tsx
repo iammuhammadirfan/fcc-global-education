@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   ArrowRight,
   Sparkles,
+  Phone,
 } from 'lucide-react';
 import Breadcrumbs from '@/components/ui/Breadcrumbs';
 import { db } from '@/lib/db';
@@ -294,14 +295,14 @@ export default async function AboutPage() {
                 className="rounded-2xl bg-white border border-slate-200/90 shadow-sm hover:shadow-xl transition-all overflow-hidden flex flex-col justify-between"
               >
                 <div>
-                  <div className="relative h-60 w-full bg-slate-900">
+                  <div className="relative h-64 sm:h-72 w-full bg-slate-900 overflow-hidden">
                     {member.image ? (
                       <Image
                         src={member.image}
                         alt={member.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 25vw"
-                        className="object-cover"
+                        className="object-cover object-top hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-400">
@@ -339,6 +340,18 @@ export default async function AboutPage() {
                             </li>
                           ))}
                         </ul>
+                      </div>
+                    )}
+
+                    {member.phone && (
+                      <div className="pt-2 border-t border-slate-100">
+                        <a
+                          href={`tel:${member.phone.replace(/[^0-9+]/g, '')}`}
+                          className="inline-flex items-center justify-center gap-1.5 w-full py-2 px-3 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200/80 font-bold text-xs transition-colors group/tel shadow-xs"
+                        >
+                          <Phone className="w-3.5 h-3.5 text-amber-600 group-hover/tel:scale-110 transition-transform" />
+                          <span>{member.phone}</span>
+                        </a>
                       </div>
                     )}
                   </div>

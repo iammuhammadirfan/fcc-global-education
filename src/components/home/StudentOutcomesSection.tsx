@@ -51,12 +51,13 @@ export default function StudentOutcomesSection({
 
   // Filter approved real reviews that should show on home
   const approvedHomeReviews = reviewsList.filter(
-    (r) => (r.status === 'approved' || r.published === true) && (r.showOnHome === true || reviewsList.length <= 6)
+    (r) => r.status === 'approved' && r.published !== false && r.showOnHome === true
   );
-  // Real approved items - ONLY genuine reviews, no dummy success stories
-  const itemsToDisplay = approvedHomeReviews.length > 0
-    ? approvedHomeReviews
-    : reviewsList.filter((r) => r.status === 'approved' || r.published === true);
+  // Real approved items - ONLY genuine approved reviews, never pending
+  const approvedGeneral = reviewsList.filter(
+    (r) => r.status === 'approved' && r.published !== false
+  );
+  const itemsToDisplay = approvedHomeReviews.length > 0 ? approvedHomeReviews : approvedGeneral;
 
   const total = itemsToDisplay.length;
   const maxIndex = Math.max(0, total - cardsPerView);

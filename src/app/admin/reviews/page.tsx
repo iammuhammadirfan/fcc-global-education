@@ -195,7 +195,7 @@ export default function AdminReviewsPage() {
 
   // Metrics
   const pendingCount = reviews.filter((r) => r.status === 'pending').length;
-  const approvedCount = reviews.filter((r) => r.status === 'approved' || r.published === true).length;
+  const approvedCount = reviews.filter((r) => r.status === 'approved' && r.published !== false).length;
   const homeCount = reviews.filter((r) => r.showOnHome === true).length;
   const avgRating = reviews.length > 0 
     ? (reviews.reduce((acc, curr) => acc + (curr.rating || 5), 0) / reviews.length).toFixed(1)
@@ -219,7 +219,7 @@ export default function AdminReviewsPage() {
     if (!matchesCountry || !matchesUni) return false;
 
     if (statusFilter === 'pending') return matchesSearch && r.status === 'pending';
-    if (statusFilter === 'approved') return matchesSearch && (r.status === 'approved' || r.published === true);
+    if (statusFilter === 'approved') return matchesSearch && r.status === 'approved' && r.published !== false;
     if (statusFilter === 'rejected') return matchesSearch && r.status === 'rejected';
     if (statusFilter === 'home') return matchesSearch && r.showOnHome === true;
     return matchesSearch;

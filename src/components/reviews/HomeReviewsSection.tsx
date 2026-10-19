@@ -13,7 +13,7 @@ export default function HomeReviewsSection({ initialReviews = [] }: HomeReviewsS
   const [reviews, setReviews] = useState<Review[]>(initialReviews);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const displayReviews = reviews.filter((r) => r.showOnHome !== false && (r.status === 'approved' || r.published === true));
+  const displayReviews = reviews.filter((r) => r.status === 'approved' && r.published !== false && r.showOnHome === true);
 
   return (
     <div className="space-y-8">
