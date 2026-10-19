@@ -42,6 +42,9 @@ export default async function HomePage() {
   const allVideos = (await db.getTable('videos')) || [];
   const allVisaSuccess = (await db.getTable('visaSuccess')) || [];
   const allReviews = ((await db.getTable('reviews' as any)) as any) || [];
+  const approvedReviews = allReviews.filter(
+    (r: any) => r.status === 'approved' && r.published !== false
+  );
   const homepageSettings = (await db.getTable('homepageSettings')) || {};
   const visaSuccessPageSettings = (await db.getTable('visaSuccessPageSettings')) || {};
 
@@ -342,7 +345,7 @@ export default async function HomePage() {
       {/* 9. Verified Student Outcomes, Real Reviews & Video Testimonials */}
       <StudentOutcomesSection
         stories={featuredStories}
-        realReviews={allReviews}
+        realReviews={approvedReviews}
         videos={featuredVideos}
       />
 

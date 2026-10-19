@@ -38,6 +38,12 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
   const copyright = generalSettings?.copyrightText || `© ${new Date().getFullYear()} FCC Global Education Consultants Ltd. All Rights Reserved.`;
   const displayCountries = (countries && countries.length > 0 ? countries : fallbackCountries).slice(0, 8);
 
+  const phoneHeading = generalSettings?.phoneHeading || 'Head Office Helpline';
+  const europeHeading = generalSettings?.europeHeading || 'Europe Consultancy';
+  const europePhone = generalSettings?.europePhone || displayPhone;
+  const australiaHeading = generalSettings?.australiaHeading || 'Australia Consultancy';
+  const australiaPhone = generalSettings?.australiaPhone || '+61 (0) 3 9000 1234';
+
   if (pathname?.startsWith('/admin')) {
     return null;
   }
@@ -144,18 +150,42 @@ export default function Footer({ footerSettings, generalSettings, countries = fa
               {companyDesc}
             </p>
 
-            <div className="space-y-2 pt-2 text-xs text-slate-600">
+            <div className="space-y-2.5 pt-2 text-xs text-slate-600">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <span>{displayAddress}</span>
               </div>
-              <div className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                <a href={`tel:${displayPhone.replace(/[^0-9+]/g, '')}`} className="hover:text-amber-700 font-medium">
-                  {displayPhone}
-                </a>
+              {/* Primary Head Office Phone */}
+              <div className="flex items-start gap-2.5">
+                <Phone className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <span className="text-[11px] font-bold text-slate-800 block">{phoneHeading}:</span>
+                  <a href={`tel:${displayPhone.replace(/[^0-9+]/g, '')}`} className="hover:text-amber-700 font-semibold text-slate-700 block">
+                    {displayPhone}
+                  </a>
+                </div>
               </div>
-              <div className="flex items-center gap-2.5">
+              {/* Europe Consultancy Phone */}
+              <div className="flex items-start gap-2.5">
+                <Phone className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <span className="text-[11px] font-bold text-slate-800 block">{europeHeading}:</span>
+                  <a href={`tel:${europePhone.replace(/[^0-9+]/g, '')}`} className="hover:text-amber-700 font-semibold text-slate-700 block">
+                    {europePhone}
+                  </a>
+                </div>
+              </div>
+              {/* Australia Consultancy Phone */}
+              <div className="flex items-start gap-2.5">
+                <Phone className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div className="space-y-0.5">
+                  <span className="text-[11px] font-bold text-slate-800 block">{australiaHeading}:</span>
+                  <a href={`tel:${australiaPhone.replace(/[^0-9+]/g, '')}`} className="hover:text-amber-700 font-semibold text-slate-700 block">
+                    {australiaPhone}
+                  </a>
+                </div>
+              </div>
+              <div className="flex items-center gap-2.5 pt-0.5">
                 <Mail className="w-4 h-4 text-amber-600 flex-shrink-0" />
                 <a href={`mailto:${displayEmail}`} className="hover:text-amber-700 font-medium">
                   {displayEmail}

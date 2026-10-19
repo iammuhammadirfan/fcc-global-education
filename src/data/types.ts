@@ -201,4 +201,6 @@ export interface TeamMember {
   order?: number;
   active?: boolean;
   specialization?: string;
+  phone?: string;
+  contactNumber?: string;
 }

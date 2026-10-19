@@ -141,6 +141,35 @@ const defaultStages = [
   },
 ];
 
+function getCountryCode(countryName?: string): string {
+  if (!countryName) return 'GL';
+  const key = countryName.toLowerCase().trim();
+  const map: Record<string, string> = {
+    'united kingdom': 'GB',
+    uk: 'GB',
+    'united states': 'US',
+    usa: 'US',
+    canada: 'CA',
+    australia: 'AU',
+    germany: 'DE',
+    ireland: 'IE',
+    'new zealand': 'NZ',
+    sweden: 'SE',
+    netherlands: 'NL',
+    japan: 'JP',
+    france: 'FR',
+    italy: 'IT',
+    spain: 'ES',
+    malaysia: 'MY',
+    china: 'CN',
+    turkey: 'TR',
+    cyprus: 'CY',
+    dubai: 'AE',
+    uae: 'AE',
+  };
+  return map[key] || countryName.slice(0, 2).toUpperCase() || 'GL';
+}
+
 const STANDARD_COUNTRIES = [
   'United Kingdom',
   'United States',
@@ -169,6 +198,7 @@ export default function AdminVisaSuccessPage() {
   const [submitting, setSubmitting] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [universities, setUniversities] = useState<any[]>([]);
+  const [countries, setCountries] = useState<any[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -176,6 +206,14 @@ export default function AdminVisaSuccessPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d.universities) setUniversities(d.universities);
+        if (d.countries && d.countries.length > 0) setCountries(d.countries);
+      })
+      .catch(() => null);
+
+    fetch('/api/admin/countries')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.countries && d.countries.length > 0) setCountries(d.countries);
       })
       .catch(() => null);
   }, []);
@@ -203,7 +241,11 @@ export default function AdminVisaSuccessPage() {
   const openEditPosterModal = (item: VisaSuccessItem) => {
     setEditingItem(item);
     setForm({ ...item, showOnHomepage: Boolean(item.showOnHomepage) });
-    const isCustom = !STANDARD_COUNTRIES.includes(item.country || '');
+    const knownCountries = [
+      ...STANDARD_COUNTRIES,
+      ...countries.map((c: any) => c.name),
+    ];
+    const isCustom = Boolean(item.country && !knownCountries.some((c) => c?.toLowerCase() === item.country?.toLowerCase()));
     setIsCustomCountry(isCustom);
     setCustomCountryName(isCustom ? (item.country || '') : '');
     setIsModalOpen(true);
@@ -781,7 +823,20 @@ export default function AdminVisaSuccessPage() {
     }
   };
 
-  const countriesList = Array.from(new Set(items.map((it) => it.country).filter(Boolean)));
+  const allAvailableCountries = Array.from(
+    new Set([
+      ...countries.map((c: any) => c.name?.trim()).filter(Boolean),
+      ...STANDARD_COUNTRIES,
+      ...items.map((it) => it.country?.trim()).filter(Boolean),
+    ])
+  ).sort((a, b) => a.localeCompare(b));
+
+  const countriesList = Array.from(
+    new Set([
+      ...countries.map((c: any) => c.name?.trim()).filter(Boolean),
+      ...items.map((it) => it.country?.trim()).filter(Boolean),
+    ])
+  ).sort((a, b) => a.localeCompare(b));
 
   const filtered = items.filter((it) => {
     const matchesSearch =
@@ -1667,14 +1722,12 @@ export default function AdminVisaSuccessPage() {
                         onChange={(e) => updateHomepageRow(idx, { country: e.target.value })}
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold focus:outline-none focus:border-amber-500 focus:bg-white cursor-pointer"
                       >
-                        <option value="Australia">Australia</option>
-                        <option value="United Kingdom">United Kingdom</option>
-                        <option value="United States">United States</option>
-                        <option value="Canada">Canada</option>
-                        <option value="Germany">Germany</option>
-                        <option value="Ireland">Ireland</option>
-                        <option value="New Zealand">New Zealand</option>
-                        <option value="All">All Countries</option>
+                        <option value="All">All Countries (Global)</option>
+                        {allAvailableCountries.map((c) => (
+                          <option key={c} value={c}>
+                            {c}
+                          </option>
+                        ))}
                         <option value="Other">Other Countries</option>
                       </select>
                     </div>
@@ -1863,15 +1916,21 @@ export default function AdminVisaSuccessPage() {
             </div>
             <select
               value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
+              onChange={(e) => {
+                setSelectedCountry(e.target.value);
+                setGalleryPage(1);
+              }}
               className="px-3.5 py-2.5 rounded-xl bg-white border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:border-amber-500 shadow-xs cursor-pointer"
             >
               <option value="all">All Countries ({items.length})</option>
-              {countriesList.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
+              {allAvailableCountries.map((c) => {
+                const count = items.filter((it) => it.country?.toLowerCase() === c.toLowerCase()).length;
+                return (
+                  <option key={c} value={c}>
+                    {c} {count > 0 ? `(${count})` : ''}
+                  </option>
+                );
+              })}
             </select>
           </div>
 
@@ -2298,47 +2357,36 @@ export default function AdminVisaSuccessPage() {
                 <div>
                   <label className="block text-slate-700 mb-1 font-semibold">Destination Country *</label>
                   <select
-                    value={isCustomCountry ? 'Other' : (form.country || 'United Kingdom')}
+                    value={isCustomCountry ? 'Other' : (form.country || countries[0]?.name || 'United Kingdom')}
                     onChange={(e) => {
                       const c = e.target.value;
                       if (c === 'Other') {
                         setIsCustomCountry(true);
                         setCustomCountryName('');
-                        setForm((prev) => ({ ...prev, country: '', countryCode: 'GL' }));
+                        setForm((prev) => ({ ...prev, country: '', countryCode: 'GL', university: '' }));
                       } else {
                         setIsCustomCountry(false);
                         setCustomCountryName('');
-                        let code = 'GB';
-                        if (c === 'United States') code = 'US';
-                        else if (c === 'Canada') code = 'CA';
-                        else if (c === 'Australia') code = 'AU';
-                        else if (c === 'Germany') code = 'DE';
-                        else if (c === 'Ireland') code = 'IE';
-                        else if (c === 'New Zealand') code = 'NZ';
-                        else if (c === 'Sweden') code = 'SE';
-                        else if (c === 'Netherlands') code = 'NL';
-                        setForm((prev) => ({ ...prev, country: c, countryCode: code, university: '' }));
+                        const matchedCountry = countries.find((item: any) => item.name?.toLowerCase() === c.toLowerCase());
+                        const code = matchedCountry?.code || getCountryCode(c);
+                        const matchingUnis = universities.filter(
+                          (u) => u.country?.toLowerCase() === c.toLowerCase()
+                        );
+                        setForm((prev) => ({
+                          ...prev,
+                          country: c,
+                          countryCode: code,
+                          university: matchingUnis[0]?.name || '',
+                        }));
                       }
                     }}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-amber-500 focus:bg-white font-medium cursor-pointer"
                   >
-                    <option value="United Kingdom">United Kingdom (UK)</option>
-                    <option value="United States">United States (USA)</option>
-                    <option value="Canada">Canada</option>
-                    <option value="Australia">Australia</option>
-                    <option value="Germany">Germany</option>
-                    <option value="Ireland">Ireland</option>
-                    <option value="New Zealand">New Zealand</option>
-                    <option value="Sweden">Sweden</option>
-                    <option value="Netherlands">Netherlands</option>
-                    {/* Render any existing custom countries from items that aren't in STANDARD_COUNTRIES */}
-                    {countriesList
-                      .filter((c) => !STANDARD_COUNTRIES.includes(c))
-                      .map((c) => (
-                        <option key={c} value={c}>
-                          {c}
-                        </option>
-                      ))}
+                    {allAvailableCountries.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
                     <option value="Other" className="font-bold text-amber-700">
                       ★ Other (Apni Marzi Se Country Add Karein...)
                     </option>
@@ -2484,11 +2532,25 @@ export default function AdminVisaSuccessPage() {
                   <input
                     type="text"
                     required
+                    list="framework-countries-list"
                     value={frameworkForm.country || ''}
-                    onChange={(e) => setFrameworkForm({ ...frameworkForm, country: e.target.value })}
-                    placeholder="e.g. United Kingdom"
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      const matched = countries.find((c: any) => c.name?.toLowerCase() === val.toLowerCase());
+                      setFrameworkForm({
+                        ...frameworkForm,
+                        country: val,
+                        flag: matched?.flag || frameworkForm.flag || '🌍',
+                      });
+                    }}
+                    placeholder="e.g. United Kingdom, Japan, Australia"
                     className="w-full px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 focus:outline-none focus:border-amber-500 focus:bg-white"
                   />
+                  <datalist id="framework-countries-list">
+                    {allAvailableCountries.map((c) => (
+                      <option key={c} value={c} />
+                    ))}
+                  </datalist>
                 </div>
                 <div>
                   <label className="block text-slate-700 mb-1 font-bold">Flag Emoji</label>
@@ -2678,36 +2740,18 @@ export default function AdminVisaSuccessPage() {
                       setIsCustomBulkCountry(false);
                       setCustomBulkCountryName('');
                       setBulkCountry(c);
-                      let code = 'GB';
-                      if (c === 'United States') code = 'US';
-                      else if (c === 'Canada') code = 'CA';
-                      else if (c === 'Australia') code = 'AU';
-                      else if (c === 'Germany') code = 'DE';
-                      else if (c === 'Ireland') code = 'IE';
-                      else if (c === 'New Zealand') code = 'NZ';
-                      else if (c === 'Sweden') code = 'SE';
-                      else if (c === 'Netherlands') code = 'NL';
+                      const matchedCountry = countries.find((item: any) => item.name?.toLowerCase() === c.toLowerCase());
+                      const code = matchedCountry?.code || getCountryCode(c);
                       setBulkCountryCode(code);
                     }
                   }}
                   className="w-full px-3.5 py-2.5 rounded-xl bg-white border border-slate-300 text-slate-900 font-semibold text-xs focus:outline-none focus:border-amber-500 cursor-pointer shadow-2xs"
                 >
-                  <option value="United Kingdom">United Kingdom (UK)</option>
-                  <option value="United States">United States (USA)</option>
-                  <option value="Canada">Canada</option>
-                  <option value="Australia">Australia</option>
-                  <option value="Germany">Germany</option>
-                  <option value="Ireland">Ireland</option>
-                  <option value="New Zealand">New Zealand</option>
-                  <option value="Sweden">Sweden</option>
-                  <option value="Netherlands">Netherlands</option>
-                  {countriesList
-                    .filter((c) => !STANDARD_COUNTRIES.includes(c))
-                    .map((c) => (
-                      <option key={c} value={c}>
-                        {c}
-                      </option>
-                    ))}
+                  {allAvailableCountries.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
                   <option value="Other" className="font-bold text-amber-700">
                     ★ Other (Enter Custom Country...)
                   </option>

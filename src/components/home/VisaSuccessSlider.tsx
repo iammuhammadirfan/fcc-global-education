@@ -58,6 +58,8 @@ function formatUniversity(uni?: string, country?: string, program?: string): str
   if (country === 'United Kingdom') return 'UK University (Student Route)';
   if (country === 'Canada') return 'Canadian Designated Institution (DLI)';
   if (country === 'United States') return 'US Accredited University (F-1)';
+  if (country === 'Japan') return 'Japanese Accredited University';
+  if (country === 'Germany') return 'German Public/State University';
   return 'Accredited Partner University';
 }
 
@@ -69,6 +71,16 @@ function getCountryFlag(country?: string): string {
   if (c.includes('canada')) return '🇨🇦';
   if (c.includes('germany')) return '🇩🇪';
   if (c.includes('ireland')) return '🇮🇪';
+  if (c.includes('japan')) return '🇯🇵';
+  if (c.includes('new zealand')) return '🇳🇿';
+  if (c.includes('sweden')) return '🇸🇪';
+  if (c.includes('netherlands')) return '🇳🇱';
+  if (c.includes('france')) return '🇫🇷';
+  if (c.includes('italy')) return '🇮🇹';
+  if (c.includes('spain')) return '🇪🇸';
+  if (c.includes('malaysia')) return '🇲🇾';
+  if (c.includes('turkey')) return '🇹🇷';
+  if (c.includes('china')) return '🇨🇳';
   return '🌍';
 }
 

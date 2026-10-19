@@ -23,7 +23,8 @@ export default function UniversityReviewsSection({
   const uLower = universityName.toLowerCase().trim();
   const matchedReviews = reviews.filter(
     (r) =>
-      (r.status === 'approved' || r.published === true) &&
+      r.status === 'approved' &&
+      r.published !== false &&
       (r.university?.toLowerCase() === uLower ||
         r.universitySlug?.toLowerCase() === uLower.replace(/[^a-z0-9]+/g, '-'))
   );

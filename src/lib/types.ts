@@ -20,8 +20,13 @@ export interface GeneralSettings {
   logoUrl: string;
   darkLogoUrl?: string;
   faviconUrl?: string;
+  phoneHeading?: string;
   phone: string;
   alternatePhone?: string;
+  europeHeading?: string;
+  europePhone?: string;
+  australiaHeading?: string;
+  australiaPhone?: string;
   whatsapp: string;
   email: string;
   address: string;
@@ -479,6 +484,8 @@ export interface TeamMember {
   sortOrder?: number;
   active?: boolean;
   specialization?: string;
+  phone?: string;
+  contactNumber?: string;
 }
 
 export interface Subscriber {

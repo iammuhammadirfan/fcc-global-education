@@ -33,6 +33,7 @@ const countryFlags: Record<string, string> = {
   Sweden: '🇸🇪',
   'New Zealand': '🇳🇿',
   Netherlands: '🇳🇱',
+  Japan: '🇯🇵',
   France: '🇫🇷',
   Italy: '🇮🇹',
   Spain: '🇪🇸',

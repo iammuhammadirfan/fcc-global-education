@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { 
   Users, Plus, Search, Edit3, Trash2, CheckCircle2, 
   XCircle, RefreshCw, Mail, Award, X, Check, ArrowRight,
-  ShieldCheck, GraduationCap, ExternalLink, Sparkles, AlertCircle
+  ShieldCheck, GraduationCap, ExternalLink, Sparkles, AlertCircle, Phone
 } from 'lucide-react';
 import { TeamMember } from '@/lib/types';
 import ImageUploadInput from '@/components/admin/ImageUploadInput';
@@ -29,6 +29,7 @@ export default function AdminTeamPage() {
     bio: '',
     credentialsText: '',
     specializationsText: '',
+    phone: '',
     sortOrder: 1,
     active: true,
   };
@@ -75,6 +76,7 @@ export default function AdminTeamPage() {
       bio: m.bio || '',
       credentialsText: Array.isArray(m.credentials) ? m.credentials.join('\n') : (m.credentials || ''),
       specializationsText: Array.isArray(m.specializations) ? m.specializations.join(', ') : (m.specializations || m.specialization || ''),
+      phone: m.phone || (m as any).contactNumber || '',
       sortOrder: m.sortOrder || m.order || 1,
       active: m.active !== false,
     });
@@ -105,6 +107,7 @@ export default function AdminTeamPage() {
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean),
+        phone: form.phone.trim(),
         sortOrder: Number(form.sortOrder || 1),
         active: form.active,
       };
@@ -199,6 +202,7 @@ export default function AdminTeamPage() {
       (m.name || '').toLowerCase().includes(q) ||
       (m.role || '').toLowerCase().includes(q) ||
       (m.bio || '').toLowerCase().includes(q) ||
+      (m.phone || '').toLowerCase().includes(q) ||
       creds.toLowerCase().includes(q) ||
       specs.toLowerCase().includes(q)
     );
@@ -343,7 +347,7 @@ export default function AdminTeamPage() {
                     <img
                       src={member.image}
                       alt={member.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-slate-800 text-slate-400">
@@ -388,6 +392,14 @@ export default function AdminTeamPage() {
                   <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
                     {member.bio}
                   </p>
+
+                  {/* Direct Contact Phone */}
+                  {member.phone && (
+                    <div className="pt-2 border-t border-slate-100 flex items-center gap-1.5 text-xs font-semibold text-amber-800 bg-amber-50/70 px-2.5 py-1.5 rounded-lg border border-amber-200/60">
+                      <Phone className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                      <span className="truncate">{member.phone}</span>
+                    </div>
+                  )}
 
                   {/* Credentials & Certifications with Emerald Checkmarks */}
                   {member.credentials && Array.isArray(member.credentials) && member.credentials.length > 0 && (
@@ -536,6 +548,23 @@ export default function AdminTeamPage() {
                 />
                 <span className="text-[10px] text-slate-400 mt-1 block">
                   Displayed as the black/amber banner at the bottom of the portrait photo.
+                </span>
+              </div>
+
+              <div>
+                <label className="block text-slate-700 font-bold uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+                  <Phone className="w-3.5 h-3.5 text-amber-600" />
+                  <span>Direct Contact Number / WhatsApp (Optional)</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  placeholder="e.g. +44 (0) 20 7946 0912 or +92 300 1234567"
+                  className="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 text-xs font-semibold focus:outline-none focus:border-amber-500"
+                />
+                <span className="text-[10px] text-slate-400 mt-1 block">
+                  Displayed on the About Us counselor card so students can call or contact directly.
                 </span>
               </div>
 

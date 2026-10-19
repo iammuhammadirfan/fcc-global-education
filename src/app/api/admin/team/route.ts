@@ -49,6 +49,7 @@ export async function POST(request: Request) {
       sortOrder: Number(body.sortOrder || body.order || team.length + 1),
       order: Number(body.sortOrder || body.order || team.length + 1),
       active: body.active !== false,
+      phone: (body.phone || body.contactNumber || '').trim(),
     };
 
     team.push(newMember);
@@ -95,6 +96,7 @@ export async function PUT(request: Request) {
       specializations: specs,
       sortOrder: Number(body.sortOrder || body.order || team[index].sortOrder || index + 1),
       active: body.active !== undefined ? Boolean(body.active) : (team[index].active ?? true),
+      phone: body.phone !== undefined ? String(body.phone).trim() : (body.contactNumber !== undefined ? String(body.contactNumber).trim() : (team[index].phone || '')),
     };
 
     team[index] = updated;

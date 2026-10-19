@@ -17,6 +17,8 @@ export default function AdminVideosPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingVideo, setEditingVideo] = useState<VideoStory | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [countries, setCountries] = useState<any[]>([]);
+  const [universities, setUniversities] = useState<any[]>([]);
 
   const initialForm: Partial<VideoStory> = {
     title: '',
@@ -66,6 +68,19 @@ export default function AdminVideosPage() {
 
   useEffect(() => {
     fetchVideos();
+    fetch('/api/admin/countries')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.countries) setCountries(d.countries);
+      })
+      .catch(() => null);
+
+    fetch('/api/universities')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.universities) setUniversities(d.universities);
+      })
+      .catch(() => null);
   }, []);
 
   const openAddModal = () => {
@@ -349,11 +364,19 @@ export default function AdminVideosPage() {
                   <label className="block text-slate-400 mb-1 font-medium">University</label>
                   <input
                     type="text"
+                    list="video-unis-list"
                     value={form.university || ''}
                     onChange={(e) => setForm({ ...form, university: e.target.value })}
                     placeholder="e.g. University of Edinburgh"
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
                   />
+                  <datalist id="video-unis-list">
+                    {universities
+                      .filter((u) => !form.destination || u.country?.toLowerCase() === form.destination.toLowerCase())
+                      .map((u) => (
+                        <option key={u.id || u.name} value={u.name} />
+                      ))}
+                  </datalist>
                 </div>
               </div>
 
@@ -362,11 +385,17 @@ export default function AdminVideosPage() {
                   <label className="block text-slate-400 mb-1 font-medium">Destination Country</label>
                   <input
                     type="text"
+                    list="video-countries-list"
                     value={form.destination || ''}
                     onChange={(e) => setForm({ ...form, destination: e.target.value })}
-                    placeholder="e.g. United Kingdom"
+                    placeholder="e.g. United Kingdom, Japan, Australia"
                     className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs focus:outline-none focus:border-amber-500"
                   />
+                  <datalist id="video-countries-list">
+                    {countries.map((c: any) => (
+                      <option key={c.id || c.name} value={c.name} />
+                    ))}
+                  </datalist>
                 </div>
                 <div>
                   <label className="block text-slate-400 mb-1 font-medium">Category</label>
